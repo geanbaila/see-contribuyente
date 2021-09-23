@@ -1,7 +1,7 @@
-assets/css
-assets/js
-assets/media
-assets/plugins
+public/assets/css/*
+public/assets/js/*
+public/assets/media/*
+public/assets/plugins/*
 /node_modules
 /public/hot
 /public/storage
