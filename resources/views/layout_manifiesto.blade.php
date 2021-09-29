@@ -1709,13 +1709,13 @@
 									<!--begin::Breadcrumb-->
 									<ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
 										<li class="breadcrumb-item text-dark">
-											<a href="#" class="btn btn-sm btn-secondary active">Cargas y encomiendas</a>
+											<a href="#" class="btn btn-sm btn-secondary">Cargas y encomiendas</a>
 										</li>
 										<li class="breadcrumb-item text-dark">
 											<a href="#" class="btn btn-sm btn-secondary">Gestión de documentos</a>
 										</li>
 										<li class="breadcrumb-item text-dark">
-											<a href="#" class="btn btn-sm btn-secondary">
+											<a href="#" class="btn btn-sm btn-secondary active">
 												Manifiesto de carga
 											</a>
 										</li>
@@ -1749,36 +1749,7 @@
 								<div class="card">
 									<div class="card mb-5 mb-xxl-8">
 										<div class="card-body pt-9 pb-0">
-											<div class="row gy-5 g-xl-12">
-												<div class="col-xxl-6">
-													<div class="row gy-5">
-														<div class="col-xxl-3">
-															<label for="exampleDataList" class="form-label">Envía:</label>
-															<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-														</div>
-														<div class="col-xxl-9">
-															<label for="exampleDataList" class="form-label">&nbsp;</label>
-															<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-														</div>
-													</div>
-												</div>
-												<div class="col-xxl-6">
-													<div class="row gy-5">
-														<div class="col-xxl-3">
-															<label for="exampleDataList" class="form-label">Celular:</label>
-															<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-														</div>
-														<div class="col-xxl-6">
-															<label for="exampleDataList" class="form-label">E-mail:</label>
-															<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-														</div>
-														<div class="col-xxl-3">
-															<label for="exampleDataList" class="form-label">Fecha:</label>
-															<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-														</div>
-													</div>
-												</div>
-											</div>
+											
 								
 											<div class="row gy-5 g-xl-12">
 												<div class="col-xxl-6">
@@ -1810,71 +1781,6 @@
 													</div>
 												</div>
 											</div>
-										 
-							
-								<div class="row gy-5 g-xl-12">
-									<div class="col-xxl-6">
-										<div class="row gy-5">
-											<div class="col-xxl-3">
-												<label for="exampleDataList" class="form-label">Medio de pago:</label>
-												<select class="form-select" aria-label="Default select example">
-													<option selected> -- </option>
-													<option value="1">CRÉDITO</option>
-													<option value="2">CONTADO</option>
-												</select>
-											</div>
-											<div class="col-xxl-4">
-												<label for="exampleDataList" class="form-label">Documento:</label>
-												<select class="form-select" aria-label="Default select example">
-													<option selected> -- </option>
-													<option value="1">BOLETA ELECTRÓNICA</option>
-													<option value="2">FACTURA ELECTRÓNICA</option>
-													<option value="3">GUÍA DE REMISIÓN</option>
-												</select>
-											</div>
-											<div class="col-xxl-2">
-												<label for="exampleDataList" class="form-label">Serie:</label>
-												<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-											</div>
-											<div class="col-xxl-3">
-												<label for="exampleDataList" class="form-label">Número:</label>
-												<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
-											</div>
-											
-										</div>
-									</div>
-									<div class="col-xxl-6">
-										<div class="row gy-5">
-											<div class="col-xxl-3">
-												<label for="exampleDataList" class="form-label">Origen:</label>
-												<select class="form-select" aria-label="Default select example">
-													<option selected> -- </option>
-													<option value="1">AREQUIPA</option>
-													<option value="2">LIMA</option>
-													<option value="3">TACNA</option>
-												</select>
-											</div>
-											<div class="col-xxl-3">
-												<label for="exampleDataList" class="form-label">Destino:</label>
-												<select class="form-select" aria-label="Default select example">
-													<option selected> -- </option>
-													<option value="1">AREQUIPA</option>
-													<option value="2">LIMA</option>
-													<option value="3">TACNA</option>
-												</select>
-											</div>
-											<div class="col-xxl-6">
-												<label for="exampleDataList" class="form-label">Agencia:</label>
-												<select class="form-select" aria-label="Default select example">
-													<option selected> -- </option>
-													<option value="1">Av. Javier Prado N 5000</option>
-												</select>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								
 											
 										</div>
 									</div>
@@ -1887,77 +1793,188 @@
 								<div class="card">
 										<div class="card mb-5 mb-xxl-8">
 											<div class="card-body pt-9 pb-0">
+												<p class="fs-6 fw-bold">Cusco</p>
 												<table class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
 													<thead class="border-gray-200 fw-bold bg-lighten">
 														<tr>
-															<th scope="col"><a><img src="{{asset('assets/media/icons/sis/plus-circle.svg')}}" width="24"/></a></th>
-															<th scope="col">Descripción</th>
-															<th scope="col" width="100">Cantidad</th>
-															<th scope="col" width="100">Precio</th>
-															<th scope="col" width="100">Total</th>
-															<th scope="col" width="100">Peso</th>
+															<th scope="col" width="80"></th>
+															<th scope="col" width="80">Vehículo</th>
+															<th scope="col" width="200">Conductor</th>
+															<th scope="col" width="80">Viajes</th>
+															<th scope="col" width="80">Partida</th>
+															<th scope="col" width="80">Llegada</th>
+															<th scope="col" width="100">Estado</th>
+															<th scope="col" width="80">Encomiendas</th>
 														</tr>
 													</thead>
 													<tbody>
 														<tr>
-															<td scope="row"  width="100">
-																<a><img src="{{asset('assets/media/icons/sis/x-circle.svg')}}" width="24"/></a>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
 															</td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>0</td>
 														</tr>
 														<tr>
-															<td scope="row"  width="100">
-																<a><img src="{{asset('assets/media/icons/sis/x-circle.svg')}}" width="24"/></a>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
 															</td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>10</td>
 														</tr>
 														<tr>
-															<td scope="row"  width="100">
-																<a><img src="{{asset('assets/media/icons/sis/x-circle.svg')}}" width="24"/></a>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
 															</td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
-															<td><input type="text" class="form-control"></td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>4</td>
 														</tr>
 													</tbody>
 												</table>
-												<br/>
-												<div class="row">
-													<div class="col-3">
-														<b>Conductor:</b> Gerson Sánchez Aguilar<br/>
-														<b>Partida:</b> 08:00 PM
-													</div>
-													<div class="col-3">
-														<b>Encomienda:</b> por despachar<br/>
-														<b>SUNAT:</b> pendiente<br/>
-														
-													</div>
-													<div class="col-3">
-														<div class="d-flex align-items-center w-100px w-sm-300px flex-column mt-3">
-															<div class="d-flex justify-content-between w-100 mt-auto mb-2">
-																<span class="fw-bold text-gray-400">envíos y viajes en el año</span>
-																<span class="fw-bolder">2</span>
-															</div>
-															<div class="h-5px mx-3 w-100 bg-light mb-3">
-																<div class="bg-success rounded h-5px" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-3 text-end align-top">
-														<button class="btn btn-primary">Confirmar operación</button>
-														<button class="btn btn-secondary"><img src="{{asset('assets/media/icons/sis/printer.svg')}}" width="24"/></button>
-													</div>
-												</div>
+											</div>
+										</div>
+								</div> 
+
+								<!--begin::Separator-->
+								<div class="separator border-gray-200 mb-6"></div>
+								<!--end::Separator-->
+
+								<div class="card">
+										<div class="card mb-5 mb-xxl-8">
+											<div class="card-body pt-9 pb-0">
+												<p class="fs-6 fw-bold">Arequipa</p>
+												<table class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
+													<thead class="border-gray-200 fw-bold bg-lighten">
+														<tr>
+															<th scope="col" width="80"></th>
+															<th scope="col" width="80">Vehículo</th>
+															<th scope="col" width="200">Conductor</th>
+															<th scope="col" width="80">Viajes</th>
+															<th scope="col" width="80">Partida</th>
+															<th scope="col" width="80">Llegada</th>
+															<th scope="col" width="100">Estado</th>
+															<th scope="col" width="80">Encomiendas</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>0</td>
+														</tr>
+														<tr>
+															<td scope="row" class="text-center" >
+															<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>10</td>
+														</tr>
+														<tr>
+														<td scope="row" class="text-center" >
+															<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>4</td>
+														</tr>
+													</tbody>
+												</table>
+												
+											</div>
+										</div>
+								</div> 
+
+								<!--begin::Separator-->
+								<div class="separator border-gray-200 mb-6"></div>
+								<!--end::Separator-->
+
+								<div class="card">
+										<div class="card mb-5 mb-xxl-8">
+											<div class="card-body pt-9 pb-0">
+												<p class="fs-6 fw-bold">Lima</p>
+												<table class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
+													<thead class="border-gray-200 fw-bold bg-lighten">
+														<tr>
+															<td scope="row" width="80"></td>
+															<th scope="col" width="80">Vehículo</th>
+															<th scope="col" width="200">Conductor</th>
+															<th scope="col" width="80">Viajes</th>
+															<th scope="col" width="80">Partida</th>
+															<th scope="col" width="80">Llegada</th>
+															<th scope="col" width="100">Estado</th>
+															<th scope="col" width="80">Encomiendas</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>0</td>
+														</tr>
+														<tr>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>10</td>
+														</tr>
+														<tr>
+															<td scope="row" class="text-center" >
+																<a><img src="{{asset('assets/media/icons/sis/eye.svg')}}"></a>
+															</td>
+															<td>QWE-XCD</td>
+															<td>José Carlos Guzmán Sánchez</td>
+															<td>4666</td>
+															<td>29.09.2021<br/>10:00PM</td>
+															<td>30.09.2021<br/>5:00AM</td>
+															<td>Viajando</td>
+															<td>4</td>
+														</tr>
+													</tbody>
+												</table>
 											</div>
 										</div>
 								</div> 
