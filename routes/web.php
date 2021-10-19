@@ -14,9 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layout');
-});
-
-Route::get('/manifiesto', function () {
-    return view('layout_manifiesto');
+    return view('welcome');
 });
