@@ -14,5 +14,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layout/layout');
+    return view('sale/register');
+});
+
+Route::get('/venta', function () {
+    return view('sale/register');
+});
+
+Route::get('/manifiesto', function () {
+    return view('manifest/list');
 });
