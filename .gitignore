@@ -1,8 +1,4 @@
 database.sql
-public/assets/css/*
-public/assets/js/*
-public/assets/media/*
-public/assets/plugins/*
 /node_modules
 /public/hot
 /public/storage

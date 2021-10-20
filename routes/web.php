@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,13 +12,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('sale/register');
-});
-
-Route::get('/venta', function () {
-    return view('sale/register');
-});
-
-Route::get('/manifiesto', function () {
-    return view('manifest/list');
+    return view('welcome');
 });
