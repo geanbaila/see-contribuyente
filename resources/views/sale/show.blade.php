@@ -1,6 +1,7 @@
 @extends('layout.layout')
 @section('content')
     <form action="{{ url('/venta/registrar') }}" method="POST">
+        <input type="hidden" name="encargoId" value="" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -74,9 +75,9 @@
                                     <select class="form-select" aria-label="Default select example" id="origen"
                                         name="origen">
                                         <option selected> -- </option>
-                                        @if(count($sede))
+                                        @if (count($sede))
                                             @foreach ($sede as $item)
-                                                <option value="{{$item->_id}}">{{$item->nombre}}</option>
+                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -86,9 +87,9 @@
                                     <select class="form-select" aria-label="Default select example" id="destino"
                                         name="destino" onchange="javascript:getAgencia(this)">
                                         <option selected> -- </option>
-                                        @if(count($sede))
+                                        @if (count($sede))
                                             @foreach ($sede as $item)
-                                                <option value="{{$item->_id}}">{{$item->nombre}}</option>
+                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -118,9 +119,9 @@
                                     <select class="form-select" aria-label="Default select example" id="documento"
                                         name="documento" onchange="javascript:getSerie()">
                                         <option value="--" selected>--</option>
-                                        @if(count($documento))
-                                            @foreach($documento as $item)
-                                                <option value="{{$item->_id}}">{{$item->nombre}}</option>
+                                        @if (count($documento))
+                                            @foreach ($documento as $item)
+                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -216,11 +217,14 @@
         </div>
     </form>
     <script>
-        function str_pad(value, length) { return (value.toString().length < length) ? 
-            str_pad("0" + value, length) : value;
+        function str_pad(value, length) {
+            return (value.toString().length < length) ?
+                str_pad("0" + value, length) : value;
         }
 
-        function validate() {
+        function getChargeForm() {
+            var encargoId = $("[name='encargoId']").val().trim();
+
             var docEnvia = $("[name='docEnvia']").val().trim();
             var nombreEnvia = $("[name='nombreEnvia']").val().trim();
             var celularEnvia = $("[name='celularEnvia']").val().trim();
@@ -242,6 +246,7 @@
             var documentoNumero = $("[name='documentoNumero']").val().trim();
 
             var data = new FormData();
+            data.append("encargoId", encargoId);
             data.append("docEnvia", docEnvia);
             data.append("nombreEnvia", nombreEnvia);
             data.append("celularEnvia", celularEnvia);
@@ -262,62 +267,7 @@
             return data;
         }
 
-        function getAgencia(element){
-            var agencia = "<option value='--'>--</option>";
-            var sedeId = $(element).val();
-            if (sedeId !== '--') {
-                $.ajax({
-                    url: "{{ url('/api/v1/agencia') }}/" + sedeId,
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    contentType: false,
-                    processData: false,
-                    dataType: "json"
-                }).done(function(result) {
-                    if(result){
-                        result.forEach(function(element, index){
-                            agencia = agencia + "<option value='" + element._id + "'>" + element.nombre + "</option>";
-                        })
-                    }
-                    $("[name='agencia']").html(agencia);
-                });
-            } else {
-                // no hay agencia
-                $("[name='agencia']").html(agencia);
-            }
-        }
-
-        function getSerie(){
-            var agenciaId = $("#agencia").val();
-            var documentoId = $("[name='documento']").val();
-            if (agenciaId !== '--' && documentoId !== '--') {
-                $.ajax({
-                    url: "{{ url('/api/v1/serie') }}/" + agenciaId + "/" + documentoId,
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    contentType: false,
-                    processData: false,
-                    dataType: "json"
-                }).done(function(result) {
-                    console.log(result);
-                    if(result){
-                        var documentoSerie = str_pad(result[0].correlativo,3);
-                        $("#documentoSerieBlocked").val(documentoSerie);
-                        $("[name='documentoSerie']").val(documentoSerie);
-                    }
-                });
-            } else {
-                // no hay serie para iniciar
-                $("[name='documentoSerie']").val('');
-            }
-        }
-
-        function doit() {
-            var data = validate();
+        function validate(data) {
             if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 10) {
                 alert('Documento incorrecto de quien Envía');
                 return false;
@@ -354,20 +304,84 @@
                 alert('No se dispone del serie');
                 return false;
             }
-            alert('qwe');
-            $.ajax({
-                url: "{{ url('/venta/registrar') }}",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: data,
-                contentType: false,
-                processData: false,
-                dataType: "json"
-            }).done(function(result) {
-                console.log(result);
-            });
+            return true;
+        }
+
+        function getAgencia(element) {
+            var agencia = "<option value='--'>--</option>";
+            var sedeId = $(element).val();
+            if (sedeId !== '--') {
+                $.ajax({
+                    url: "{{ url('/api/v1/agencia') }}/" + sedeId,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: false,
+                    processData: false,
+                    dataType: "json"
+                }).done(function(result) {
+                    if (result) {
+                        result.forEach(function(element, index) {
+                            agencia = agencia + "<option value='" + element._id + "'>" + element.nombre +
+                                "</option>";
+                        })
+                    }
+                    $("[name='agencia']").html(agencia);
+                });
+            } else {
+                // no hay agencia
+                $("[name='agencia']").html(agencia);
+            }
+        }
+
+        function getSerie() {
+            var agenciaId = $("#agencia").val();
+            var documentoId = $("[name='documento']").val();
+            if (agenciaId !== '--' && documentoId !== '--') {
+                $.ajax({
+                    url: "{{ url('/api/v1/serie') }}/" + agenciaId + "/" + documentoId,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: false,
+                    processData: false,
+                    dataType: "json"
+                }).done(function(result) {
+                    console.log(result);
+                    if (result) {
+                        var documentoSerie = str_pad(result[0].correlativo, 3);
+                        $("#documentoSerieBlocked").val(documentoSerie);
+                        $("[name='documentoSerie']").val(documentoSerie);
+                    }
+                });
+            } else {
+                // no hay serie para iniciar
+                $("[name='documentoSerie']").val('');
+            }
+        }
+
+        function doit() {
+            var data = getChargeForm();
+            if (validate(data)) {
+                $.ajax({
+                    url: "{{ url('/venta/registrar') }}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json"
+                }).done(function(result) {
+                    if (data.get('encargoId').length === 0) {
+                        $("[name='encargoId']").val(result.result.encargoId);
+                    }
+                    console.log(result.result._id);
+                });
+            }
         }
     </script>
 @endsection
