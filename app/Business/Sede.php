@@ -15,4 +15,5 @@ class Sede extends Model
     {
         return $this->hasMany('App\Business\Agencia');
     }
+
 }

@@ -177,7 +177,6 @@ return [
 
         // add other provider
         Jenssegers\Mongodb\MongodbServiceProvider::class,
-
     ],
 
     /*

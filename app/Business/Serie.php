@@ -10,5 +10,5 @@ class Serie extends Model
     protected $connection = 'mongodb';
     protected $collection = 'serie';
     protected $primaryKey = '_id';
-    
+
 }

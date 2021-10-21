@@ -8,10 +8,6 @@ class SaleController extends Controller
 {
     public function register(Request $request){
         $data = $request->all();
-
-        $sede = Sede::all();
-
-
         return \response()->json([ 'status' => 'OK', 'data' => $data['docEnvia'], 'entidad' => $entidad ]);
     }
 

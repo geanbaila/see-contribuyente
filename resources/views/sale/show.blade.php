@@ -213,6 +213,10 @@
         </div>
     </form>
     <script>
+        function str_pad(value, length) { return (value.toString().length < length) ? 
+            str_pad("0" + value, length) : value;
+        }
+        
         function validate() {
             var docEnvia = $("[name='docEnvia']").val();
             var nombreEnvia = $("[name='nombreEnvia']").val();
@@ -306,10 +310,6 @@
                 // no hay serie para iniciar
                 $("[name='documentoSerie']").val('');
             }
-        }
-
-        function str_pad(value, length) { return (value.toString().length < length) ? 
-            str_pad("0" + value, length) : value;
         }
 
         function doit() {

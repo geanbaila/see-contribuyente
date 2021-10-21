@@ -15,4 +15,5 @@ class Agencia extends Model
     {
         return $this->belongsTo('App\Business\Sede');
     }
+
 }
