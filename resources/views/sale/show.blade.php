@@ -158,25 +158,26 @@
                         class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
-                                <th scope="col"><a><img src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}"
-                                            width="24" /></a></th>
+                                <th scope="col">
+                                    <a onclick="javascript:addChargeRow()"><img src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
+                                </th>
                                 <th scope="col">Descripción</th>
                                 <th scope="col" width="100">Cantidad</th>
                                 <th scope="col" width="100">Precio</th>
-                                <th scope="col" width="100">Total</th>
                                 <th scope="col" width="100">Peso</th>
+                                <th scope="col" width="100">Total</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="chargeRow">
                             <tr>
                                 <td scope="row" width="100">
-                                    <a><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                    <a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
                                 </td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control" name="descripcion"></td>
+                                <td><input type="text" class="form-control" name="cantidad"></td>
+                                <td><input type="text" class="form-control" name="precio"></td>
+                                <td><input type="text" class="form-control" name="peso"></td>
+                                <td><input type="text" class="form-control" name="total"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -217,6 +218,29 @@
         </div>
     </form>
     <script>
+        function addChargeRow() {
+            var html = '<tr>'
+            + '<td scope="row" width="100">'
+            + '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>'
+            + '</td>'
+            + '<td><input type="text" class="form-control" name="descripcion"></td>'
+            + '<td><input type="text" class="form-control" name="cantidad"></td>'
+            + '<td><input type="text" class="form-control" name="precio"></td>'
+            + '<td><input type="text" class="form-control" name="total"></td>'
+            + '<td><input type="text" class="form-control" name="peso"></td>'
+            + '</tr>';
+            $("#chargeRow").append(html);
+        }
+        
+        function removeChargeRow(element) {
+            var total = $("#chargeRow").find("tr").length;
+            if (total > 1) {
+                $(element).parent().parent().remove();
+            } else {
+                // al menos debe mantener una fila
+            }
+        }
+
         function str_pad(value, length) {
             return (value.toString().length < length) ?
                 str_pad("0" + value, length) : value;
@@ -244,6 +268,10 @@
             var documento = $("[name='documento']").val().trim();
             var documentoSerie = $("[name='documentoSerie']").val().trim();
             var documentoNumero = $("[name='documentoNumero']").val().trim();
+            var descripcion = document.getElementsByName("descripcion");
+            var cantidad = document.getElementsByName("cantidad");
+            var precio = document.getElementsByName("precio");
+            var peso = document.getElementsByName("peso");
 
             var data = new FormData();
             data.append("encargoId", encargoId);
@@ -264,6 +292,11 @@
             data.append("documento", documento);
             data.append("documentoSerie", documentoSerie);
             data.append("documentoNumero", documentoNumero);
+            var n = descripcion.length;
+            for (var i=0; i<n; i++){
+                data.append("encargo[]", [descripcion[i].value, cantidad[i].value, precio[i].value, peso[i].value]);
+            };
+            console.log(data);
             return data;
         }
 
@@ -349,7 +382,6 @@
                     processData: false,
                     dataType: "json"
                 }).done(function(result) {
-                    console.log(result);
                     if (result) {
                         var documentoSerie = str_pad(result[0].correlativo, 3);
                         $("#documentoSerieBlocked").val(documentoSerie);
@@ -379,7 +411,6 @@
                     if (data.get('encargoId').length === 0) {
                         $("[name='encargoId']").val(result.result.encargoId);
                     }
-                    console.log(result.result._id);
                 });
             }
         }

@@ -14,6 +14,22 @@ class SaleController extends Controller
 
     public function register(Request $request){
         $data = $request->all();
+        $var = function() {
+            
+            $data = func_get_arg(0);
+            $stack = [];
+            foreach($data as $item) {
+                $element = explode(",",$item);
+                array_push($stack, [
+                    'descripcion' => $element[0],
+                    'cantidad' => $element[1],
+                    'precio' => $element[2],
+                    'peso' => $element[3],
+                    'total' => 0,
+                ]);
+            }
+            return $stack;
+        };
         $insertEncargo = [
             'doc_envia' => $data['docEnvia'],
             'nombre_envia' => $data['nombreEnvia'],
@@ -34,6 +50,8 @@ class SaleController extends Controller
             'documento' => $data['documento'],
             'documento_serie' => $data['documentoSerie'],
             'documento_numero' => $data['documentoNumero'],
+
+            'encargo' => $var($data['encargo']),
         ];
         if (strlen($data['encargoId']) > 0) {
             $ObjectId = new ObjectId($data['encargoId']);
