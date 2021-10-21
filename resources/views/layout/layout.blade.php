@@ -4,6 +4,7 @@
 	<!--begin::Head-->
 	<head><base href="../">
 		<title>Laravel</title>
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<meta name="robots" content="noindex, nosnippet, nofollow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta charset="utf-8" />
@@ -4278,6 +4279,7 @@
 		<script src="{{asset('assets/js/custom/apps/chat/chat.js')}}"></script>
 		<script src="{{asset('assets/js/custom/modals/create-app.js')}}"></script>
 		<script src="{{asset('assets/js/custom/modals/upgrade-plan.js')}}"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<!--end::Page Custom Javascript-->
 		<!--end::Javascript-->
 	</body>
