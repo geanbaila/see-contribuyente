@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "1f853b80f3a006dd8549d09d2fdf611f",
+=======
+    "content-hash": "6e4a9dd2476552506dba12be3b05aeec",
+>>>>>>> 75049dd3d1982903fb8100411f310cb7df423a09
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -372,6 +376,7 @@
             "time": "2020-10-22T13:48:01+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "jean85/pretty-package-versions",
             "version": "2.0.5",
             "source": {
@@ -504,6 +509,8 @@
             "time": "2019-09-08T08:20:21+00:00"
         },
         {
+=======
+>>>>>>> 75049dd3d1982903fb8100411f310cb7df423a09
             "name": "laravel/framework",
             "version": "v6.20.36",
             "source": {

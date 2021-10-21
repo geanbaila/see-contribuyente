@@ -21,6 +21,7 @@ Route::post('/venta/registrar', 'SaleController@registrar');
 
 Route::get('/manifiesto', function () {
     return view('manifest.list');
+
 });
 
 Route::post('/api/v1/serie/{agencia}/{documento}', function ($agencia, $documento) {
