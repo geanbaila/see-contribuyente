@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/venta', 'SaleController@show');
-Route::post('/venta/registrar', 'SaleController@registrar');
+Route::post('/venta/registrar', 'SaleController@register');
 
 
 Route::get('/manifiesto', function () {
@@ -24,8 +24,10 @@ Route::get('/manifiesto', function () {
 
 });
 
-Route::post('/api/v1/serie/{agencia}/{documento}', function ($agencia, $documento) {
-    $serie = [];
+Route::post('/api/v1/serie/{agenciaId}/{documentoId}', function ($agenciaId, $documentoId) {
+    $serie = \App\Business\Serie::where('agencia_id', new MongoDB\BSON\ObjectId("$agenciaId"))
+    ->where('documento_id', new MongoDB\BSON\ObjectId("$documentoId"))
+    ->get();
     return response()->json($serie);
 });
 
