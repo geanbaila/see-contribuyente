@@ -430,7 +430,7 @@
             }
         }
 
-        function getEncargo() {
+        function askEncargo() {
             var docRecibe = $("#buscaDocRecibe").val();
             var docEnvia = $("#buscaDocEnvia").val();
             if (docRecibe.length === 8 || docRecibe.length === 10 || docEnvia.length === 8 || docEnvia.length === 10) {
@@ -447,6 +447,18 @@
                     }
                 }).done(function(result) {
                     if (result) {
+                        console.log(result.result.encargo);
+                        var html = '<tr>'
+						+ '<th scope="row">'
+						+ '<input class="form-check-input h-20px w-20px" type="checkbox" name="communication[]" value="email" checked="checked">'
+						+ '</th>'
+						+ '<td>' + result.result.encargo.fecha_envia + '</td>'
+						+ '<td>' + result.result.encargo.doc_envia + '</td>'
+						+ '<td>' + result.result.encargo.doc_recibe + '</td>'
+						+ '<td>' + result.result.encargo.agencia_destino+ '</td>'
+						+ '<td>00.00</td>'
+						+ '</tr>';
+                        $("#responseChargeRow").html(html);
                         putChargeForm(result.result.encargo);
                     }
                 });

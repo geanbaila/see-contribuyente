@@ -3690,18 +3690,7 @@
 												<th scope="col">Total S/.</th>
 												</tr>
 											</thead>
-											<tbody>
-												<tr>
-													<th scope="row">
-														<input class="form-check-input h-20px w-20px" type="checkbox" name="communication[]" value="email" checked="checked">
-													</th>
-													<td>05.09.2021 08:00 PM</td>
-													<td>Shermely Moyna Rendon<br/>47474747</td>
-													<td>Gianna Faccin Zaconett<br/>88888888</td>
-													<td>Plaza Principal N° 408 Cayma<br/>Arequipa</td>
-													<td>20.00</td>
-												</tr>
-												 
+											<tbody id="responseChargeRow">	 
 											</tbody>
 											</table>
 										</div>
@@ -3723,7 +3712,8 @@
 												<span class="indicator-progress">Please wait...
 												<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
 											</button>
-											<a href="javascript:getEncargo()" type="button" class="btn btn-lg btn-primary" data-kt-stepper-action="next">Generar Boleta E. / Factura E.
+											<a href="javascript:askEncargo()" type="button" class="btn btn-lg btn-primary" data-kt-stepper-action="next">Consultar</a>
+											<a href="javascript:getEncargo()" type="button" class="btn btn-lg btn-secondary" data-kt-stepper-action="next">Generar Boleta E. / Factura E.
 											<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
 											<span class="svg-icon svg-icon-3 ms-1 me-0">
 												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
