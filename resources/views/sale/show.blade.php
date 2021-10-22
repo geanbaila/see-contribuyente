@@ -1,7 +1,8 @@
 @extends('layout.layout')
 @section('content')
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargoId" value="" />
+        <input type="text" name="encargoId" value="" />
+        <input type="text" name="agenciaOrigen" id="agenciaOrigen" value="61710743a8c74c6bfc5e310e">
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -85,7 +86,7 @@
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Destino:</label>
                                     <select class="form-select" aria-label="Default select example" id="destino"
-                                        name="destino" onchange="javascript:getAgencia(this)">
+                                        name="destino" onchange="javascript:getAgencia(this, false)">
                                         <option selected> -- </option>
                                         @if (count($sede))
                                             @foreach ($sede as $item)
@@ -96,8 +97,8 @@
                                 </div>
                                 <div class="col-xxl-6">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
-                                    <select class="form-select" aria-label="Default select example" id="agencia"
-                                        name="agencia" onchange="javascript:getSerie()">
+                                    <select class="form-select" aria-label="Default select example"
+                                        name="agenciaDestino">
                                         <option value="--" selected> -- </option>
                                     </select>
                                 </div>
@@ -159,7 +160,8 @@
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
                                 <th scope="col">
-                                    <a onclick="javascript:addChargeRow()"><img src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
+                                    <a onclick="javascript:addChargeRow()"><img
+                                            src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
                                 </th>
                                 <th scope="col">Descripción</th>
                                 <th scope="col" width="100">Cantidad</th>
@@ -171,7 +173,8 @@
                         <tbody id="chargeRow">
                             <tr>
                                 <td scope="row" width="100">
-                                    <a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                    <a onclick="javascript:removeChargeRow(this)"><img
+                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
                                 </td>
                                 <td><input type="text" class="form-control" name="descripcion"></td>
                                 <td><input type="text" class="form-control" name="cantidad"></td>
@@ -219,19 +222,19 @@
     </form>
     <script>
         function addChargeRow() {
-            var html = '<tr>'
-            + '<td scope="row" width="100">'
-            + '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>'
-            + '</td>'
-            + '<td><input type="text" class="form-control" name="descripcion"></td>'
-            + '<td><input type="text" class="form-control" name="cantidad"></td>'
-            + '<td><input type="text" class="form-control" name="precio"></td>'
-            + '<td><input type="text" class="form-control" name="total"></td>'
-            + '<td><input type="text" class="form-control" name="peso"></td>'
-            + '</tr>';
+            var html = '<tr>' +
+                '<td scope="row" width="100">' +
+                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
+                '</td>' +
+                '<td><input type="text" class="form-control" name="descripcion"></td>' +
+                '<td><input type="text" class="form-control" name="cantidad"></td>' +
+                '<td><input type="text" class="form-control" name="precio"></td>' +
+                '<td><input type="text" class="form-control" name="peso"></td>' +
+                '<td><input type="text" class="form-control" name="total"></td>' +
+                '</tr>';
             $("#chargeRow").append(html);
         }
-        
+
         function removeChargeRow(element) {
             var total = $("#chargeRow").find("tr").length;
             if (total > 1) {
@@ -244,6 +247,33 @@
         function str_pad(value, length) {
             return (value.toString().length < length) ?
                 str_pad("0" + value, length) : value;
+        }
+
+        function putChargeForm(data) {
+            $("[name='encargoId']").val(data._id);
+
+            $("[name='docEnvia']").val(data.doc_envia);
+            $("[name='nombreEnvia']").val(data.nombre_envia);
+            $("[name='celularEnvia']").val(data.celular_envia);
+            $("[name='emailEnvia']").val(data.email_envia);
+            $("[name='fechaEnvia']").val(data.fecha_envia);
+
+            $("[name='docRecibe']").val(data.doc_recibe);
+            $("[name='nombreRecibe']").val(data.nombre_recibe);
+            $("[name='celularRecibe']").val(data.celular_recibe);
+            $("[name='emailRecibe']").val(data.email_recibe);
+            $("[name='fechaRecibe']").val(data.fecha_recibe);
+
+            $("[name='origen']").val(data.origen).change(); // come from session
+            $("[name='agenciaOrigen']").val(data.agencia_origen); // come from session
+            $("[name='destino']").val(data.destino).change();
+            getAgencia($("[name='destino']"), data.agencia_destino);
+
+            $("[name='medioPago']").val(data.medio_pago).change();
+            $("[name='documento']").val(data.documento).change();
+            // $("[name='documentoSerie']").val(data.documento_serie);
+            // $("#documentoSerieBlocked").val(data.documento_serie);
+            // $("[name='documentoNumero']").val(data.documento_numero);
         }
 
         function getChargeForm() {
@@ -263,7 +293,8 @@
 
             var origen = $("[name='origen']").val().trim();
             var destino = $("[name='destino']").val().trim();
-            var agencia = $("[name='agencia']").val().trim();
+            var agenciaOrigen = $("[name='agenciaOrigen']").val().trim();
+            var agenciaDestino = $("[name='agenciaDestino']").val().trim();
             var medioPago = $("[name='medioPago']").val().trim();
             var documento = $("[name='documento']").val().trim();
             var documentoSerie = $("[name='documentoSerie']").val().trim();
@@ -287,13 +318,14 @@
             data.append("fechaRecibe", fechaRecibe);
             data.append("origen", origen);
             data.append("destino", destino);
-            data.append("agencia", agencia);
+            data.append("agenciaOrigen", agenciaOrigen);
+            data.append("agenciaDestino", agenciaDestino);
             data.append("medioPago", medioPago);
             data.append("documento", documento);
             data.append("documentoSerie", documentoSerie);
             data.append("documentoNumero", documentoNumero);
             var n = descripcion.length;
-            for (var i=0; i<n; i++){
+            for (var i = 0; i < n; i++) {
                 data.append("encargo[]", [descripcion[i].value, cantidad[i].value, precio[i].value, peso[i].value]);
             };
             console.log(data);
@@ -325,7 +357,7 @@
                 alert('No se dispone del destino');
                 return false;
             }
-            if (data.get('agencia').length === 2 && data.get('agencia') === '--') {
+            if (data.get('agenciaDestino').length === 2 && data.get('agenciaDestino') === '--') {
                 alert('No se dispone del agencia');
                 return false;
             }
@@ -340,8 +372,8 @@
             return true;
         }
 
-        function getAgencia(element) {
-            var agencia = "<option value='--'>--</option>";
+        function getAgencia(element, selected) {
+            var agenciaDestino = "<option value='--'>--</option>";
             var sedeId = $(element).val();
             if (sedeId !== '--') {
                 $.ajax({
@@ -356,24 +388,28 @@
                 }).done(function(result) {
                     if (result) {
                         result.forEach(function(element, index) {
-                            agencia = agencia + "<option value='" + element._id + "'>" + element.nombre +
+                            agenciaDestino = agenciaDestino + "<option value='" + element._id + "'>" +
+                                element.nombre +
                                 "</option>";
                         })
                     }
-                    $("[name='agencia']").html(agencia);
+                    $("[name='agenciaDestino']").html(agenciaDestino);
+                    if (selected) {
+                        $("[name='agenciaDestino']").val(selected).change();
+                    }
                 });
             } else {
-                // no hay agencia
-                $("[name='agencia']").html(agencia);
+                // no hay agenciaDestino, déjame en vacío
+                $("[name='agenciaDestino']").html(agenciaDestino);
             }
         }
 
         function getSerie() {
-            var agenciaId = $("#agencia").val();
+            var agenciaOrigen = $("#agenciaOrigen").val();
             var documentoId = $("[name='documento']").val();
-            if (agenciaId !== '--' && documentoId !== '--') {
+            if (agenciaOrigen !== '--' && documentoId !== '--') {
                 $.ajax({
-                    url: "{{ url('/api/v1/serie') }}/" + agenciaId + "/" + documentoId,
+                    url: "{{ url('/api/v1/serie') }}/" + agenciaOrigen + "/" + documentoId,
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -391,6 +427,32 @@
             } else {
                 // no hay serie para iniciar
                 $("[name='documentoSerie']").val('');
+            }
+        }
+
+        function getEncargo() {
+            var docRecibe = $("#buscaDocRecibe").val();
+            var docEnvia = $("#buscaDocEnvia").val();
+            if (docRecibe.length === 8 || docRecibe.length === 10 || docEnvia.length === 8 || docEnvia.length === 10) {
+                $.ajax({
+                    url: "{{ url('/api/v1/encargo') }}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: "json",
+                    data: {
+                        docRecibe: docRecibe,
+                        docEnvia: docEnvia
+                    }
+                }).done(function(result) {
+                    if (result) {
+                        putChargeForm(result.result.encargo);
+                    }
+                });
+            } else {
+                // no hay suficientes valores
+
             }
         }
 

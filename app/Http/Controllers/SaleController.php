@@ -45,7 +45,8 @@ class SaleController extends Controller
 
             'origen' => $data['origen'],
             'destino' => $data['destino'],
-            'agencia' => $data['agencia'],
+            'agencia_origen' => $data['agenciaOrigen'],
+            'agencia_destino' => $data['agenciaDestino'],
             'medio_pago' => $data['medioPago'],
             'documento' => $data['documento'],
             'documento_serie' => $data['documentoSerie'],

@@ -24,14 +24,6 @@ Route::get('/manifiesto', function () {
 
 });
 
-Route::post('/api/v1/serie/{agenciaId}/{documentoId}', function ($agenciaId, $documentoId) {
-    $serie = \App\Business\Serie::where('agencia_id', new MongoDB\BSON\ObjectId("$agenciaId"))
-    ->where('documento_id', new MongoDB\BSON\ObjectId("$documentoId"))
-    ->get();
-    return response()->json($serie);
-});
-
-Route::post('/api/v1/agencia/{sedeId}', function ($sedeId) {
-    $agencia = \App\Business\Agencia::where('sede_id', new MongoDB\BSON\ObjectId("$sedeId"))->get();
-    return response()->json($agencia);
-});
+Route::post('/api/v1/serie/{agenciaId}/{documentoId}', 'ApiController@getSerie');
+Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
+Route::post('/api/v1/encargo', 'ApiController@getEncargo');

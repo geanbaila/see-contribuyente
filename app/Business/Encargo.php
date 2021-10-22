@@ -26,10 +26,13 @@ class Encargo extends Model
 
         'origen',
         'destino',
-        'agencia',
+        'agencia_origen',
+        'agencia_destino',
         'medio_pago',
         'documento',
         'documento_serie',
         'documento_numero',
+        
+        'encargo',
     ];
 }
