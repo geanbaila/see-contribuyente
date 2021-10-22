@@ -7,7 +7,7 @@
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
@@ -35,10 +35,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xxl-1">
+                            <div class="row gy-5">
+                                <div class="col-xxl-2">
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
@@ -66,10 +73,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xxl-1">
+                            <div class="row gy-5">
+                                <div class="col-xxl-2">
+                                    <label>&nbsp;</label>
+                                    <a onclick="javascript:addReceivesRow()"><img src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg" width="24"></a>
+                                    <br />
+                                    <a onclick="javascript:removeReceivesRow(this)"><img src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg" width="24"></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
@@ -140,6 +157,13 @@
 
                             </div>
                         </div>
+                        <div class="col-xxl-1">
+                            <div class="row gy-5">
+                                <div class="col-xxl-2">
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -159,28 +183,28 @@
                         class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
-                                <th scope="col">
-                                    <a onclick="javascript:addChargeRow()"><img
-                                            src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
-                                </th>
                                 <th scope="col">Descripción</th>
                                 <th scope="col" width="100">Cantidad</th>
                                 <th scope="col" width="100">Precio</th>
                                 <th scope="col" width="100">Peso</th>
                                 <th scope="col" width="100">Total</th>
+                                <th scope="col" width="80" class="float-right">
+                                    <a onclick="javascript:addChargeRow()"><img
+                                            src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="chargeRow">
                             <tr>
-                                <td scope="row" width="100">
-                                    <a onclick="javascript:removeChargeRow(this)"><img
-                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                </td>
                                 <td><input type="text" class="form-control" name="descripcion"></td>
                                 <td><input type="text" class="form-control" name="cantidad"></td>
                                 <td><input type="text" class="form-control" name="precio"></td>
                                 <td><input type="text" class="form-control" name="peso"></td>
                                 <td><input type="text" class="form-control" name="total"></td>
+                                <td scope="row" width="80" class="float-right">
+                                    <a onclick="javascript:removeChargeRow(this)"><img
+                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -208,12 +232,16 @@
                             </div>
                         </div>
                         <div class="col-4 text-end align-top">
-                            <a class="btn btn-primary" onclick="javascript:doit();">Confirmar operación</a>
-                            <button class="btn btn-secondary"><img src="{{ asset('assets/media/icons/sis/printer.svg') }}"
-                                    width="24" /></button>
-                            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app"><img
-                                    src="{{ asset('assets/media/icons/sis/search.svg') }}" width="24" /></a>
-
+                            <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
+                            <a class="btn btn-secondary" onclick="javascript:printElement('capa')">
+                                <img src="{{ asset('assets/media/icons/sis/printer.svg') }}"  width="24" />
+                            </a>
+                            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">
+                                <img src="{{ asset('assets/media/icons/sis/search.svg') }}" width="24" />
+                            </a>
+                            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">
+                                <img src="{{ asset('assets/media/icons/sis/trash-2.svg') }}" width="24" />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -223,14 +251,14 @@
     <script>
         function addChargeRow() {
             var html = '<tr>' +
-                '<td scope="row" width="100">' +
-                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
-                '</td>' +
                 '<td><input type="text" class="form-control" name="descripcion"></td>' +
                 '<td><input type="text" class="form-control" name="cantidad"></td>' +
                 '<td><input type="text" class="form-control" name="precio"></td>' +
                 '<td><input type="text" class="form-control" name="peso"></td>' +
                 '<td><input type="text" class="form-control" name="total"></td>' +
+                '<td scope="row" class="float-right">' +
+                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
+                '</td>' +
                 '</tr>';
             $("#chargeRow").append(html);
         }
@@ -487,6 +515,24 @@
                     }
                 });
             }
+        }
+
+        function printElement(elemnt) {
+            var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+            mywindow.document.write('<html><head><title>hola</title>');
+            mywindow.document.write('</head><body >');
+            mywindow.document.write('<h1>prueba</h1>');
+            // mywindow.document.write(document.getElementById(elemnt).innerHTML);
+            mywindow.document.write('</body></html>');
+
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10*/
+
+            mywindow.print();
+            mywindow.close();
+
+            return true;
         }
     </script>
 @endsection

@@ -177,6 +177,8 @@ return [
 
         // add other provider
         Jenssegers\Mongodb\MongodbServiceProvider::class,
+    	Elibyy\TCPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -228,6 +230,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+	// add alias providers
+	    'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
     ],
 
 ];

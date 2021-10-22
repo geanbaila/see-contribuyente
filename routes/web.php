@@ -11,11 +11,15 @@
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/venta', 'SaleController@show');
+
+Route::get('/venta', 'SaleController@list');
+Route::get('/venta/nuevo', 'SaleController@show');
+Route::get('/venta/editar/{encargoId}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 
 

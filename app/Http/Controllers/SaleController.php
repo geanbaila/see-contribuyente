@@ -12,7 +12,7 @@ use MongoDB\BSON\ObjectId;
 class SaleController extends Controller
 {
 
-    public function register(Request $request){
+    public function register(Request $request) {
         $data = $request->all();
         $var = function() {
             
@@ -65,9 +65,20 @@ class SaleController extends Controller
         return \response()->json([ 'status' => 'OK', 'result' => ['encargoId' => $encargoId] ]);
     }
 
-    public function show(){
+    public function show() {
         $sede = Sede::all();
         $documento = Documento::all();
         return view('sale.show')->with([ 'sede' => $sede, 'documento' => $documento ]);
+    }
+
+    public function edit($encargoId) {
+        $encargo = Encargo::find($encargoId);
+        return view('sale.show')->with([ 'sede' => $sede, 'documento' => $documento, 'encargo' => $encargo ]);
+
+    }
+
+    public function list() {
+        $encargo = Encargo::all();
+        return view('sale.list')->with([ 'encargo' => $encargo ]);
     }
 }
