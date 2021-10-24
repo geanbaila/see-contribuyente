@@ -29,6 +29,7 @@ Route::get('/manifiesto', function () {
 
 });
 
-Route::post('/api/v1/serie/{agenciaId}/{documentoId}', 'ApiController@getSerie');
+Route::post('/api/v1/serie/{agenciaOrigenId}/{agenciaDestinoId}/{documentoId}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
 Route::post('/api/v1/encargo', 'ApiController@getEncargo');
+Route::post('/api/v1/venta/comprobante/{encargoId}', 'ApiController@getComprobantePago');

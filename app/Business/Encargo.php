@@ -56,33 +56,77 @@ class Encargo extends Model
     }
 
     static function findBill($encargoId) {
-        $resultado = Encargo::find($encargoId);
-        if ($resultado->documentos->alias === 'B' || $resultado->documentos->alias === 'F') {
-            $fecha = explode("-", $resultado->documento_fecha);
+        $encargo = Encargo::find($encargoId);
+        if ($encargo->documentos->alias === 'B' || $encargo->documentos->alias === 'F') {
+            $fecha = explode("-", $encargo->documento_fecha);
             $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
+            $documento_fecha_hhiiss = "";
             $data = [
+                'tituloDocumento' => $encargo->documentos->nombre,
+
                 'empresaComercial' => env('EMPRESA_COMERCIAL', 'ACME'),
                 'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'ACME'),
                 'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'ACME'),
                 'empresaRuc' => env('EMPRESA_RUC','ACME'),
 
-                'emisorAgenciaDireccion' => mb_strtoupper($resultado->emisores->direccion),
-                'emisorAgenciaTelefono' => $resultado->emisores->telefono,
-                'emisorTipoDocumentoElectronico' => strtoupper($resultado->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
-                'emisorNumeroDocumentoElectronico' => $resultado->documento_serie . ' - ' . $resultado->documento_numero,
+                'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
+                'emisorAgenciaTelefono' => $encargo->emisores->telefono,
+                'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . ' - ' . $encargo->documento_numero,
                 'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
+                'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
 
-                'clienteRazonSocial' => mb_strtoupper($resultado->clientes->razon_social),
-                'clienteDireccion' => $resultado->clientes->direccion,
-                'clienteDocumento' => $resultado->clientes->documento,
+                'clienteRazonSocial' => mb_strtoupper($encargo->clientes->razon_social),
+                'clienteDireccion' => $encargo->clientes->direccion,
+                'clienteDocumento' => $encargo->clientes->documento,
                 'consigna' => [
-                    'nombre' => mb_strtoupper('nombre de prueba'.$resultado->nombre_recibe),
+                    'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
-                'destino' => mb_strtoupper($resultado->sedes->nombre),
-                'encargoDetalle' => $resultado->encargo,
+                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'encargoDetalle' => $encargo->encargo,
             ];
+        } else {
+            $data = [];
         }
-        
         return $data;
     }
+    
+    static function findRemition($encargoId) {
+        $encargo = Encargo::find($encargoId);
+        if ($encargo->documentos->alias === 'G') {
+            $fecha = explode("-", $encargo->documento_fecha);
+            $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
+            $documento_fecha_hhiiss = "";
+            $data = [
+                'tituloDocumento' => $encargo->documentos->nombre,
+
+                'empresaComercial' => env('EMPRESA_COMERCIAL', 'ACME'),
+                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'ACME'),
+                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'ACME'),
+                'empresaRuc' => env('EMPRESA_RUC','ACME'),
+
+                'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
+                'emisorAgenciaTelefono' => $encargo->emisores->telefono,
+                'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre),
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . ' - ' . $encargo->documento_numero,
+                'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
+                'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
+
+                'clienteRazonSocial' => mb_strtoupper($encargo->clientes->razon_social),
+                'clienteDireccion' => $encargo->clientes->direccion,
+                'clienteDocumento' => $encargo->clientes->documento,
+                'consigna' => [
+                    'nombre' => mb_strtoupper($encargo->nombre_recibe),
+                ],
+                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'encargoDetalle' => $encargo->encargo,
+            ];
+        } else {
+            $data = [];
+        }
+        return $data;
+    }
+
+
+    
 }

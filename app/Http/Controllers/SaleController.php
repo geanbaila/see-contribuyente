@@ -33,22 +33,27 @@ class SaleController extends Controller
             return $stack;
         };
         $documento = Documento::find($data['documento']);
+
+        // registrar o actualizar el cliente
+        $documento_fecha = date('Y-m-d');
         if ($documento->alias === 'G') {
             // guía de remisión
-            $documento_fecha = '';
             $insertCliente = [
                 'documento' => $data['docRecibe'],
                 'razon_social' => $data['nombreRecibe'],
                 'direccion' => '',
             ];
-        } else {
+        } else if ($documento->alias === 'B' || $documento->alias === 'F') {
             // boletas y facturas
-            $documento_fecha = date('Y-m-d');
             $insertCliente = [
                 'documento' => $data['docEnvia'],
                 'razon_social' => $data['nombreEnvia'],
                 'direccion' => '',
             ];
+        } else {
+            // hey, no deberías estar aquí, el validador dice que hay campos obligatorios!
+            $documento_fecha = "";
+            $insertCliente = [];
         }
         if (strlen($data['encargoId']) > 0) {
             $clienteId = $data['clienteId'];
@@ -57,6 +62,7 @@ class SaleController extends Controller
             $clienteId = $cliente->id;
         }
         
+        // registrar o actualizar el encargo
         $emisorId = $data['agenciaOrigen']; // agencia que está en sesión. hacer luego
         $insertEncargo = [
             'doc_envia' => $data['docEnvia'],
@@ -93,8 +99,18 @@ class SaleController extends Controller
             $encargo = Encargo::create($insertEncargo);
             $encargoId = $encargo['id'];
         }
-        $this->writeBill($encargoId);
-        return \response()->json([ 'status' => 'OK', 'result' => ['encargoId' => $encargoId, 'clienteId' => $clienteId] ]);
+
+        // registrar o actualizar el PDF
+        if ($documento->alias === 'G') {
+            $this->writeRemition($encargoId);
+        } else if ($documento->alias === 'B' || $documento->alias === 'F') {
+            $this->writeBill($encargoId);
+        } else {
+            // no escribir PDF
+        }
+        // hacer la asociacion de PDF en la BD. hacer luego
+        
+        return \response()->json(['result' => ['encargoId' => $encargoId, 'clienteId' => $clienteId] ]);
     }
 
     public function show() {
@@ -118,13 +134,12 @@ class SaleController extends Controller
     public function writeBill($encargoId) {
         $data = Encargo::findBill($encargoId);
         if ($data) {
-            PDF::SetTitle('Hello World');
+            PDF::SetTitle($data['tituloDocumento']);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
             PDF::AddPage();
             $width = 50;
             
-            // Color and font restoration
             PDF::SetFillColor(255, 255, 255);
             PDF::SetTextColor(0);
             $fontSizeGrande = 9;
@@ -167,7 +182,7 @@ class SaleController extends Controller
 
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::Cell($width/2, $height, "Fecha: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'C', 0);
-            PDF::Cell($width/2, $height, "Hora: " . $data['emisorFechaDocumentoElectronico'], 'B', 1, 'C', 0);
+            PDF::Cell($width/2, $height, "Hora: " . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'C', 0);
 
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell($width, $height, "Cliente: ".$data['clienteRazonSocial'], $border, $align_left, 1, 0, $x, $y);
@@ -246,8 +261,41 @@ class SaleController extends Controller
             PDF::MultiCell(30, $height, "imagenQR", true, $align_left, 1, 0, $x, $y);
             PDF::Ln(30);
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), $border, $align_left, 1, 0, $x, $y);
+            $year = substr($data['emisorFechaDocumentoElectronico'], -4);
+            $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";
+            if (file_exists(base_path("public/" . $filename))) { unlink(base_path("public/" . $filename)); }
+            PDF::Output(public_path($filename), 'F');
+            PDF::reset();
+        }
+    }
+
+    public function writeRemition($encargoId) {
+        $data = Encargo::findRemition($encargoId);
+        if ($data) {
+            PDF::SetTitle($data['tituloDocumento']);
+            PDF::setPrintHeader(false);
+            PDF::setPrintFooter(false);
+            PDF::AddPage();
+            $width = 50;
             
-            PDF::Output(public_path('hello_world.pdf'), 'F');
+            PDF::SetFillColor(255, 255, 255);
+            PDF::SetTextColor(0);
+            $fontSizeGrande = 9;
+            $fontSizeRegular = 7;
+            
+            $border = false;
+            $align_center = 'C';
+            $align_left = 'L';
+            $align_right = 'R';
+            $height = '';
+            $y = '';
+            $x = ''; // 5
+            $width = 60;
+            PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), $border, $align_left, 1, 0, $x, $y);
+            $year = substr($data['emisorFechaDocumentoElectronico'], -4);
+            $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";
+            if (file_exists(base_path($filename))) { unlink(base_path($filename)); }
+            PDF::Output(public_path($filename), 'F');
             PDF::reset();
         }
     }

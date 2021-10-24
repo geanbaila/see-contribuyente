@@ -26,11 +26,18 @@ class ApiController extends Controller
         return response()->json($agencia);
     }
 
-    public function getSerie($agenciaId, $documentoId) {
-        $serie = \App\Business\Serie::where('agencia_id', new ObjectId("$agenciaId"))
+    public function getSerie($agenciaOrigenId, $agenciaDestinoId, $documentoId) {
+        $documento = \App\Business\Documento::find($documentoId);
+        $agencia = ($documento->alias === 'G') ? $agenciaDestinoId : $agenciaOrigenId;
+        $serie = \App\Business\Serie::where('agencia_id', new ObjectId("$agencia"))
         ->where('documento_id', new ObjectId("$documentoId"))
         ->get();
         return response()->json($serie);
+    }
+
+    public function getComprobantePago(String $encargoId) {
+        $response = ['result' => ['urlComprobantePago' => url('pruebas/2021/' . $encargoId . '.pdf?v=' .uniqid())]];
+        return response()->json($response);
     }
 
 }

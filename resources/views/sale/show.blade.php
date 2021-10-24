@@ -83,9 +83,9 @@
                                             src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg"
                                             width="24"></a>
                                     <br />
-                                    <a onclick="javascript:removeReceivesRow(this)"><img
-                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
-                                            width="24"></a>
+                                    <!--<a onclick="javascript:removeReceivesRow(this)"><img
+                                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
+                                                            width="24"></a>-->
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,8 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
-                                    <select class="form-select" aria-label="Default select example" name="agenciaOrigen">
+                                    <select class="form-select" aria-label="Default select example" name="agenciaOrigen"
+                                        onchange="javascript:getSerie()">
                                         <option selected> -- </option>
                                         @if (count($agenciaOrigen))
                                             @foreach ($agenciaOrigen as $item)
@@ -202,14 +203,14 @@
                         <tbody id="chargeRow">
                             <tr>
                                 <td><input type="text" class="form-control" name="descripcion"></td>
-                                <td><input type="text" class="form-control" name="cantidad"></td>
-                                <td><input type="text" class="form-control" name="precio"></td>
-                                <td><input type="text" class="form-control" name="peso"></td>
-                                <td><input type="text" class="form-control" name="total"></td>
-                                <td scope="row" width="80" class="float-right">
-                                    <a onclick="javascript:removeChargeRow(this)"><img
-                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                </td>
+                                <td><input type="number" class="form-control" name="cantidad"></td>
+                                <td><input type="number" class="form-control" name="precio"></td>
+                                <td><input type="number" class="form-control" name="peso"></td>
+                                <td><input type="number" class="form-control" name="total"></td>
+                                <!--<td scope="row" width="80" class="float-right">
+                                                    <a onclick="javascript:removeChargeRow(this)"><img
+                                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                                </td>-->
                             </tr>
                         </tbody>
                     </table>
@@ -238,16 +239,16 @@
                         </div>
                         <div class="col-4 text-end align-top">
                             <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
-                            <a id="btnImprimir" class="btn btn-secondary disabled"
-                                onclick="javascript:printElement('capa')">
+                            <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
+                                data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                 <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
                             </a>
-                            <a id="btnBuscar" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#kt_modal_create_app">
-                                <img src="{{ asset('assets/media/icons/sis/search.svg') }}" width="24" />
+                            <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#modalBuscarVenta">
+                                <img src="{{ asset('assets/media/icons/sis/search-white.svg') }}" width="24" />
                             </a>
                             <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
-                                data-bs-target="#kt_modal_create_app">
+                                data-bs-target="#modalEliminarVenta">
                                 <img src="{{ asset('assets/media/icons/sis/trash-2.svg') }}" width="24" />
                             </a>
                         </div>
@@ -255,15 +256,58 @@
                 </div>
             </div>
         </div>
+        
     </form>
     <script>
+        function showSuccessToastr(message) {
+            console.log('mostrar success toastr')
+			toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "30000",
+                "hideDuration": "1000",
+                "timeOut": "60000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            toastr.success(message);
+        }
+        function showErrorToastr(message) {
+			toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "30000",
+                "hideDuration": "1000",
+                "timeOut": "60000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            toastr.error(message);
+        }
+
         function addChargeRow() {
             var html = '<tr>' +
                 '<td><input type="text" class="form-control" name="descripcion"></td>' +
-                '<td><input type="text" class="form-control" name="cantidad"></td>' +
-                '<td><input type="text" class="form-control" name="precio"></td>' +
-                '<td><input type="text" class="form-control" name="peso"></td>' +
-                '<td><input type="text" class="form-control" name="total"></td>' +
+                '<td><input type="number" class="form-control" name="cantidad"></td>' +
+                '<td><input type="number" class="form-control" name="precio"></td>' +
+                '<td><input type="number" class="form-control" name="peso"></td>' +
+                '<td><input type="number" class="form-control" name="total"></td>' +
                 '<td scope="row" class="float-right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
                 '</td>' +
@@ -403,7 +447,7 @@
                 return false;
             }
             if (data.get('agenciaDestino').length === 2 && data.get('agenciaDestino') === '--') {
-                alert('No se dispone del agencia');
+                alert('No se dispone del agencia destino');
                 return false;
             }
             if (data.get('documento').length === 2) {
@@ -454,10 +498,12 @@
 
         function getSerie() {
             var agenciaOrigen = $("[name='agenciaOrigen']").val();
+            var agenciaDestino = $("[name='agenciaDestino']").val();
             var documentoId = $("[name='documento']").val();
-            if (agenciaOrigen !== '--' && documentoId !== '--') {
+            if (agenciaOrigen !== '--' && agenciaDestino !== '--' && documentoId !== '--') {
                 $.ajax({
-                    url: "{{ url('/api/v1/serie') }}/" + agenciaOrigen + "/" + documentoId,
+                    url: "{{ url('/api/v1/serie') }}/" + agenciaOrigen + "/" + agenciaDestino + "/" +
+                        documentoId,
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -468,8 +514,9 @@
                 }).done(function(result) {
                     console.log('result_getSerie:', result);
                     if (result) {
-                        var documentoSerie = str_pad(result[0].correlativo, 3);
+                        var documentoSerie = result[0].correlativo;
                         $("[name='documentoSerie']").val(documentoSerie);
+                        // var documentoSerie = str_pad(result[0].correlativo, 3);
                     }
                 });
             } else {
@@ -507,13 +554,10 @@
                                 '<td>' + element.agencia_destino + '</td>' +
                                 '<td>00.00</td>' +
                                 '</tr>';
-                                $("#responseChargeRow").html(html);
-                                putChargeForm(element);
-                                $("#btnImprimir").removeClass("disabled btn-secondary");
-                                $("#btnImprimir").addClass("btn-primary");
-                                $("#btnEliminar").removeClass("disabled btn-secondary");
-                                $("#btnEliminar").addClass("btn-primary");
-                            });
+                            $("#responseChargeRow").html(html);
+                            putChargeForm(element);
+                            enabledBtn();
+                        });
                     } else {
                         $("#responseChargeRow").html(html);
                     }
@@ -522,6 +566,17 @@
                 // no hay suficientes valores
 
             }
+        }
+
+        function enabledBtn() {
+            $("#btnImprimir").removeClass("disabled btn-secondary");
+            $("#btnImprimir").addClass("btn-primary");
+            $("#btnEliminar").removeClass("disabled btn-secondary");
+            $("#btnEliminar").addClass("btn-primary");
+
+            $("#btnImprimir").children().attr("src", "{{ asset('assets/media/icons/sis/printer-white.svg') }}");
+            $("#btnEliminar").children().attr("src", "{{ asset('assets/media/icons/sis/trash-2-white.svg') }}");
+
         }
 
         function doit() {
@@ -541,31 +596,34 @@
                     if (data.get('encargoId').length === 0) {
                         $("[name='encargoId']").val(result.result.encargoId);
                         $("[name='clienteId']").val(result.result.clienteId);
-                        $("#btnImprimir").removeClass("disabled btn-secondary");
-                        $("#btnImprimir").addClass("btn-primary");
-                        $("#btnEliminar").removeClass("disabled btn-secondary");
-                        $("#btnEliminar").addClass("btn-primary");
+                        enabledBtn();
+                        // showSuccessToastr('todo ok');
                     }
                 });
+            } else {
+                // no ha superado la validación
+                showErrorToastr('Complete los campos obligatorios');
             }
         }
 
-        function printElement(elemnt) {
-            var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-            mywindow.document.write('<html><head><title>hola</title>');
-            mywindow.document.write('</head><body >');
-            mywindow.document.write('<h1>prueba</h1>');
-            // mywindow.document.write(document.getElementById(elemnt).innerHTML);
-            mywindow.document.write('</body></html>');
-
-            mywindow.document.close(); // necessary for IE >= 10
-            mywindow.focus(); // necessary for IE >= 10*/
-
-            mywindow.print();
-            mywindow.close();
-
-            return true;
+        function printElement() {
+            var encargoId = $("[name='encargoId']").val();
+            if (encargoId) {
+                $.ajax({
+                    url: "{{ url('/api/v1/venta/comprobante') }}/" + encargoId,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: false,
+                    processData: false,
+                    dataType: "json"
+                }).done(function(result) {
+                    $("#comprobantePago").attr("src", result.result.urlComprobantePago);
+                });
+                return true;
+            }
         }
+
     </script>
 @endsection
