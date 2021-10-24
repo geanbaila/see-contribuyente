@@ -84,8 +84,8 @@
                                             width="24"></a>
                                     <br />
                                     <!--<a onclick="javascript:removeReceivesRow(this)"><img
-                                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
-                                                            width="24"></a>-->
+                                                                                src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
+                                                                                width="24"></a>-->
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
-                                    <select class="form-select" aria-label="Default select example" name="agenciaOrigen"
+                                    <select class="form-select" aria-label="--" name="agenciaOrigen"
                                         onchange="javascript:getSerie()">
                                         <option selected> -- </option>
                                         @if (count($agenciaOrigen))
@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Destino:</label>
-                                    <select class="form-select" aria-label="Default select example" name="destino"
+                                    <select class="form-select" aria-label="--" name="destino"
                                         onchange="javascript:getAgenciaDestino(this.value, false)">
                                         <option selected> -- </option>
                                         @if (count($sede))
@@ -120,8 +120,7 @@
                                 </div>
                                 <div class="col-xxl-6">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
-                                    <select class="form-select" aria-label="Default select example"
-                                        name="agenciaDestino">
+                                    <select class="form-select" aria-label="--" name="agenciaDestino">
                                         <option value="--" selected> -- </option>
                                     </select>
                                 </div>
@@ -131,8 +130,7 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Medio de pago:</label>
-                                    <select class="form-select" aria-label="Default select example" id="medioPago"
-                                        name="medioPago">
+                                    <select class="form-select" aria-label="--" id="medioPago" name="medioPago">
                                         <option value="--" selected> -- </option>
                                         <option value="1">CRÉDITO</option>
                                         <option value="2">CONTADO</option>
@@ -140,8 +138,8 @@
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Documento:</label>
-                                    <select class="form-select" aria-label="Default select example" id="documento"
-                                        name="documento" onchange="javascript:getSerie()">
+                                    <select class="form-select" aria-label="--" id="documento" name="documento"
+                                        onchange="javascript:getSerie()">
                                         <option value="--" selected>--</option>
                                         @if (count($documento))
                                             @foreach ($documento as $item)
@@ -202,15 +200,28 @@
                         </thead>
                         <tbody id="chargeRow">
                             <tr>
-                                <td><input type="text" class="form-control" name="descripcion"></td>
-                                <td><input type="number" class="form-control" name="cantidad"></td>
-                                <td><input type="number" class="form-control" name="precio"></td>
-                                <td><input type="number" class="form-control" name="peso"></td>
+                                <td>
+                                    <select class="form-select" aria-label="--" name="descripcion"
+                                        onchange="javascript:updateChargeDetail(this)">
+                                        <option value="--" selected> -- </option>
+                                        @if (isset($carga))
+                                            @foreach ($carga as $item)
+                                                <option value="{{ $item->id }}" data-price="{{ $item->precio }}">
+                                                    {{ $item->nombre }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control" name="cantidad"
+                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
+                                <td><input type="number" class="form-control" name="precio" disabled></td>
+                                <td><input type="number" class="form-control" name="peso"
+                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
                                 <td><input type="number" class="form-control" name="total"></td>
                                 <!--<td scope="row" width="80" class="float-right">
-                                                    <a onclick="javascript:removeChargeRow(this)"><img
-                                                            src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                                </td>-->
+                                                                        <a onclick="javascript:removeChargeRow(this)"><img
+                                                                                src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                                                    </td>-->
                             </tr>
                         </tbody>
                     </table>
@@ -256,12 +267,12 @@
                 </div>
             </div>
         </div>
-        
+
     </form>
     <script>
         function showSuccessToastr(message) {
             console.log('mostrar success toastr')
-			toastr.options = {
+            toastr.options = {
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": false,
@@ -280,8 +291,9 @@
             };
             toastr.success(message);
         }
+
         function showErrorToastr(message) {
-			toastr.options = {
+            toastr.options = {
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": false,
@@ -301,12 +313,42 @@
             toastr.error(message);
         }
 
+        function updateChargeDetail(element) {
+            var tr = $(element).parent().parent();
+            var precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
+            $(tr).find("td [name='precio']").val(precio);
+            var cantidad = $(tr).find("td [name='cantidad']").val();
+            if (cantidad === '') {
+                $(tr).find("td [name='cantidad']").val(1);
+            }
+        }
+
+        function calculatePayChargeDetail(element) {
+            var tr = $(element).parent().parent();
+            var precio =$(tr).find("td [name='precio']").val();
+            var cantidad =$(tr).find("td [name='cantidad']").val();
+            var peso =$(tr).find("td [name='peso']").val();
+            var total = precio*cantidad*peso;
+            $(tr).find("td [name='total']").val(total);
+        }
+
         function addChargeRow() {
+            var options = '<option value="--" selected> -- </option>';
+            @if (isset($carga))
+                @foreach ($carga as $item)
+                    options +='<option value="{{ $item->id }}" data-price="{{ $item->precio }}">';
+                    options +='{{ $item->nombre }}'
+                    options +='</option>';
+                @endforeach
+            @endif
             var html = '<tr>' +
-                '<td><input type="text" class="form-control" name="descripcion"></td>' +
-                '<td><input type="number" class="form-control" name="cantidad"></td>' +
-                '<td><input type="number" class="form-control" name="precio"></td>' +
-                '<td><input type="number" class="form-control" name="peso"></td>' +
+                '<td>' +
+                '<select class="form-select" aria-label="--" name="descripcion"  onchange="javascript:updateChargeDetail(this)">' +
+                options +
+                '</select></td>' +
+                '<td><input type="number" class="form-control" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                '<td><input type="number" class="form-control" name="precio" disabled></td>' +
+                '<td><input type="number" class="form-control" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control" name="total"></td>' +
                 '<td scope="row" class="float-right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
@@ -624,6 +666,5 @@
                 return true;
             }
         }
-
     </script>
 @endsection

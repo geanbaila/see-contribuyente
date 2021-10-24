@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Business\Sede;
+use App\Business\Carga;
 use App\Business\Agencia;
 use App\Business\Documento;
 use App\Business\Encargo;
@@ -22,16 +23,26 @@ class SaleController extends Controller
             $stack = [];
             foreach($data as $item) {
                 $element = explode(",",$item);
-                array_push($stack, [
-                    'descripcion' => $element[0],
-                    'cantidad' => $element[1],
-                    'precio' => $element[2],
-                    'peso' => $element[3],
-                    'total' => 0,
-                ]);
+                if ($element[0] !== "--"){
+                    $cantidad = $element[1];
+                    $peso = $element[3];
+                    $carga = Carga::find($element[0]);
+                    if ($carga) {
+                        $descripcion = $carga->nombre;
+                        $precio = $carga->precio;
+                        $total = $cantidad*$precio*$peso;
+                        array_push($stack, [
+                            'descripcion' => $descripcion,
+                            'cantidad' => $cantidad,
+                            'precio' => $precio,
+                            'peso' => $peso,
+                            'total' => $total,
+                        ]);
+                    }
+                }
             }
             return $stack;
-        };
+        }; // revisar validación luego
         $documento = Documento::find($data['documento']);
 
         // registrar o actualizar el cliente
@@ -115,17 +126,19 @@ class SaleController extends Controller
 
     public function show() {
         $sede = Sede::all();
+        $carga = Carga::orderBy('nombre','asc')->get();
         $agenciaOrigen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
         $documento = Documento::all();
-        return view('sale.show')->with([ 'agenciaOrigen' => $agenciaOrigen, 'sede' => $sede, 'documento' => $documento ]);
+        return view('sale.show')->with([ 'agenciaOrigen' => $agenciaOrigen, 'sede' => $sede, 'documento' => $documento, 'carga' => $carga ]);
     }
 
     public function edit($encargoId) {
         $sede = Sede::all();
+        $carga = Carga::all();
         $agenciaOrigen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
         $documento = Documento::all();
         $encargo = Encargo::find($encargoId);
-        return view('sale.edit')->with([ 'agenciaOrigen' => $agenciaOrigen, 'sede' => $sede, 'documento' => $documento, 'encargo' => $encargo ]);
+        return view('sale.edit')->with([ 'agenciaOrigen' => $agenciaOrigen, 'sede' => $sede, 'documento' => $documento, 'carga' => $carga, 'encargo' => $encargo ]);
     }
 
     public function list() {
