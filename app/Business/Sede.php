@@ -11,9 +11,14 @@ class Sede extends Model
     protected $collection = 'sede';
     protected $primaryKey = '_id';
 
-    public function agencia()
-    {
-        return $this->hasMany('App\Business\Agencia');
-    }
+    protected $fillable = [
+        'nombre',
+    ];
+
+    // public function agencia()
+    // {
+    //     return $this->hasMany('App\Business\Agencia');
+    // }
+
 
 }

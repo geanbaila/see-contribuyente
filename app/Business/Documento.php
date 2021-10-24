@@ -11,4 +11,10 @@ class Documento extends Model
     protected $collection = 'documento';
     protected $primaryKey = '_id';
 
+    protected $fillable = [
+        'nombre',
+        'alias',
+    ];
+
+
 }

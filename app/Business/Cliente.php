@@ -5,22 +5,20 @@ namespace App\Business;
 // use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class Agencia extends Model
+class Cliente extends Model
 {
     protected $connection = 'mongodb';
-    protected $collection = 'agencia';
+    protected $collection = 'cliente';
     protected $primaryKey = '_id';
 
     protected $fillable = [
-        'nombre',
+        'documento',
+        'razon_social',
         'direccion',
-        'telefono',
-        'sede_id',
     ];
 
-    public function sede()
+    public function encargo()
     {
-        return $this->belongsTo('App\Business\Sede', 'sede_id');
-    } // ok
-
+        return $this->hasMany('App\Business\Encargo');
+    }
 }

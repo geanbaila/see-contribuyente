@@ -13,12 +13,12 @@ class ApiController extends Controller
             // $documento = $request->input('documento');
             $encargo = new \App\Business\Encargo();
             if (strlen($envia)>0) {
-                $encargo->where('docEnvia', $envia);
+                $encargo = $encargo->where('doc_envia', $envia);
             }
             if (strlen($recibe)>0) {
-                $encargo->where('docRecibe', $recibe);
+                $encargo = $encargo->where('doc_recibe', $recibe);
             }
-            return response()->json([ 'result' => ['encargo' => $encargo->first()] ]);
+            return response()->json([ 'result' => ['encargo' => $encargo->get()] ]);
     }
 
     public function getAgencia(String $sedeId) {
