@@ -15,8 +15,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/{encargoId}', 'SaleController@writeBill');
-
 
 Route::get('/venta', 'SaleController@list');
 Route::get('/venta/nuevo', 'SaleController@show');

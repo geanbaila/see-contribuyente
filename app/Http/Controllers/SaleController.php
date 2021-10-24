@@ -121,9 +121,11 @@ class SaleController extends Controller
     }
 
     public function edit($encargoId) {
+        $sede = Sede::all();
+        $agenciaOrigen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
+        $documento = Documento::all();
         $encargo = Encargo::find($encargoId);
-        return view('sale.show')->with([ 'sede' => $sede, 'documento' => $documento, 'encargo' => $encargo ]);
-
+        return view('sale.edit')->with([ 'agenciaOrigen' => $agenciaOrigen, 'sede' => $sede, 'documento' => $documento, 'encargo' => $encargo ]);
     }
 
     public function list() {
