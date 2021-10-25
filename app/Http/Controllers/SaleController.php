@@ -229,42 +229,46 @@ class SaleController extends Controller
             PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
+            $importeTotal = 0.00;
             foreach($data['encargoDetalle'] as $encargo){
+                $importeTotal +=$encargo['total'];
                 PDF::MultiCell(24, $height, $encargo['descripcion'], $border, $align_left, 1, 0, $x, $y);
                 PDF::MultiCell(14, $height, $encargo['cantidad'], $border, $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(12, $height, $encargo['precio'], $border, $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(10, $height, $encargo['total'], $border, $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             }
+            $igv = $importeTotal * env('IGV', 0.18);
+            $subTotal = $importeTotal - $igv;
             PDF::Ln();
             PDF::Cell($width/3, $height, "SUBTOTAL", 'T', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", 'T', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", 'T', 0, 'R', 1);
+            PDF::Cell($width/3, $height, $subTotal, 'T', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell($width/3, $height, "OP.GRAVADA", '', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", '', 0, 'R', 1);
+            PDF::Cell($width/3, $height, $subTotal, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell($width/3, $height, "OP.EXONERADA", '', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", '', 0, 'R', 1);
+            PDF::Cell($width/3, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
             
             PDF::Cell($width/3, $height, "OP.GRATUITA", '', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", '', 0, 'R', 1);
+            PDF::Cell($width/3, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell($width/3, $height, "IGV 18%", '', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", '', 0, 'R', 1);
+            PDF::Cell($width/3, $height, $igv, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell($width/3, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
             PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "100.00", '', 0, 'R', 1);
+            PDF::Cell($width/3, $height, $importeTotal, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeGrande);
@@ -273,8 +277,10 @@ class SaleController extends Controller
             PDF::Ln();
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell(40, $height, "Representación impresa de ".$data['emisorTipoDocumentoElectronico'].".", $border, $align_left, 1, 0, $x, $y);
-            PDF::MultiCell(30, $height, "imagenQR", true, $align_left, 1, 0, $x, $y);
-            PDF::Ln(30);
+            
+            PDF::Image(base_path('public/assets/media/logos/logo.jpeg'), '', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+
+            PDF::Ln(25);
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), $border, $align_left, 1, 0, $x, $y);
             $year = substr($data['emisorFechaDocumentoElectronico'], -4);
             $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";
@@ -306,6 +312,8 @@ class SaleController extends Controller
             $y = '';
             $x = ''; // 5
             $width = 60;
+            PDF::Image(base_path('public/assets/media/logos/logo.jpeg'), '', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+            PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), $border, $align_left, 1, 0, $x, $y);
             $year = substr($data['emisorFechaDocumentoElectronico'], -4);
             $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";

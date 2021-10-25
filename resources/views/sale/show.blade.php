@@ -120,7 +120,7 @@
                                 </div>
                                 <div class="col-xxl-6">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
-                                    <select class="form-select" aria-label="--" name="agenciaDestino">
+                                    <select class="form-select" aria-label="--" name="agenciaDestino" onchange="javascript:getSerie()">
                                         <option value="--" selected> -- </option>
                                     </select>
                                 </div>
@@ -278,7 +278,7 @@
                 "newestOnTop": false,
                 "progressBar": true,
                 "positionClass": "toast-bottom-right",
-                "preventDuplicates": false,
+                "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "30000",
                 "hideDuration": "1000",
@@ -299,7 +299,7 @@
                 "newestOnTop": false,
                 "progressBar": true,
                 "positionClass": "toast-bottom-right",
-                "preventDuplicates": false,
+                "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "30000",
                 "hideDuration": "1000",
