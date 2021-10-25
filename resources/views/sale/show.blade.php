@@ -1,8 +1,8 @@
 @extends('layout.layout')
 @section('content')
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargoId" value="" />
-        <input type="text" name="clienteId" value="" />
+        <input type="hidden" name="encargoId" value="" />
+        <input type="hidden" name="clienteId" value="" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -150,13 +150,11 @@
                                 </div>
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
-                                    <input class="form-control" id="documentoSerie" name="documentoSerie" value=""
-                                        disabled>
+                                    <input class="form-control" id="documentoSerie" name="documentoSerie" value="" disabled>
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Número:</label>
-                                    <input class="form-control" id="documentoNumero" name="documentoNumero"
-                                        placeholder="">
+                                    <input class="form-control" id="documentoNumero" name="documentoNumero" value="" disabled>
                                 </div>
 
                             </div>
@@ -188,10 +186,10 @@
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
                                 <th scope="col">Descripción</th>
+                                <th scope="col" width="100">Peso</th>
                                 <th scope="col" width="100">Cantidad</th>
                                 <th scope="col" width="100">Precio</th>
-                                <th scope="col" width="100">Peso</th>
-                                <th scope="col" width="100">Total</th>
+                                <th scope="col" width="100">Subtotal</th>
                                 <th scope="col" width="80" class="float-right">
                                     <a onclick="javascript:addChargeRow()"><img
                                             src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
@@ -212,18 +210,29 @@
                                         @endif
                                     </select>
                                 </td>
-                                <td><input type="number" class="form-control" name="cantidad"
+                                <td><input type="number" class="form-control" name="peso"
+                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>
+                                <td>
+                                    <input type="number" class="form-control" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
                                 <td><input type="number" class="form-control" name="precio" disabled></td>
-                                <td><input type="number" class="form-control" name="peso"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control" name="total"></td>
+                                <td><input type="number" class="form-control" name="total" disabled></td>
                                 <!--<td scope="row" width="80" class="float-right">
                                                                         <a onclick="javascript:removeChargeRow(this)"><img
                                                                                 src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
                                                                     </td>-->
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" align="right">total&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td><input type="number" class="form-control" name="subtotal" disabled></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" align="right">importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td><input type="number" class="form-control" name="descuento" value="0.00"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                     <br />
                     <div class="row">
@@ -250,13 +259,13 @@
                         </div>
                         <div class="col-4 text-end align-top">
                             <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
-                            <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
-                                data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
-                            </a>
                             <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modalBuscarVenta">
                                 <img src="{{ asset('assets/media/icons/sis/search-white.svg') }}" width="24" />
+                            </a>
+                            <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
+                                data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
+                                <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
                             </a>
                             <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalEliminarVenta">
@@ -346,10 +355,10 @@
                 '<select class="form-select" aria-label="--" name="descripcion"  onchange="javascript:updateChargeDetail(this)">' +
                 options +
                 '</select></td>' +
+                '<td><input type="number" class="form-control" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control" name="precio" disabled></td>' +
-                '<td><input type="number" class="form-control" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control" name="total"></td>' +
+                '<td><input type="number" class="form-control" name="total" disabled></td>' +
                 '<td scope="row" class="float-right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
                 '</td>' +
@@ -372,8 +381,6 @@
         }
 
         function putChargeForm(data) {
-            console.log('data from putChargeForm:');
-            console.log(data);
             $("[name='encargoId']").val(data._id);
 
             $("[name='docEnvia']").val(data.doc_envia);
@@ -464,7 +471,7 @@
         }
 
         function validate(data) {
-            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 10) {
+            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11) {
                 alert('Documento incorrecto de quien Envía');
                 return false;
             }
@@ -472,7 +479,7 @@
                 alert('No se dispone de los nombre de quien Envía');
                 return false;
             }
-            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 10) {
+            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11) {
                 alert('Documento incorrecto de quien Recibe');
                 return false;
             }
@@ -570,7 +577,7 @@
         function askEncargo() {
             var docRecibe = $("#buscaDocRecibe").val();
             var docEnvia = $("#buscaDocEnvia").val();
-            if (docRecibe.length === 8 || docRecibe.length === 10 || docEnvia.length === 8 || docEnvia.length === 10) {
+            if (docRecibe.length === 8 || docRecibe.length === 11 || docEnvia.length === 8 || docEnvia.length === 11) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",
