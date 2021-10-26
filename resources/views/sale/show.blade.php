@@ -186,11 +186,11 @@
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
                                 <th scope="col">Descripción</th>
-                                <th scope="col" width="100">Peso</th>
-                                <th scope="col" width="100">Cantidad</th>
-                                <th scope="col" width="100">Precio</th>
-                                <th scope="col" width="100">Subtotal</th>
-                                <th scope="col" width="80" class="float-right">
+                                <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right" >Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
                                             src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
                                 </th>
@@ -225,11 +225,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" align="right">total&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="4" align="right">Total&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control" name="subtotal" disabled></td>
                             </tr>
                             <tr>
-                                <td colspan="4" align="right">importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="4" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control" name="descuento" value="0.00"></td>
                             </tr>
                         </tfoot>
@@ -258,11 +258,11 @@
                             </div>
                         </div>
                         <div class="col-4 text-end align-top">
-                            <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
                             <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modalBuscarVenta">
+                                data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
                                 <img src="{{ asset('assets/media/icons/sis/search-white.svg') }}" width="24" />
                             </a>
+                            <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
                             <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                 <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
@@ -330,15 +330,26 @@
             if (cantidad === '') {
                 $(tr).find("td [name='cantidad']").val(1);
             }
+            $(tr).find("td [name='cantidad']").trigger("onkeyup");
         }
 
         function calculatePayChargeDetail(element) {
             var tr = $(element).parent().parent();
-            var precio =$(tr).find("td [name='precio']").val();
-            var cantidad =$(tr).find("td [name='cantidad']").val();
-            var peso =$(tr).find("td [name='peso']").val();
+            var precio = parseFloat($(tr).find("td [name='precio']").val());
+            var cantidad = parseFloat($(tr).find("td [name='cantidad']").val());
+            var peso = parseFloat($(tr).find("td [name='peso']").val());
             var total = precio*cantidad*peso;
-            $(tr).find("td [name='total']").val(total);
+            $(tr).find("td [name='total']").val(total.toFixed(2));
+            reCalculatePayChargeDetail();
+        }
+
+        function reCalculatePayChargeDetail() {
+            subtotal = 0.00;
+            $("#chargeRow >tr>td:nth-child(5)").each(function(index, element){
+                subtotal = subtotal + parseFloat($(element).find("[name='total']").val());
+                $("[name='subtotal']").val(subtotal.toFixed(2));
+                $("[name='descuento']").val(subtotal.toFixed(2));
+            });
         }
 
         function addChargeRow() {
@@ -359,7 +370,7 @@
                 '<td><input type="number" class="form-control" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control" name="precio" disabled></td>' +
                 '<td><input type="number" class="form-control" name="total" disabled></td>' +
-                '<td scope="row" class="float-right">' +
+                '<td scope="row" align="right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
                 '</td>' +
                 '</tr>';
@@ -370,6 +381,7 @@
             var total = $("#chargeRow").find("tr").length;
             if (total > 1) {
                 $(element).parent().parent().remove();
+                reCalculatePayChargeDetail();
             } else {
                 // al menos debe mantener una fila
             }
@@ -575,9 +587,10 @@
         }
 
         function askEncargo() {
-            var docRecibe = $("#buscaDocRecibe").val();
-            var docEnvia = $("#buscaDocEnvia").val();
-            if (docRecibe.length === 8 || docRecibe.length === 11 || docEnvia.length === 8 || docEnvia.length === 11) {
+            var docRecibeOenvia = $("#buscaDocRecibeDocEnvia").val();
+            var documento = $("#buscaDocumento").val();
+            
+            if (docRecibeOenvia.length === 8 || docRecibeOenvia.length === 11) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",
@@ -586,8 +599,8 @@
                     },
                     dataType: "json",
                     data: {
-                        docRecibe: docRecibe,
-                        docEnvia: docEnvia
+                        docRecibeOenvia: docRecibeOenvia,
+                        documento: documento
                     }
                 }).done(function(result) {
                     var html = '<tr><td colspan="5">No se encontraron coincidencias</td></tr>';
@@ -597,10 +610,10 @@
                                 '<th scope="row">' +
                                 '<input class="form-check-input h-20px w-20px" type="checkbox" name="communication[]" value="email" checked="checked">' +
                                 '</th>' +
-                                '<td>' + element.fecha_envia + '</td>' +
                                 '<td>' + element.doc_envia + '</td>' +
                                 '<td>' + element.doc_recibe + '</td>' +
                                 '<td>' + element.agencia_destino + '</td>' +
+                                '<td>' + element.documento_fecha + '</td>' +
                                 '<td>00.00</td>' +
                                 '</tr>';
                             $("#responseChargeRow").html(html);
@@ -673,5 +686,7 @@
                 return true;
             }
         }
+
+        
     </script>
 @endsection

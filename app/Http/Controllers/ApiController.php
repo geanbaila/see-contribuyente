@@ -8,15 +8,11 @@ use MongoDB\BSON\ObjectId;
 class ApiController extends Controller
 {
     public function getEncargo(Request $request) {
-            $envia = $request->input('docEnvia');
-            $recibe = $request->input('docRecibe');
-            // $documento = $request->input('documento');
+            $docRecibeOenvia = $request->input('docRecibeOenvia');
+            $documento = $request->input('documento');
             $encargo = new \App\Business\Encargo();
-            if (strlen($envia)>0) {
-                $encargo = $encargo->where('doc_envia', $envia);
-            }
-            if (strlen($recibe)>0) {
-                $encargo = $encargo->where('doc_recibe', $recibe);
+            if (strlen($docRecibeOenvia)>0) {
+                $encargo = $encargo->where('doc_envia', $docRecibeOenvia)->orWhere('doc_recibe', $docRecibeOenvia);
             }
             return response()->json([ 'result' => ['encargo' => $encargo->get()] ]);
     }

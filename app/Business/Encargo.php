@@ -80,7 +80,7 @@ class Encargo extends Model
                 'clienteDireccion' => $encargo->clientes->direccion,
                 'clienteDocumento' => $encargo->clientes->documento,
                 'consigna' => [
-                    'nombre' => mb_strtoupper($encargo->nombre_recibe),
+                    'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
