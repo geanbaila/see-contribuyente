@@ -211,11 +211,11 @@
                                     </select>
                                 </td>
                                 <td><input type="number" class="form-control" name="peso"
-                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td>
-                                    <input type="number" class="form-control" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control" name="precio" disabled></td>
+                                <td><input type="number" class="form-control" name="cantidad"
+                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
+                                <td><input type="number" class="form-control" name="precio" 
+                                        onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                 <td><input type="number" class="form-control" name="total" disabled></td>
                                 <!--<td scope="row" width="80" class="float-right">
                                                                         <a onclick="javascript:removeChargeRow(this)"><img
@@ -324,7 +324,13 @@
 
         function updateChargeDetail(element) {
             var tr = $(element).parent().parent();
-            var precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
+            var precio = '';
+            if (element.value === '6175bf2e8f1a2809dcb499c9') {
+                // ABRIR EL PRECIO PARA *OTROS*
+                $(tr).find("td [name='precio']").removeAttr("disabled");
+            } else{
+                precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
+            }
             $(tr).find("td [name='precio']").val(precio);
             var cantidad = $(tr).find("td [name='cantidad']").val();
             if (cantidad === '') {
@@ -368,7 +374,7 @@
                 '</select></td>' +
                 '<td><input type="number" class="form-control" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control" name="precio" disabled></td>' +
+                '<td><input type="number" class="form-control" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
