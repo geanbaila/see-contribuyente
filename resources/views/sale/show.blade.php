@@ -234,7 +234,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control" name="descuento" value="0.00"></td>
+                                <td><input type="number" class="form-control" name="importePagar" value="0.00"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -360,7 +360,7 @@
             $("#chargeRow >tr>td:nth-child(5)").each(function(index, element) {
                 subtotal = subtotal + parseFloat($(element).find("[name='total']").val());
                 $("[name='subtotal']").val(subtotal.toFixed(2));
-                $("[name='descuento']").val(subtotal.toFixed(2));
+                $("[name='importePagar']").val(subtotal.toFixed(2));
             });
         }
 
@@ -424,7 +424,6 @@
             // $("[name='origen']").val(data.origen).change(); // come from session
             $("[name='agenciaOrigen']").val(data.agencia_origen); // come from session
             $("[name='destino']").val(data.destino).change();
-            console.log(data.destino, data.agencia_destino);
             getAgenciaDestino(data.destino, data.agencia_destino);
 
             $("[name='medioPago']").val(data.medio_pago).change();
@@ -433,6 +432,20 @@
             // $("[name='documentoNumero']").val(data.documento_numero);
 
             $("[name='clienteId']").val(data.cliente_id);
+
+            if (data.encargo.length > 0) {
+                var total = data.encargo.length;
+                _.forEach(data.encargo, function(element, index) {
+                    var j = index + 1;
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga_id).change();
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='precio']").val(element.precio);
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad);
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
+                    if(j < total) { 
+                        addChargeRow();
+                    }
+                });
+            }
         }
 
         function getChargeForm() {
@@ -458,6 +471,8 @@
             var documento = $("[name='documento']").val().trim();
             var documentoSerie = $("[name='documentoSerie']").val().trim();
             var documentoNumero = $("[name='documentoNumero']").val().trim();
+            var importePagar = $("[name='importePagar']").val().trim();
+            var subtotal = $("[name='subtotal']").val().trim();
 
             var descripcion = document.getElementsByName("descripcion");
             var cantidad = document.getElementsByName("cantidad");
@@ -486,6 +501,8 @@
             data.append("documento", documento);
             data.append("documentoSerie", documentoSerie);
             data.append("documentoNumero", documentoNumero);
+            data.append("importePagar", importePagar);
+            data.append("subtotal", subtotal);
             var n = descripcion.length;
             for (var i = 0; i < n; i++) {
                 data.append("encargo[]", [descripcion[i].value, peso[i].value, cantidad[i].value, precio[i].value]);
@@ -495,7 +512,7 @@
         }
 
         function validate(data) {
-            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11) {
+            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11 && data.get('docEnvia').length !== 12) {
                 alert('Documento incorrecto de quien Envía');
                 return false;
             }
@@ -503,7 +520,7 @@
                 alert('No se dispone de los nombre de quien Envía');
                 return false;
             }
-            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11) {
+            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11 && data.get('docRecibe').length !== 12) {
                 alert('Documento incorrecto de quien Recibe');
                 return false;
             }
@@ -531,6 +548,14 @@
                 alert('No se dispone del serie');
                 return false;
             }
+            if(data.get('documento') === '617122a2a8c74c6bfc5e36e6' && data.get('docEnvia').length !== 11) {
+                alert('No se puede emitir una factura para una persona natural');
+                return false;
+            }
+            if(data.get('importePagar') > data.get('subtotal')) {
+                alert('El importe a pagar no puede ser mayor que total (suma de subtotales)).');
+                return false;
+            }
             return true;
         }
 
@@ -539,7 +564,7 @@
          * @selected : id de la agencia de destino
          */
         function getAgenciaDestino(destinoId, selected) {
-            var agenciaDestino = "<option value='--'>--</option>";
+            $("[name='agenciaDestino']").html("<option value='--'>--</option>");
             if (destinoId !== '--') {
                 $.ajax({
                     url: "{{ url('/api/v1/agencia') }}/" + destinoId,
@@ -552,20 +577,17 @@
                     dataType: "json"
                 }).done(function(result) {
                     if (result) {
-                        result.forEach(function(element, index) {
-                            agenciaDestino = agenciaDestino + "<option value='" + element._id + "'>" +
-                                element.direccion +
-                                "</option>";
-                        })
-                    }
-                    $("[name='agenciaDestino']").html(agenciaDestino);
-                    if (selected) {
-                        $("[name='agenciaDestino']").val(selected).change();
+                        _.forEach(result, function(element, index) {
+                            $("[name='agenciaDestino']").append("<option value='" + element._id + "'>" + element.direccion + "</option>");
+                        });
+                        if (selected) {
+                            $("[name='agenciaDestino']").val(selected).change();
+                        }
                     }
                 });
             } else {
-                // no hay agenciaDestino, déjame en vacío
-                $("[name='agenciaDestino']").html(agenciaDestino);
+                // no hay agenciaDestino, me quedo en vacío
+                
             }
         }
 
@@ -585,7 +607,6 @@
                     processData: false,
                     dataType: "json"
                 }).done(function(result) {
-                    console.log('result_getSerie:', result);
                     if (result) {
                         var documentoSerie = result[0].correlativo;
                         $("[name='documentoSerie']").val(documentoSerie);
@@ -602,7 +623,7 @@
             var docRecibeOenvia = $("#buscaDocRecibeDocEnvia").val();
             var documento = $("#buscaDocumento").val();
 
-            if (docRecibeOenvia.length === 8 || docRecibeOenvia.length === 11) {
+            if (docRecibeOenvia.length === 8 || docRecibeOenvia.length === 11 || docRecibeOenvia.length !== 12) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",
@@ -617,7 +638,7 @@
                 }).done(function(result) {
                     var html = '<tr><td colspan="5">No se encontraron coincidencias</td></tr>';
                     if (result) {
-                        result.result.encargo.forEach(function(element, index) {
+                        _.forEach(result.result.encargo, function(element, index) {
                             html = '<tr>' +
                                 '<th scope="row">' +
                                 '<input class="form-check-input h-20px w-20px" type="checkbox" name="communication[]" value="email" checked="checked">' +
@@ -656,7 +677,8 @@
         function doit() {
             var data = getChargeForm();
             if (validate(data)) {
-                if (subtotal <= parseFloat("{{env('DETRACCION')}}")) {
+                var importePagar = $("[name='importePagar']").val();
+                if (importePagar <= parseFloat("{{env('DETRACCION')}}")) {
                     $.ajax({
                         url: "{{ url('/venta/registrar') }}",
                         type: "POST",
@@ -711,7 +733,7 @@
         $("[name='docEnvia']").on('keypress', function(e) {
             if (e.which == 13) {
                 var docEnvia = $("[name='docEnvia']").val().trim();
-                if (docEnvia.length === 8) {
+                if (docEnvia.length === 8 || docEnvia.length !== 12) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docEnvia,
@@ -752,7 +774,7 @@
         $("[name='docRecibe']").on('keypress',function(e) {
             if (e.which == 13) {
                 var docRecibe = $("[name='docRecibe']").val().trim();
-                if (docRecibe.length === 8) {
+                if (docRecibe.length === 8 || docRecibe.length !== 12) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docRecibe,

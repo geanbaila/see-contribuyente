@@ -4162,6 +4162,7 @@
 		<script src="{{asset('assets/js/custom/modals/create-app.js')}}"></script>
 		<script src="{{asset('assets/js/custom/modals/upgrade-plan.js')}}"></script> -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="{{asset('assets/js/lodash.js')}}"></script>
 		<!--end::Page Custom Javascript-->
 		<!--end::Javascript-->
  

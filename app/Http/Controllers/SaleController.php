@@ -29,11 +29,10 @@ class SaleController extends Controller
                     $precio = $element[3];
                     $carga = Carga::find($element[0]);
                     if ($carga) {
-                        $descripcion = $carga->nombre;
-                        // $precio = $carga->precio;
                         $total = number_format(1.00*$cantidad*$precio*$peso,2,'.','');
                         array_push($stack, [
-                            'descripcion' => $descripcion,
+                            'carga_id' => $carga->id,
+                            'descripcion' => $carga->nombre,
                             'cantidad' => $cantidad,
                             'precio' => $precio,
                             'peso' => $peso,
@@ -210,7 +209,7 @@ class SaleController extends Controller
             PDF::Cell($width/2, $height, "HORA: 00:00:00" . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'R', 0);
             // -------------
             
-            $dniruc = (strlen($data['clienteDocumento']) === 8) ? 'DNI' : 'RUC';
+            $dniruc = (strlen($data['clienteDocumento']) === 8) ? 'DNI/CE' : 'RUC';
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell($width, $height, "CLIENTE: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
@@ -253,15 +252,15 @@ class SaleController extends Controller
             }
             $importeTotal = number_format($importeTotal, 2, '.', '');
             $igv = number_format($importeTotal * env('IGV', 0.18), 2, '.', '');
-            $subTotal = number_format($importeTotal - $igv, 2, '.', '');
+            $subtotal = number_format($importeTotal - $igv, 2, '.', '');
             PDF::Cell(35, $height, "SUBTOTAL", 'T', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
-            PDF::Cell(20, $height, $subTotal, 'T', 0, 'R', 1);
+            PDF::Cell(20, $height, $subtotal, 'T', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell(35, $height, "OP.GRAVADA", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $subTotal, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell(35, $height, "OP.EXONERADA", '', 0, 'L', 1);
