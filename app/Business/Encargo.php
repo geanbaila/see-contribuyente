@@ -37,6 +37,8 @@ class Encargo extends Model
         'documento_numero',
         'documento_fecha',        
         'encargo',
+        'subtotal',
+        'importePagar',
     ];
 
     public function sedes() {
@@ -84,6 +86,8 @@ class Encargo extends Model
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
+                'subtotal' => $encargo->subtotal,
+                'importePagar' => $encargo->importePagar,
             ];
         } else {
             $data = [];
@@ -120,6 +124,8 @@ class Encargo extends Model
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
+                'subtotal' => $encargo->subtotal,
+                'importePagar' => $encargo->importePagar,
             ];
         } else {
             $data = [];

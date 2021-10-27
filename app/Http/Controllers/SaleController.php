@@ -29,7 +29,7 @@ class SaleController extends Controller
                     $precio = $element[3];
                     $carga = Carga::find($element[0]);
                     if ($carga) {
-                        $total = number_format(1.00*$cantidad*$precio*$peso,2,'.','');
+                        $total = number_format($cantidad*$precio*$peso, 2, '.', '');
                         array_push($stack, [
                             'carga_id' => $carga->id,
                             'descripcion' => $carga->nombre,
@@ -41,7 +41,7 @@ class SaleController extends Controller
                     }
                 }
             }
-            return $stack;
+            return [$stack];
         };
         if (!$var($data['encargo'])) {
             return \response()->json(['result' => ['status' => 'fails', 'message' => 'No ha ingresado el detalle de la encomienda.']]);
@@ -104,7 +104,9 @@ class SaleController extends Controller
             'documento_serie' => $data['documentoSerie'],
             'documento_numero' => $data['documentoNumero'],
             'documento_fecha' => $documento_fecha,
-            'encargo' => $var($data['encargo']),
+            'encargo' => $var($data['encargo'])[0],
+            'subtotal' => number_format($data['subtotal'], 2, '.', ''),
+            'importePagar' => number_format($data['importePagar'], 2, '.', ''),
         ];
         if (strlen($data['encargoId']) > 0) {
             $ObjectId = new ObjectId($data['encargoId']);
@@ -243,19 +245,27 @@ class SaleController extends Controller
             $importeTotal = 0.00;
             PDF::SetFont('times', '', $fontSizeRegular);
             foreach($data['encargoDetalle'] as $encargo){
-                $importeTotal +=$encargo['total'];
-                PDF::MultiCell(24, $height, $encargo['descripcion'], $border, $align_left, 1, 0, $x, $y);
-                PDF::MultiCell(14, $height, $encargo['cantidad'], $border, $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, $encargo['precio'], $border, $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, $encargo['total'], $border, $align_center, 1, 0, $x, $y);
+                $importeTotal += $encargo['total'];
+                PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
+                PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(12, $height, $encargo['precio'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(10, $height, $encargo['total'], '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             }
-            $importeTotal = number_format($importeTotal, 2, '.', '');
-            $igv = number_format($importeTotal * env('IGV', 0.18), 2, '.', '');
-            $subtotal = number_format($importeTotal - $igv, 2, '.', '');
-            PDF::Cell(35, $height, "SUBTOTAL", 'T', 0, 'L', 1);
+            
+            $importePagar = number_format($data['importePagar'], 2, '.', '');
+            $igv = number_format($importePagar * env('IGV', 0.18), 2, '.', '');
+            $subtotal = number_format($importePagar - $igv, 2, '.', '');
+            $descuentos = number_format($importePagar - $importeTotal, 2, '.', '');
+         
+            PDF::Cell(35, $height, "DESCUENTOS", 'T', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
-            PDF::Cell(20, $height, $subtotal, 'T', 0, 'R', 1);
+            PDF::Cell(20, $height, $descuentos, 'T', 0, 'R', 1);
+            PDF::Ln();
+
+            PDF::Cell(35, $height, "SUBTOTAL", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell(35, $height, "OP.GRAVADA", '', 0, 'L', 1);
@@ -282,7 +292,7 @@ class SaleController extends Controller
             PDF::Cell(35, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
             PDF::SetFont('times', 'B', $fontSizeGigante);
-            PDF::Cell(20, $height, $importeTotal, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $importePagar, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeGrande);

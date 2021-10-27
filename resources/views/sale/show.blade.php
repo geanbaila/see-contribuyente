@@ -193,7 +193,7 @@
                                 <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;
                                 </th>
-                                <th scope="col" width="150" style="text-align:right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right">Total&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
                                             src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
@@ -229,7 +229,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" align="right">Total&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="4" align="right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control" name="subtotal" disabled></td>
                             </tr>
                             <tr>
@@ -553,7 +553,7 @@
                 return false;
             }
             if(data.get('importePagar') > data.get('subtotal')) {
-                alert('El importe a pagar no puede ser mayor que total (suma de subtotales)).');
+                alert('El importe a pagar no puede ser mayor que total (suma de subtotales).');
                 return false;
             }
             return true;
@@ -647,7 +647,7 @@
                                 '<td>' + element.doc_recibe + '</td>' +
                                 '<td>' + element.agencia_destino + '</td>' +
                                 '<td>' + element.documento_fecha + '</td>' +
-                                '<td>00.00</td>' +
+                                '<td>' + element.subtotal + '</td>' +
                                 '</tr>';
                             $("#responseChargeRow").html(html);
                             putChargeForm(element);
