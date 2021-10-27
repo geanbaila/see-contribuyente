@@ -84,8 +84,8 @@
                                             width="24"></a>
                                     <br />
                                     <!--<a onclick="javascript:removeReceivesRow(this)"><img
-                                                                                src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
-                                                                                width="24"></a>-->
+                                                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
+                                                                                    width="24"></a>-->
                                 </div>
                             </div>
                         </div>
@@ -120,7 +120,8 @@
                                 </div>
                                 <div class="col-xxl-6">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
-                                    <select class="form-select" aria-label="--" name="agenciaDestino" onchange="javascript:getSerie()">
+                                    <select class="form-select" aria-label="--" name="agenciaDestino"
+                                        onchange="javascript:getSerie()">
                                         <option value="--" selected> -- </option>
                                     </select>
                                 </div>
@@ -150,11 +151,13 @@
                                 </div>
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
-                                    <input class="form-control" id="documentoSerie" name="documentoSerie" value="" disabled>
+                                    <input class="form-control" id="documentoSerie" name="documentoSerie" value=""
+                                        disabled>
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Número:</label>
-                                    <input class="form-control" id="documentoNumero" name="documentoNumero" value="" disabled>
+                                    <input class="form-control" id="documentoNumero" name="documentoNumero" value=""
+                                        disabled>
                                 </div>
 
                             </div>
@@ -188,8 +191,9 @@
                                 <th scope="col">Descripción</th>
                                 <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                <th scope="col" width="150" style="text-align:right" >Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;
+                                </th>
+                                <th scope="col" width="150" style="text-align:right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
                                             src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
@@ -214,13 +218,13 @@
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
                                 <td><input type="number" class="form-control" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control" name="precio" 
+                                <td><input type="number" class="form-control" name="precio"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                 <td><input type="number" class="form-control" name="total" disabled></td>
                                 <!--<td scope="row" width="80" class="float-right">
-                                                                        <a onclick="javascript:removeChargeRow(this)"><img
-                                                                                src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                                                    </td>-->
+                                                                            <a onclick="javascript:removeChargeRow(this)"><img
+                                                                                    src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                                                        </td>-->
                             </tr>
                         </tbody>
                         <tfoot>
@@ -278,6 +282,8 @@
         </div>
 
     </form>
+@endsection
+@section('scripts')
     <script>
         function showSuccessToastr(message) {
             console.log('mostrar success toastr')
@@ -328,7 +334,7 @@
             if (element.value === '6175bf2e8f1a2809dcb499c9') {
                 // ABRIR EL PRECIO PARA *OTROS*
                 $(tr).find("td [name='precio']").removeAttr("disabled");
-            } else{
+            } else {
                 precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
             }
             $(tr).find("td [name='precio']").val(precio);
@@ -344,14 +350,14 @@
             var precio = parseFloat($(tr).find("td [name='precio']").val());
             var cantidad = parseFloat($(tr).find("td [name='cantidad']").val());
             var peso = parseFloat($(tr).find("td [name='peso']").val());
-            var total = precio*cantidad*peso;
+            var total = precio * cantidad * peso;
             $(tr).find("td [name='total']").val(total.toFixed(2));
             reCalculatePayChargeDetail();
         }
 
         function reCalculatePayChargeDetail() {
             subtotal = 0.00;
-            $("#chargeRow >tr>td:nth-child(5)").each(function(index, element){
+            $("#chargeRow >tr>td:nth-child(5)").each(function(index, element) {
                 subtotal = subtotal + parseFloat($(element).find("[name='total']").val());
                 $("[name='subtotal']").val(subtotal.toFixed(2));
                 $("[name='descuento']").val(subtotal.toFixed(2));
@@ -363,8 +369,8 @@
             @if (isset($carga))
                 @foreach ($carga as $item)
                     options +='<option value="{{ $item->id }}" data-price="{{ $item->precio }}">';
-                    options +='{{ $item->nombre }}'
-                    options +='</option>';
+                        options +='{{ $item->nombre }}'
+                        options +='</option>';
                 @endforeach
             @endif
             var html = '<tr>' +
@@ -482,7 +488,7 @@
             data.append("documentoNumero", documentoNumero);
             var n = descripcion.length;
             for (var i = 0; i < n; i++) {
-                data.append("encargo[]", [descripcion[i].value, cantidad[i].value, precio[i].value, peso[i].value]);
+                data.append("encargo[]", [descripcion[i].value, peso[i].value, cantidad[i].value, precio[i].value]);
             };
             data.append("clienteId", clienteId);
             return data;
@@ -595,7 +601,7 @@
         function askEncargo() {
             var docRecibeOenvia = $("#buscaDocRecibeDocEnvia").val();
             var documento = $("#buscaDocumento").val();
-            
+
             if (docRecibeOenvia.length === 8 || docRecibeOenvia.length === 11) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
@@ -650,24 +656,33 @@
         function doit() {
             var data = getChargeForm();
             if (validate(data)) {
-                $.ajax({
-                    url: "{{ url('/venta/registrar') }}",
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: data,
-                    contentType: false,
-                    processData: false,
-                    dataType: "json"
-                }).done(function(result) {
-                    if (data.get('encargoId').length === 0) {
-                        $("[name='encargoId']").val(result.result.encargoId);
-                        $("[name='clienteId']").val(result.result.clienteId);
-                        enabledBtn();
-                        // showSuccessToastr('todo ok');
-                    }
-                });
+                if (subtotal <= parseFloat("{{env('DETRACCION')}}")) {
+                    $.ajax({
+                        url: "{{ url('/venta/registrar') }}",
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        dataType: "json"
+                    }).done(function(result) {
+                        if(result.result.status === 'OK'){
+                            if (data.get('encargoId').length === 0) {
+                                $("[name='encargoId']").val(result.result.encargoId);
+                                $("[name='clienteId']").val(result.result.clienteId);
+                                enabledBtn();
+                                showSuccessToastr(result.result.message);
+                            }
+                        } else { 
+                            showErrorToastr(result.result.message);
+                        }
+                    });
+                } else {
+                    // evitar la DETRACCIÓN 
+                    showErrorToastr('Usted debe emitir boletas/facturas/guías por montos menores a ' + '{{env('DETRACCION')}}');
+                }
             } else {
                 // no ha superado la validación
                 showErrorToastr('Complete los campos obligatorios');
@@ -693,6 +708,86 @@
             }
         }
 
+        $("[name='docEnvia']").on('keypress', function(e) {
+            if (e.which == 13) {
+                var docEnvia = $("[name='docEnvia']").val().trim();
+                if (docEnvia.length === 8) {
+                    // consultar a RENIEC
+                    $.ajax({
+                        url: "{{ url('/api/v1/reniec') }}/" + docEnvia,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        contentType: false,
+                        processData: false,
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombreEnvia']").val(result.result.nombre);
+                    });
+                    
+                }
+                else if(docEnvia.length === 11) {
+                    // consultar a SUNAT
+                    $.ajax({
+                        url: "{{ url('/api/v1/sunat') }}/" + docEnvia,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        contentType: false,
+                        processData: false,
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombreEnvia']").val(result.result.nombre);
+                    });
+                }
+                else {
+                    // consultar
+                    alert("ha ingresado " + docEnvia.length +" caracteres, complételo por favor.");
+                }
+            }
+        });
         
+        $("[name='docRecibe']").on('keypress',function(e) {
+            if (e.which == 13) {
+                var docRecibe = $("[name='docRecibe']").val().trim();
+                if (docRecibe.length === 8) {
+                    // consultar a RENIEC
+                    $.ajax({
+                        url: "{{ url('/api/v1/reniec') }}/" + docRecibe,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        contentType: false,
+                        processData: false,
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombreRecibe']").val(result.result.nombre);
+                    });
+                    
+                }
+                else if(docRecibe.length === 11) {
+                    // consultar a SUNAT
+                    $.ajax({
+                        url: "{{ url('/api/v1/sunat') }}/" + docRecibe,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        contentType: false,
+                        processData: false,
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombreRecibe']").val(result.result.nombre);
+                    });
+                }
+                else {
+                    // consultar
+                    alert("ha ingresado " + docRecibe.length +" caracteres, complételo por favor.");
+                }
+            }
+        });
     </script>
 @endsection

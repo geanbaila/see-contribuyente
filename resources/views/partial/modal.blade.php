@@ -216,7 +216,7 @@
                             <form class="form" novalidate="novalidate" id="">
                                 <div class="row gy-5">
                                     <div class="col-12">
-                                        <embed id="comprobantePago" src="" frameborder="0" width="100%" height="400px">
+                                        <embed id="comprobantePago" src="" frameborder="0" width="100%" height="500px">
                                     </div> 
                                 </div>
                             </form>

@@ -36,4 +36,22 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
+    public function getSunat() {
+        $response = [
+            'result' =>[
+                'nombre' => 'GEAN CARLOS BAILA LAURENTE'
+            ],
+        ];
+        return response()->json($response);
+    }
+    
+    public function getReniec() {
+        $response = [
+            'result' =>[
+                'nombre' => 'GEAN CARLOS BAILA LAURENTE'
+            ],
+        ];
+        return response()->json($response);
+    }
+
 }

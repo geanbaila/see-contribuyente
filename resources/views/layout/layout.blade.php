@@ -4165,6 +4165,7 @@
 		<!--end::Page Custom Javascript-->
 		<!--end::Javascript-->
  
+		@yield('scripts')
 	</body>
 	<!--end::Body-->
 </html>

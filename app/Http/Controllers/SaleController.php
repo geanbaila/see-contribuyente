@@ -24,13 +24,14 @@ class SaleController extends Controller
             foreach($data as $item) {
                 $element = explode(",",$item);
                 if ($element[0] !== "--"){
-                    $cantidad = $element[1];
-                    $peso = $element[3];
+                    $peso = $element[1];
+                    $cantidad = $element[2];
+                    $precio = $element[3];
                     $carga = Carga::find($element[0]);
                     if ($carga) {
                         $descripcion = $carga->nombre;
-                        $precio = $carga->precio;
-                        $total = $cantidad*$precio*$peso;
+                        // $precio = $carga->precio;
+                        $total = number_format(1.00*$cantidad*$precio*$peso,2,'.','');
                         array_push($stack, [
                             'descripcion' => $descripcion,
                             'cantidad' => $cantidad,
@@ -42,7 +43,11 @@ class SaleController extends Controller
                 }
             }
             return $stack;
-        }; // revisar validación luego
+        };
+        if (!$var($data['encargo'])) {
+            return \response()->json(['result' => ['status' => 'fails', 'message' => 'No ha ingresado el detalle de la encomienda.']]);
+        }
+
         $documento = Documento::find($data['documento']);
 
         // registrar o actualizar el cliente
@@ -121,7 +126,7 @@ class SaleController extends Controller
         }
         // hacer la asociacion de PDF en la BD. hacer luego
         
-        return \response()->json(['result' => ['encargoId' => $encargoId, 'clienteId' => $clienteId] ]);
+        return \response()->json(['result' => ['status' => 'OK', 'message' => 'Registro correctamente', 'encargoId' => $encargoId, 'clienteId' => $clienteId] ]);
     }
 
     public function show() {
@@ -158,9 +163,10 @@ class SaleController extends Controller
             PDF::SetFillColor(255, 255, 255);
             PDF::SetTextColor(0);
             $fontSizeGrande = 9;
+            $fontSizeGigante = 10;
             $fontSizeRegular = 7;
             
-            $border = false;
+            $border = 'B';
             $align_center = 'C';
             $align_left = 'L';
             $align_right = 'R';
@@ -168,17 +174,18 @@ class SaleController extends Controller
             $y = '';
             $x = ''; // 5
             $width = 60;
+            PDF::setCellPaddings( $left = '', $top = '0.5', $right = '', $bottom = '0.5');
             
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            PDF::MultiCell($width, $height, $data['empresaComercial'], $border, $align_center,  1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['empresaComercial'], '', $align_center,  1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaRazonSocial'], $border, $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['empresaRazonSocial'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaDireccionFiscal'], $border, $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['empresaDireccionFiscal'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
@@ -186,50 +193,56 @@ class SaleController extends Controller
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::Cell($width, $height, "Teléfono: " . $data['emisorAgenciaTelefono'], 'T', 1, 'L', 0);
-            PDF::MultiCell($width, $height, "Terminal: ".$data['emisorAgenciaDireccion'], $border, $align_left, 1, 0, $x, $y);
+            PDF::Cell($width, $height, "TELÉFONO: " . $data['emisorAgenciaTelefono'], 'T', 1, 'L', 0);
+            PDF::MultiCell($width, $height, "TERMINAL: ".$data['emisorAgenciaDireccion'], $border, $align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            // -------------
+            
+            PDF::SetFont('times', 'B', $fontSizeGigante);
+            PDF::Cell($width, $height, $data['emisorTipoDocumentoElectronico'], 'T', 1, 'C', 0);
+            PDF::MultiCell($width, $height, $data['emisorNumeroDocumentoElectronico'], '', $align_center, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $fontSizeRegular);
+            PDF::MultiCell($width, $height, "OPERADOR: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            PDF::Cell($width/2, $height, "FECHA: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'L', 0);
+            PDF::Cell($width/2, $height, "HORA: 00:00:00" . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'R', 0);
+            // -------------
+            
+            $dniruc = (strlen($data['clienteDocumento']) === 8) ? 'DNI' : 'RUC';
+            PDF::SetFont('times', '', $fontSizeRegular);
+            PDF::MultiCell($width, $height, "CLIENTE: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::MultiCell($width, $height, "$dniruc: " . $data['clienteDocumento'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
+            PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            // -------------
+
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            PDF::Cell($width, $height, $data['emisorTipoDocumentoElectronico'], 'T', 1, 'C', 0);
-            PDF::MultiCell($width, $height, $data['emisorNumeroDocumentoElectronico'], $border, $align_center, 1, 0, $x, $y);
-            PDF::Ln();
-
-            PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::Cell($width/2, $height, "Fecha: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'C', 0);
-            PDF::Cell($width/2, $height, "Hora: " . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'C', 0);
-
-            PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, "Cliente: ".$data['clienteRazonSocial'], $border, $align_left, 1, 0, $x, $y);
-            PDF::Ln();
-
-            /* PDF::MultiCell($width, $height, "Dirección: " . $data['clienteDireccion'], $border, $align_left, 1, 0, $x, $y);
-            PDF::Ln(); */
-            PDF::Cell($width, $height, "DNI/RUC: " . $data['clienteDocumento'], 'B', 1, 'L', 0);
-
-            PDF::MultiCell($width, $height, "Consigna:", $border, $align_left, 1, 0, $x, $y);
-            PDF::Ln();
-
-            PDF::SetFont('', 'B');
             foreach($data['consigna'] as $nombre) {
-                PDF::MultiCell($width, $height, $nombre, $border, $align_left, 1, 0, $x, $y);
+                PDF::MultiCell($width, $height, $nombre, '', $align_left, 1, 0, $x, $y);
                 PDF::Ln();
             }
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell(20, $height, "Destino:", $border, $align_left, 1, 0, $x, $y);
-            PDF::SetFont('times', 'B', $fontSizeGrande);
+            PDF::MultiCell(20, $height, "DESTINO:", '', $align_left, 1, 0, $x, $y);
+            PDF::SetFont('times', 'B', $fontSizeGigante);
             PDF::MultiCell(40, $height, $data['destino'], $border, $align_right, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width, $height, "", 'T', 1, 'L', 0, '', 10);
             
-            PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::Cell(24, $height, "DESCRIPCION", '', 0, 'L', 1);
+            PDF::SetFont('times', 'B', $fontSizeRegular);
+            PDF::Cell(24, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
             PDF::Cell(14, $height, "CANTIDAD", '', 0, 'L', 1);
             PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
             $importeTotal = 0.00;
+            PDF::SetFont('times', '', $fontSizeRegular);
             foreach($data['encargoDetalle'] as $encargo){
                 $importeTotal +=$encargo['total'];
                 PDF::MultiCell(24, $height, $encargo['descripcion'], $border, $align_left, 1, 0, $x, $y);
@@ -238,50 +251,50 @@ class SaleController extends Controller
                 PDF::MultiCell(10, $height, $encargo['total'], $border, $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             }
-            $igv = $importeTotal * env('IGV', 0.18);
-            $subTotal = $importeTotal - $igv;
-            PDF::Ln();
-            PDF::Cell($width/3, $height, "SUBTOTAL", 'T', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", 'T', 0, 'C', 1);
-            PDF::Cell($width/3, $height, $subTotal, 'T', 0, 'R', 1);
-            PDF::Ln();
-
-            PDF::Cell($width/3, $height, "OP.GRAVADA", '', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, $subTotal, '', 0, 'R', 1);
+            $importeTotal = number_format($importeTotal, 2, '.', '');
+            $igv = number_format($importeTotal * env('IGV', 0.18), 2, '.', '');
+            $subTotal = number_format($importeTotal - $igv, 2, '.', '');
+            PDF::Cell(35, $height, "SUBTOTAL", 'T', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
+            PDF::Cell(20, $height, $subTotal, 'T', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell($width/3, $height, "OP.EXONERADA", '', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "0", '', 0, 'R', 1);
+            PDF::Cell(35, $height, "OP.GRAVADA", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(20, $height, $subTotal, '', 0, 'R', 1);
+            PDF::Ln();
+
+            PDF::Cell(35, $height, "OP.EXONERADA", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(20, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
             
-            PDF::Cell($width/3, $height, "OP.GRATUITA", '', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, "0", '', 0, 'R', 1);
+            PDF::Cell(35, $height, "OP.GRATUITA", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(20, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell($width/3, $height, "IGV 18%", '', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, $igv, '', 0, 'R', 1);
+            PDF::Cell(35, $height, "IGV 18%", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(20, $height, $igv, '', 0, 'R', 1);
             PDF::Ln();
-
-            PDF::Cell($width/3, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
-            PDF::Cell($width/3, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell($width/3, $height, $importeTotal, '', 0, 'R', 1);
+            
+            PDF::SetFont('times', 'B', $fontSizeGrande);
+            PDF::Cell(35, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
+            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::SetFont('times', 'B', $fontSizeGigante);
+            PDF::Cell(20, $height, $importeTotal, '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeGrande);
             PDF::Cell($width, $height, "hash SUNAT:", 'T', 1, 'L', 1);
             PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
-            PDF::Ln();
+            PDF::Image(base_path('public/assets/media/logos/logo.jpeg'), '30', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+            PDF::Ln(20);
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell(40, $height, "Representación impresa de ".$data['emisorTipoDocumentoElectronico'].".", $border, $align_left, 1, 0, $x, $y);
-            
-            PDF::Image(base_path('public/assets/media/logos/logo.jpeg'), '', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
-
-            PDF::Ln(25);
-            PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), $border, $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "Representación impresa de ".$data['emisorTipoDocumentoElectronico'].". Puede descargarlo y/o consultarlo desde www.enlacesbus.com.pe/see", $border, $align_center, 1, 0, $x, $y);
+            PDF::Ln();
+            PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             $year = substr($data['emisorFechaDocumentoElectronico'], -4);
             $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";
             if (file_exists(base_path("public/" . $filename))) { unlink(base_path("public/" . $filename)); }

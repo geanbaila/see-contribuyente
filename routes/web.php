@@ -31,3 +31,5 @@ Route::post('/api/v1/serie/{agenciaOrigenId}/{agenciaDestinoId}/{documentoId}', 
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
 Route::post('/api/v1/encargo', 'ApiController@getEncargo');
 Route::post('/api/v1/venta/comprobante/{encargoId}', 'ApiController@getComprobantePago');
+Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
+Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
