@@ -429,7 +429,7 @@
             $("[name='medioPago']").val(data.medio_pago).change();
             $("[name='documento']").val(data.documento_id).change();
             $("[name='documentoSerie']").val(data.documento_serie);
-            // $("[name='documentoNumero']").val(data.documento_numero);
+            $("[name='documentoNumero']").val(data.documento_numero);
 
             $("[name='clienteId']").val(data.cliente_id);
 
@@ -694,6 +694,7 @@
                             if (data.get('encargoId').length === 0) {
                                 $("[name='encargoId']").val(result.result.encargoId);
                                 $("[name='clienteId']").val(result.result.clienteId);
+                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,{{env('ZEROFILL',6)}}));
                                 enabledBtn();
                                 showSuccessToastr(result.result.message);
                             }
@@ -733,7 +734,7 @@
         $("[name='docEnvia']").on('keypress', function(e) {
             if (e.which == 13) {
                 var docEnvia = $("[name='docEnvia']").val().trim();
-                if (docEnvia.length === 8 || docEnvia.length !== 12) {
+                if (docEnvia.length === 8 || docEnvia.length === 12) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docEnvia,
@@ -774,7 +775,7 @@
         $("[name='docRecibe']").on('keypress',function(e) {
             if (e.which == 13) {
                 var docRecibe = $("[name='docRecibe']").val().trim();
-                if (docRecibe.length === 8 || docRecibe.length !== 12) {
+                if (docRecibe.length === 8 || docRecibe.length === 12) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docRecibe,

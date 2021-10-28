@@ -106,15 +106,23 @@ class SaleController extends Controller
             'documento_fecha' => $documento_fecha,
             'encargo' => $var($data['encargo'])[0],
             'subtotal' => number_format($data['subtotal'], 2, '.', ''),
-            'importePagar' => number_format($data['importePagar'], 2, '.', ''),
+            'importe_pagar' => number_format($data['importePagar'], 2, '.', ''),
         ];
+        
         if (strlen($data['encargoId']) > 0) {
             $ObjectId = new ObjectId($data['encargoId']);
             $encargo = Encargo::where('_id', $ObjectId)->update($insertEncargo, ['upsert' => true]);
+            if (!$encargo) {
+                return \response()->json(['result' => ['status' => 'fails', 'message' => 'No se pudo grabar los cambios, inténtalo otra vez.']]);
+            }
             $encargoId = $data['encargoId']; 
+            $documentoNumero = $data['documentoNumero'];
         } else {
             $encargo = Encargo::create($insertEncargo);
             $encargoId = $encargo['id'];
+            $ObjectId = new ObjectId($encargoId);
+            $documentoNumero = sprintf("%0".env('ZEROFILL',6)."d",Encargo::getNextSequence($encargoId, $data['documentoSerie']));
+            $encargo = Encargo::where('_id', $ObjectId)->update(['documento_numero' => $documentoNumero]);
         }
 
         // registrar o actualizar el PDF
@@ -127,7 +135,15 @@ class SaleController extends Controller
         }
         // hacer la asociacion de PDF en la BD. hacer luego
         
-        return \response()->json(['result' => ['status' => 'OK', 'message' => 'Registro correctamente', 'encargoId' => $encargoId, 'clienteId' => $clienteId] ]);
+        return \response()->json([
+            'result' => [
+                'status' => 'OK', 
+                'message' => 'Registro correctamente', 
+                'encargoId' => $encargoId, 
+                'clienteId' => $clienteId, 
+                'documentoNumero' => $documentoNumero
+            ]
+        ]);
     }
 
     public function show() {

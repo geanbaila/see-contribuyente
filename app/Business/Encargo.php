@@ -87,7 +87,7 @@ class Encargo extends Model
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
                 'subtotal' => $encargo->subtotal,
-                'importePagar' => $encargo->importePagar,
+                'importePagar' => $encargo->importe_pagar,
             ];
         } else {
             $data = [];
@@ -125,12 +125,31 @@ class Encargo extends Model
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
                 'subtotal' => $encargo->subtotal,
-                'importePagar' => $encargo->importePagar,
+                'importePagar' => $encargo->importe_pagar,
             ];
         } else {
             $data = [];
         }
         return $data;
+    }
+
+    static function getNextSequence($encargoId, $documentoSerie) {
+        $encargo = Encargo::find($encargoId);
+        if(!$encargo->documento_numero) {
+            $manager = new \MongoDB\Driver\Manager("mongodb://".env('DB_HOST').":".env('DB_PORT'));
+            $cmd = new \MongoDB\Driver\Command([
+                "findandmodify" => "sequence",
+                "query" => array("_id"=> $documentoSerie),
+                "update" => array('$inc' => array("seq"=> 1)),
+            ]);
+            $cursor = $manager->executeCommand(env('DB_DATABASE'), $cmd);
+            $sequence = 0;
+            foreach($cursor as $d){
+                $sequence = $d->value->seq;
+            }
+            Catalogo::insert(['documento_serie' => $documentoSerie, 'documento_numero' => $sequence, 'encargo_id' => $encargoId]);
+        }
+        return $sequence;
     }
 
 
