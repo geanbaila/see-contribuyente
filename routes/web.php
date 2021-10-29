@@ -21,11 +21,12 @@ Route::get('/venta/nuevo', 'SaleController@show');
 Route::get('/venta/editar/{encargoId}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 
-
 Route::get('/manifiesto', function () {
     return view('manifest.list');
-
 });
+
+Route::get('/configuracion', 'ConfigurationController@list');
+Route::post('/configuracion/{tabla}', 'ConfigurationController@edit');
 
 Route::post('/api/v1/serie/{agenciaOrigenId}/{agenciaDestinoId}/{documentoId}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');

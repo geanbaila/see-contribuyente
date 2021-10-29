@@ -56,11 +56,9 @@
 													<span class="menu-title">Dashboard</span>
 												</a>
 											</div>
-											<div class="menu-item me-lg-1">
-												<a class="menu-link py-3 active" href="#">
-													<span class="menu-title">Encomiendas</span>
-												</a>
-											</div>
+											
+											@include('partial/menu')
+											
 										</div>
 										<!--end::Menu-->
 									</div>
@@ -1701,19 +1699,7 @@
 					<!--end::Header-->
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-						<!--begin::Toolbar-->
-						<div class="toolbar" id="kt_toolbar">
-							<!--begin::Container-->
-							<div id="kt_toolbar_container" class="container-xxl d-flex flex-stack">
-								<!--begin::Page title-->
-								<div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                                    @include('partial/menu')
-								</div>
-								<!--end::Page title-->
-							</div>
-							<!--end::Container-->
-						</div>
-						<!--end::Toolbar-->
+						
 						<!--begin::Post-->
 						<div class="post d-flex flex-column-fluid" id="kt_post">
 							<!--begin::Container-->

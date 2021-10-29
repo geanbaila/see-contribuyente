@@ -1,5 +1,10 @@
 @extends('layout.layout')
 @section('content')
+<style>
+    .fw8{
+        font-weight: 800 !important;
+    }
+</style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
         <input type="hidden" name="encargoId" value="" />
         <input type="hidden" name="clienteId" value="" />
@@ -214,13 +219,13 @@
                                         @endif
                                     </select>
                                 </td>
-                                <td><input type="number" class="form-control" name="peso"
+                                <td><input type="number" class="form-control fw8" name="peso"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control" name="cantidad"
+                                <td><input type="number" class="form-control fw8" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control" name="precio"
+                                <td><input type="number" class="form-control fw8" name="precio"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                <td><input type="number" class="form-control" name="total" disabled></td>
+                                <td><input type="number" class="form-control fw8" name="total" disabled></td>
                                 <!--<td scope="row" width="80" class="float-right">
                                                                             <a onclick="javascript:removeChargeRow(this)"><img
                                                                                     src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
@@ -230,11 +235,11 @@
                         <tfoot>
                             <tr>
                                 <td colspan="4" align="right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control" name="subtotal" disabled></td>
+                                <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
                             </tr>
                             <tr>
                                 <td colspan="4" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control" name="importePagar" value="0.00"></td>
+                                <td><input type="number" class="form-control fw8" name="importePagar" value="0.00"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -378,10 +383,10 @@
                 '<select class="form-select" aria-label="--" name="descripcion"  onchange="javascript:updateChargeDetail(this)">' +
                 options +
                 '</select></td>' +
-                '<td><input type="number" class="form-control" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
-                '<td><input type="number" class="form-control" name="total" disabled></td>' +
+                '<td><input type="number" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                '<td><input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                '<td><input type="number" class="form-control fw8" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
+                '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
                 '</td>' +
