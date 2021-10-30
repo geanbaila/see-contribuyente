@@ -21,6 +21,6 @@ class Agencia extends Model
     public function sede()
     {
         return $this->belongsTo('App\Business\Sede', 'sede_id');
-    } // ok
+    }
 
 }

@@ -26,7 +26,7 @@ Route::get('/manifiesto', function () {
 });
 
 Route::get('/configuracion', 'ConfigurationController@list');
-Route::post('/configuracion/{tabla}', 'ConfigurationController@edit');
+Route::post('/configuracion/salida', 'ConfigurationController@update');
 
 Route::post('/api/v1/serie/{agenciaOrigenId}/{agenciaDestinoId}/{documentoId}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
