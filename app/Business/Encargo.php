@@ -66,10 +66,10 @@ class Encargo extends Model
             $data = [
                 'tituloDocumento' => $encargo->documentos->nombre,
 
-                'empresaComercial' => env('EMPRESA_COMERCIAL', 'ACME'),
-                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'ACME'),
-                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'ACME'),
-                'empresaRuc' => env('EMPRESA_RUC','ACME'),
+                'empresaComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
+                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
+                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                'empresaRuc' => env('EMPRESA_RUC','NO DEFINIDO'),
 
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
@@ -104,10 +104,10 @@ class Encargo extends Model
             $data = [
                 'tituloDocumento' => $encargo->documentos->nombre,
 
-                'empresaComercial' => env('EMPRESA_COMERCIAL', 'ACME'),
-                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'ACME'),
-                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'ACME'),
-                'empresaRuc' => env('EMPRESA_RUC','ACME'),
+                'empresaComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
+                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
+                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                'empresaRuc' => env('EMPRESA_RUC','NO DEFINIDO'),
 
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
