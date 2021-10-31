@@ -90,7 +90,7 @@
                         <!--begin::Table body-->
                         <tbody>
                             @foreach ($salida as $item)
-                            <?php 
+                            <?php
                             $w = date("w");
                             $ww = ($w ==6) ? 0 : $w+1;
                             ?>

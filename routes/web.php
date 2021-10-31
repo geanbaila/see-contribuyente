@@ -21,9 +21,7 @@ Route::get('/venta/nuevo', 'SaleController@show');
 Route::get('/venta/editar/{encargoId}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 
-Route::get('/manifiesto', function () {
-    return view('manifest.list');
-});
+Route::get('/manifiesto', 'ManifestController@list');
 
 Route::get('/configuracion', 'ConfigurationController@list');
 Route::post('/configuracion/salida', 'ConfigurationController@update');

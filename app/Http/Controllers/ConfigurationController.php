@@ -30,6 +30,7 @@ class ConfigurationController extends Controller
         $agenciaId = $request->input("agenciaId");
         $placa =  $request->input("placa");
         $horario = $request->input("horario");
+        date_default_timezone_set('America/Lima');
         $w = date("w");
         $updateSalida = [
             "agencia_id" => $agenciaId,
@@ -42,10 +43,9 @@ class ConfigurationController extends Controller
         if ($status) {
             // autocompletar los demás días
             $salida = Salida::find($salidaId);
-            // hoy y mañana
             $dia0 = $this->getDay($w, 0);
             $dia1 = $this->getDay($w, 1);
-            // siguientes 4 días
+            
             $dia2 = $this->getDay($w, 2);
             $dia3 = $this->getDay($w, 3);
             $dia4 = $this->getDay($w, 4);
@@ -68,55 +68,7 @@ class ConfigurationController extends Controller
     }
 
     public function register(Request $request) {
-        $placa =  $request->input("placa");
-        $dia = $request->input("dia");
-        $agencia = $request->input("agencia");
-        $horario = $request->input("horario");
-        $key1 = $request->input("key1");
-        $insertSalida = [
-            "placa" => $placa,
-            "dia" => $dia,
-            "agencia" => $agencia,
-            "horario" => $horario,
-        ];
+        // acción para ingreso de más buses
+    }
 
-        $salida = Salida::create($insertSalida);
-        $response = [
-            "result" => [
-                "status" => "OK", 
-                "salidaId" => $salida->id,
-            ]
-        ];
-        return response()->json($response);
-    }
- 
-    function getBeforeDay($w) {
-        $ww = ($w==0) ? 6 : $w-1;
-        return $this->getDay($ww, 0);
-    }
-    
-    function getDay($w, $j = 0) {
-        for ($i = 1; $i <= $j; $i++) {
-            $w = ($w == 6) ? 0 : $w+1;
-        }
-        switch($w){
-            case 0: 
-                $column = "domingo"; break;
-            case 1: 
-                $column = "lunes"; break;
-            case 2: 
-                $column = "martes"; break;
-            case 3: 
-                $column = "miercoles"; break;
-            case 4: 
-                $column = "jueves"; break;
-            case 5: 
-                $column = "viernes"; break;
-            case 6: 
-                $column = "sabado"; break;
-            default:
-                $response = ['status' => 'fails']; break;
-        }
-        return $column;
-    }
 }
