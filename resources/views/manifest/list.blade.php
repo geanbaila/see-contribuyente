@@ -53,12 +53,12 @@
                     class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                     <thead class="border-gray-200 fw-bold bg-lighten">
                         <tr>
-                            <td scope="row" width="80"></td>
+                            <td scope="row" width="50"></td>
+                            <th scope="col" width="180">Agencia</th>
                             <th scope="col" width="80">Vehículo</th>
-                            <th scope="col" width="200">Conductor</th>
-                            <th scope="col" width="80">Viajes</th>
-                            <th scope="col" width="80">Partida</th>
-                            <th scope="col" width="80">Llegada</th>
+                            <th scope="col" width="100">Conductor</th>
+                            <th scope="col" width="70">Partida</th>
+                            <th scope="col" width="70">Llegada</th>
                             <th scope="col" width="100">Estado</th>
                             <th scope="col" width="80">Encomiendas</th>
                         </tr>
@@ -67,7 +67,7 @@
                         @foreach ($salida as $item)
                         @if ($item->agencia->sede->id == $s->id)
                         <?php
-                        $estado = ($item->horario < $ahora) ? 'viajando' : 'disponible';
+                        $status = ($item->horario < $ahora) ? 'viajando' : 'pronto partirá';
                         $t = explode(':',$item->horario);
                         $t[0] = $t[0]+16;
                         $t[0] = ($t[0]>24) ? $t[0]-24 : $t[0];
@@ -77,12 +77,12 @@
                             <td scope="row" class="text-center">
                                 <a><img src="{{ asset('assets/media/icons/sis/eye.svg') }}"></a>
                             </td>
+                            <td>{{$item->agencia->nombre}}</td>
                             <td>{{$item->$columna}}</td>
-                            <td>--</td>
-                            <td>--</td>
+                            <td>Gean Carlos Baila Laurente</td>
                             <td>{{$item->horario}}</td>
                             <td>{{str_pad($t[0], 2, '0', STR_PAD_LEFT).':'.$t[1]}}</td>
-                            <td>{{$estado}}</td>
+                            <td>{{$status}}</td>
                             <td>0</td>
                         </tr>
                         @endif
