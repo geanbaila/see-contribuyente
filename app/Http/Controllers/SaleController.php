@@ -11,6 +11,8 @@ use App\Business\Documento;
 use App\Business\Encargo;
 use App\Business\Cliente;
 use MongoDB\BSON\ObjectId;
+use \PHPQRCode\QRcode;
+
 use PDF;
 
 class SaleController extends Controller
@@ -314,7 +316,10 @@ class SaleController extends Controller
             PDF::SetFont('times', '', $fontSizeGrande);
             PDF::Cell($width, $height, "hash SUNAT:", 'T', 1, 'L', 1);
             PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
-            PDF::Image(base_path('public/assets/media/logos/logo.jpeg'), '30', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+
+            $qr = base_path('public/pruebas/qrcode.png');
+            QRcode::png("Hola mundo!", $qr, 'L', 4, 2);
+            PDF::Image($qr, '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
             PDF::Ln(20);
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell($width, $height, "Representación impresa de ".$data['emisorTipoDocumentoElectronico'].". Puede descargarlo y/o consultarlo desde www.enlacesbus.com.pe/see", $border, $align_center, 1, 0, $x, $y);
@@ -380,7 +385,9 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, $data['emisorNumeroDocumentoElectronico'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width, $height, "", '', 1, 'L', 1);
-            PDF::Image(base_path('public/assets/media/icons/sis/bus.png'), '30', '', 20, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+            $qr = base_path('public/pruebas/qrcode.png');
+            QRcode::png("Hola mundo!", $qr, 'L', 4, 2);
+            PDF::Image($qr, '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
             PDF::Ln(20);
 
             PDF::SetFont('times', '', $fontSizeRegular);
