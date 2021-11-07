@@ -592,8 +592,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<!--SVG file not found: icons/duotune/graphs/gra002.svg
--->
+																			<!--SVG file not found: icons/duotune/graphs/gra002.svg-->
 																		</span>
 																	</div>
 																	<!--end::Symbol-->

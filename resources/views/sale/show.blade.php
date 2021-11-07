@@ -12,7 +12,7 @@
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Medio de pago:</label>
@@ -194,7 +194,7 @@
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
                                 <th scope="col">Descripción</th>
-                                <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <!-- <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
                                 <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;
                                 </th>
@@ -219,9 +219,11 @@
                                         @endif
                                     </select>
                                 </td>
-                                <td><input type="number" class="form-control fw8" name="peso"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
-                                <td><input type="number" class="form-control fw8" name="cantidad"
+                                <!-- <td><input type="number" class="form-control fw8" name="peso"
+                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                <td><input type="hidden" class="form-control fw8" name="peso"
+                                    onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
+                                    <input type="number" class="form-control fw8" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>
                                 <td><input type="number" class="form-control fw8" name="precio"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
@@ -234,11 +236,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" align="right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="3" align="right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
                             </tr>
                             <tr>
-                                <td colspan="4" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="3" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control fw8" name="importePagar" value="0.00"></td>
                             </tr>
                         </tfoot>
@@ -335,7 +337,7 @@
 
         function updateChargeDetail(element) {
             var tr = $(element).parent().parent();
-            var precio = '';
+            var precio = '0';
             if (element.value === '6175bf2e8f1a2809dcb499c9') {
                 // ABRIR EL PRECIO PARA *OTROS*
                 $(tr).find("td [name='precio']").removeAttr("disabled");
@@ -343,6 +345,7 @@
                 precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
             }
             $(tr).find("td [name='precio']").val(precio);
+
             var cantidad = $(tr).find("td [name='cantidad']").val();
             if (cantidad === '') {
                 $(tr).find("td [name='cantidad']").val(1);
@@ -362,7 +365,7 @@
 
         function reCalculatePayChargeDetail() {
             subtotal = 0.00;
-            $("#chargeRow >tr>td:nth-child(5)").each(function(index, element) {
+            $("#chargeRow >tr>td:nth-child(4)").each(function(index, element) {
                 subtotal = subtotal + parseFloat($(element).find("[name='total']").val());
                 $("[name='subtotal']").val(subtotal.toFixed(2));
                 $("[name='importePagar']").val(subtotal.toFixed(2));
@@ -383,8 +386,9 @@
                 '<select class="form-select" aria-label="--" name="descripcion"  onchange="javascript:updateChargeDetail(this)">' +
                 options +
                 '</select></td>' +
-                '<td><input type="number" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                // '<td><input type="number" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                '<td><input type="hidden" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)" value="1">'+
+                    '<input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control fw8" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
@@ -444,8 +448,8 @@
                     var j = index + 1;
                     $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga_id).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='precio']").val(element.precio);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger("onkeyup");
+                    // $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
                     if(j < total) { 
                         addChargeRow();
                     }
@@ -553,12 +557,13 @@
                 alert('No se dispone del serie');
                 return false;
             }
-            if(data.get('documento') === '617122a2a8c74c6bfc5e36e6' && data.get('docEnvia').length !== 11) {
+            const factura = '617122a2a8c74c6bfc5e36e6';
+            if(data.get('documento') === factura && data.get('docEnvia').length !== 11) {
                 alert('No se puede emitir una factura para una persona natural');
                 return false;
             }
-            if(data.get('importePagar') > data.get('subtotal')) {
-                alert('El importe a pagar no puede ser mayor que total (suma de subtotales).');
+            if(parseFloat(data.get('importePagar')) > parseFloat(data.get('subtotal'))) {
+                alert('El importe a pagar no puede ser mayor que total (suma de subtotales)');
                 return false;
             }
             return true;
@@ -699,7 +704,7 @@
                             if (data.get('encargoId').length === 0) {
                                 $("[name='encargoId']").val(result.result.encargoId);
                                 $("[name='clienteId']").val(result.result.clienteId);
-                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,{{env('ZEROFILL',6)}}));
+                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,{{env('ZEROFILL', 8)}}));
                                 enabledBtn();
                                 showSuccessToastr(result.result.message);
                             }

@@ -74,7 +74,7 @@ class Encargo extends Model
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
                 'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
-                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . ' - ' . $encargo->documento_numero,
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_numero,
                 'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
                 'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
 
@@ -100,7 +100,7 @@ class Encargo extends Model
         if ($encargo->documentos->alias === 'G') {
             $fecha = explode("-", $encargo->documento_fecha);
             $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
-            $documento_fecha_hhiiss = "";
+            $documento_fecha_hhiiss = "00:00:00";
             $data = [
                 'tituloDocumento' => $encargo->documentos->nombre,
 
@@ -112,13 +112,13 @@ class Encargo extends Model
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
                 'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre),
-                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . ' - ' . $encargo->documento_numero,
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_numero,
                 'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
                 'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
 
                 'clienteRazonSocial' => mb_strtoupper($encargo->clientes->razon_social),
                 'clienteDireccion' => $encargo->clientes->direccion,
-                'clienteDocumento' => $encargo->clientes->documento,
+                'clienteDocumento' => $encargo->clientes->documento, // dni o ruc
                 'consigna' => [
                     'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
