@@ -84,7 +84,7 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-2">
                                     <label>&nbsp;</label>
-                                    <a onclick="javascript:addReceivesRow()"><img
+                                    <a class="" onclick="javascript:addReceivesRow()"><img
                                             src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg"
                                             width="24"></a>
                                     <br />
@@ -248,7 +248,7 @@
                     </table>
                     <br />
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-2">
                             <b>Conductor:</b> Gerson Sánchez Aguilar<br />
                             <b>Partida:</b> 08:00 PM
                         </div>
@@ -269,7 +269,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4 text-end align-top">
+                        <div class="col-5 text-end align-top">
                             <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
                                 <img src="{{ asset('assets/media/icons/sis/search-white.svg') }}" width="24" />
@@ -278,6 +278,10 @@
                             <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                 <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
+                            </a>
+                            <a id="btnEmail" class="btn btn-secondary disabled" data-bs-toggle="modal"
+                                data-bs-target="#modalImprimirComprobante" onclick="javascript:sendEmail()">
+                                <img src="{{ asset('assets/media/icons/sis/email.svg') }}" width="24" />
                             </a>
                             <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalEliminarVenta">
@@ -681,10 +685,13 @@
         function enabledBtn() {
             $("#btnImprimir").removeClass("disabled btn-secondary");
             $("#btnImprimir").addClass("btn-primary");
+            $("#btnEmail").removeClass("disabled btn-secondary");
+            $("#btnEmail").addClass("btn-primary");
             $("#btnEliminar").removeClass("disabled btn-secondary");
             $("#btnEliminar").addClass("btn-primary");
 
             $("#btnImprimir").children().attr("src", "{{ asset('assets/media/icons/sis/printer-white.svg') }}");
+            $("#btnEmail").children().attr("src", "{{ asset('assets/media/icons/sis/email-white.svg') }}");
             $("#btnEliminar").children().attr("src", "{{ asset('assets/media/icons/sis/trash-2-white.svg') }}");
 
         }
