@@ -1,10 +1,10 @@
 @extends('layout.layout')
 @section('content')
-<style>
-    .fw8{
-        font-weight: 800 !important;
-    }
-</style>
+    <style>
+        .fw8 {
+            font-weight: 800 !important;
+        }
+    </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
         <input type="hidden" name="encargoId" value="" />
         <input type="hidden" name="clienteId" value="" />
@@ -89,8 +89,8 @@
                                             width="24"></a>
                                     <br />
                                     <!--<a onclick="javascript:removeReceivesRow(this)"><img
-                                                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
-                                                                                    width="24"></a>-->
+                                                                                        src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
+                                                                                        width="24"></a>-->
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                                         disabled>
                                 </div>
                                 <div class="col-xxl-3">
-                                    <label for="exampleDataList" class="form-label">Número:</label>
+                                    <label for="exampleDataList" class="form-label">Correlativo:</label>
                                     <input class="form-control" id="documentoNumero" name="documentoNumero" value=""
                                         disabled>
                                 </div>
@@ -183,7 +183,7 @@
         </div>
 
         <!--begin::Separator-->
-        <div class="separator border-gray-200 mb-6"></div>
+        <div class="separator border-gray-200 mb-2"></div>
         <!--end::Separator-->
 
         <div class="card">
@@ -220,18 +220,19 @@
                                     </select>
                                 </td>
                                 <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                 <td><input type="hidden" class="form-control fw8" name="peso"
-                                    onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
+                                        onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
                                     <input type="number" class="form-control fw8" name="cantidad"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>
+                                        onkeyup="javascript:calculatePayChargeDetail(this);">
+                                </td>
                                 <td><input type="number" class="form-control fw8" name="precio"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                 <td><input type="number" class="form-control fw8" name="total" disabled></td>
                                 <!--<td scope="row" width="80" class="float-right">
-                                                                            <a onclick="javascript:removeChargeRow(this)"><img
-                                                                                    src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                                                        </td>-->
+                                                                                <a onclick="javascript:removeChargeRow(this)"><img
+                                                                                        src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
+                                                                            </td>-->
                             </tr>
                         </tbody>
                         <tfoot>
@@ -387,8 +388,8 @@
                 options +
                 '</select></td>' +
                 // '<td><input type="number" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="hidden" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)" value="1">'+
-                    '<input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
+                '<td><input type="hidden" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)" value="1">' +
+                '<input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="number" class="form-control fw8" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
@@ -448,9 +449,10 @@
                     var j = index + 1;
                     $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga_id).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='precio']").val(element.precio);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger("onkeyup");
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger(
+                        "onkeyup");
                     // $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
-                    if(j < total) { 
+                    if (j < total) {
                         addChargeRow();
                     }
                 });
@@ -521,7 +523,8 @@
         }
 
         function validate(data) {
-            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11 && data.get('docEnvia').length !== 12) {
+            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11 && data.get('docEnvia').length !==
+                12) {
                 alert('Documento incorrecto de quien Envía');
                 return false;
             }
@@ -529,7 +532,8 @@
                 alert('No se dispone de los nombre de quien Envía');
                 return false;
             }
-            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11 && data.get('docRecibe').length !== 12) {
+            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11 && data.get('docRecibe')
+                .length !== 12) {
                 alert('Documento incorrecto de quien Recibe');
                 return false;
             }
@@ -558,11 +562,11 @@
                 return false;
             }
             const factura = '617122a2a8c74c6bfc5e36e6';
-            if(data.get('documento') === factura && data.get('docEnvia').length !== 11) {
+            if (data.get('documento') === factura && data.get('docEnvia').length !== 11) {
                 alert('No se puede emitir una factura para una persona natural');
                 return false;
             }
-            if(parseFloat(data.get('importePagar')) > parseFloat(data.get('subtotal'))) {
+            if (parseFloat(data.get('importePagar')) > parseFloat(data.get('subtotal'))) {
                 alert('El importe a pagar no puede ser mayor que total (suma de subtotales)');
                 return false;
             }
@@ -588,7 +592,8 @@
                 }).done(function(result) {
                     if (result) {
                         _.forEach(result, function(element, index) {
-                            $("[name='agenciaDestino']").append("<option value='" + element._id + "'>" + element.direccion + "</option>");
+                            $("[name='agenciaDestino']").append("<option value='" + element._id + "'>" +
+                                element.direccion + "</option>");
                         });
                         if (selected) {
                             $("[name='agenciaDestino']").val(selected).change();
@@ -597,7 +602,7 @@
                 });
             } else {
                 // no hay agenciaDestino, me quedo en vacío
-                
+
             }
         }
 
@@ -688,7 +693,7 @@
             var data = getChargeForm();
             if (validate(data)) {
                 var importePagar = $("[name='importePagar']").val();
-                if (importePagar <= parseFloat("{{env('DETRACCION')}}")) {
+                if (importePagar <= parseFloat("{{ env('DETRACCION') }}")) {
                     $.ajax({
                         url: "{{ url('/venta/registrar') }}",
                         type: "POST",
@@ -700,21 +705,23 @@
                         processData: false,
                         dataType: "json"
                     }).done(function(result) {
-                        if(result.result.status === 'OK'){
+                        if (result.result.status === 'OK') {
                             if (data.get('encargoId').length === 0) {
                                 $("[name='encargoId']").val(result.result.encargoId);
                                 $("[name='clienteId']").val(result.result.clienteId);
-                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,{{env('ZEROFILL', 8)}}));
+                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,
+                                    {{ env('ZEROFILL', 8) }}));
                                 enabledBtn();
                                 showSuccessToastr(result.result.message);
                             }
-                        } else { 
+                        } else {
                             showErrorToastr(result.result.message);
                         }
                     });
                 } else {
                     // evitar la DETRACCIÓN 
-                    showErrorToastr('Usted debe emitir boletas/facturas/guías por montos menores a ' + '{{env('DETRACCION')}}');
+                    showErrorToastr('Usted debe emitir boletas/facturas/guías por montos menores a ' +
+                        '{{ env('DETRACCION') }}');
                 }
             } else {
                 // no ha superado la validación
@@ -758,9 +765,8 @@
                     }).done(function(result) {
                         $("[name='nombreEnvia']").val(result.result.nombre);
                     });
-                    
-                }
-                else if(docEnvia.length === 11) {
+
+                } else if (docEnvia.length === 11) {
                     // consultar a SUNAT
                     $.ajax({
                         url: "{{ url('/api/v1/sunat') }}/" + docEnvia,
@@ -774,15 +780,14 @@
                     }).done(function(result) {
                         $("[name='nombreEnvia']").val(result.result.nombre);
                     });
-                }
-                else {
+                } else {
                     // consultar
-                    alert("ha ingresado " + docEnvia.length +" caracteres, complételo por favor.");
+                    alert("ha ingresado " + docEnvia.length + " caracteres, complételo por favor.");
                 }
             }
         });
-        
-        $("[name='docRecibe']").on('keypress',function(e) {
+
+        $("[name='docRecibe']").on('keypress', function(e) {
             if (e.which == 13) {
                 var docRecibe = $("[name='docRecibe']").val().trim();
                 if (docRecibe.length === 8 || docRecibe.length === 12) {
@@ -799,9 +804,8 @@
                     }).done(function(result) {
                         $("[name='nombreRecibe']").val(result.result.nombre);
                     });
-                    
-                }
-                else if(docRecibe.length === 11) {
+
+                } else if (docRecibe.length === 11) {
                     // consultar a SUNAT
                     $.ajax({
                         url: "{{ url('/api/v1/sunat') }}/" + docRecibe,
@@ -815,10 +819,9 @@
                     }).done(function(result) {
                         $("[name='nombreRecibe']").val(result.result.nombre);
                     });
-                }
-                else {
+                } else {
                     // consultar
-                    alert("ha ingresado " + docRecibe.length +" caracteres, complételo por favor.");
+                    alert("ha ingresado " + docRecibe.length + " caracteres, complételo por favor.");
                 }
             }
         });

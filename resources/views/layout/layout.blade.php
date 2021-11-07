@@ -19,6 +19,11 @@
 		<link href="{{asset('assets/plugins/global/plugins.bundle.css')}}" rel="stylesheet" type="text/css" />
 		<link href="{{asset('assets/css/style.bundle.css')}}" rel="stylesheet" type="text/css" />
 		<!--end::Global Stylesheets Bundle-->
+		<style>
+			.yield-content{
+				margin-top: -44px !important;
+			}
+		</style>
 	</head>
 	<!--end::Head-->
 	<!--begin::Body-->
@@ -51,12 +56,6 @@
 									<div class="header-menu align-items-stretch" data-kt-drawer="true" data-kt-drawer-name="header-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_header_menu_mobile_toggle" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_body', lg: '#kt_header_nav'}">
 										<!--begin::Menu-->
 										<div class="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch" id="#kt_header_menu" data-kt-menu="true">
-											<div class="menu-item me-lg-1">
-												<a class="menu-link py-3" href="#">
-													<span class="menu-title">Dashboard</span>
-												</a>
-											</div>
-											
 											@include('partial/menu')
 											
 										</div>
@@ -1697,7 +1696,7 @@
 					</div>
 					<!--end::Header-->
 					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+					<div class="yield-content d-flex flex-column flex-column-fluid" id="kt_content">
 						
 						<!--begin::Post-->
 						<div class="post d-flex flex-column-fluid" id="kt_post">
@@ -2763,289 +2762,7 @@
 									</div>
 								</div>
 							</div>
-							<!--end::License-->
-							<!--begin::License-->
-							<div class="rounded border border-dashed border-gray-300 py-4 px-6 mb-5">
-								<div class="d-flex flex-stack">
-									<div class="d-flex flex-column">
-										<div class="d-flex align-items-center mb-1">
-											<div class="fs-6 fw-bold text-gray-800 fw-bold mb-0 me-1">Extended License</div>
-											<i class="text-gray-400 fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="popover" data-bs-custom-class="popover-dark" data-bs-trigger="hover" data-bs-placement="top" data-bs-content="Use, by you or one client, in a single end product which end users can be charged for."></i>
-										</div>
-										<div class="fs-7 text-muted">For single end product with paying users.</div>
-									</div>
-									<div class="text-nowrap">
-										<span class="text-muted fs-7 fw-bold me-n1">$</span>
-										<span class="text-dark fs-1 fw-bolder">939</span>
-									</div>
-								</div>
-							</div>
-							<!--end::License-->
-							<!--begin::License-->
-							<div class="rounded border border-dashed border-gray-300 py-4 px-6 mb-5">
-								<div class="d-flex flex-stack">
-									<div class="d-flex flex-column">
-										<div class="d-flex align-items-center mb-1">
-											<div class="fs-6 fw-bold text-gray-800 fw-bold mb-0 me-1">Custom License</div>
-										</div>
-										<div class="fs-7 text-muted">Reach us for custom license offers.</div>
-									</div>
-									<div class="text-nowrap">
-										<a href="https://keenthemes.com/contact/" class="btn btn-sm btn-success" target="_blank">Contact Us</a>
-									</div>
-								</div>
-							</div>
-							<!--end::License-->
-							<!--begin::Purchase-->
-							<a href="https://1.envato.market/EA4JP" class="btn btn-primary mb-15 w-100">Buy Now</a>
-							<!--end::Purchase-->
-							<!--begin::Demos-->
-							<div class="mb-0">
-								<h3 class="fw-bolder text-center mb-6">Metronic Demos</h3>
-								<!--begin::Row-->
-								<div class="row g-5">
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-success rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo1.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo1" class="btn btn-sm btn-success shadow">Demo 1</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo2.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo2" class="btn btn-sm btn-success shadow">Demo 2</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo3.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo3" class="btn btn-sm btn-success shadow">Demo 3</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo4.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo4" class="btn btn-sm btn-success shadow">Demo 4</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo5.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo5" class="btn btn-sm btn-success shadow">Demo 5</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo6.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo6" class="btn btn-sm btn-success shadow">Demo 6</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo7.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo7" class="btn btn-sm btn-success shadow">Demo 7</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo8.png" alt="demo" class="w-100" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<a href="https://preview.keenthemes.com/metronic8/demo8" class="btn btn-sm btn-success shadow">Demo 8</a>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo9.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo10.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo11.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo12.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo13.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo14.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo15.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo16.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-									<!--begin::Col-->
-									<div class="col-6">
-										<!--begin::Demo-->
-										<div class="overlay overflow-hidden position-relative border border-4 border-gray-200 rounded">
-											<div class="overlay-wrapper">
-												<img src="assets/media/demos/demo17.png" alt="demo" class="w-100 opacity-75" />
-											</div>
-											<div class="overlay-layer bg-dark bg-opacity-10">
-												<div class="badge badge-white px-6 py-4 fw-bold fs-base shadow">Coming soon</div>
-											</div>
-										</div>
-										<!--end::Demo-->
-									</div>
-									<!--end::Col-->
-								</div>
-								<!--end::Row-->
-							</div>
-							<!--end::Demos-->
+							<!--end::License--> 
 						</div>
 						<!--end::Wrapper-->
 					</div>

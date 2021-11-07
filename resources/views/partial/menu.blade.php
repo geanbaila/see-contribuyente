@@ -1,17 +1,22 @@
+<div class="menu-item me-lg-1">
+	<a class="menu-link py-3" href="{{url('/')}}">
+		<span class="menu-title">DASHBOARD</span>
+	</a>
+</div>
 
 <div class="menu-item me-lg-1">
 	<a class="menu-link py-3 active" href="{{url('/venta')}}" >
-		<span class="menu-title">Encomiendas</span>
+		<span class="menu-title">ENCARGOS</span>
 	</a>
 </div>
 <div class="menu-item me-lg-1">
 	<a class="menu-link py-3 active" href="{{url('/manifiesto')}}">
-		<span class="menu-title">Manifiesto</span>
+		<span class="menu-title">MANIFIESTO</span>
 	</a>
 </div>
 <div class="menu-item me-lg-1">
 	<a class="menu-link py-3 active" href="{{url('/configuracion')}}">
-		<span class="menu-title">Configuración</span>
+		<span class="menu-title">CONFIGURACIÓN</span>
 	</a>
 </div>
 <!--begin::Breadcrumb-->

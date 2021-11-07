@@ -387,9 +387,8 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, $data['emisorNumeroDocumentoElectronico'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width, $height, "", '', 1, 'L', 1);
-            $qr = base_path('public/pruebas/qrcode.png');
-            QRcode::png("Hola mundo!", $qr, 'L', 4, 2);
-            PDF::Image($qr, '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
+            $img = base_path('public/assets/media/icons/sis/bus.png');
+            PDF::Image($img, '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
             PDF::Ln(20);
 
             PDF::SetFont('times', '', $fontSizeRegular);

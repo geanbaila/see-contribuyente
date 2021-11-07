@@ -9,9 +9,14 @@
                         <thead class="border-gray-200 fw-bold bg-lighten">
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Documento</th>
+                                <th scope="col">Importe total</th>
                                 <th scope="col">Envía</th>
                                 <th scope="col">Recibe</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">PDF</th>
+                                <th scope="col">XML</th>
+                                <th scope="col">CDR</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -21,9 +26,21 @@
                                         <a href="{{ url('/venta/editar/' . $item->_id) }}"><img
                                                 src="{{ asset('/assets/media/icons/sis/edit.svg') }}" width="24" /></a>
                                     </th>
+                                    <td>{{ $item->documento_serie }}-{{ $item->documento_numero }}</td>
+                                    <td>{{ $item->subtotal }}</td>
                                     <td>{{ $item->nombre_envia }}</td>
                                     <td>{{ $item->nombre_recibe }}</td>
-                                    <td>{{ $item->_id }}</td>
+                                    <td><a target="_blank"><img
+                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                            width="24"></a>
+                                    </td>
+                                    <td><a target="_blank"><img
+                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                            width="24"></a>
+                                    </td>
+                                    <td><a target="_blank"><img
+                                        src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                        width="24"></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
