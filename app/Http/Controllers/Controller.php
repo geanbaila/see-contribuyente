@@ -11,6 +11,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function __construct() {
+        define('GUIA','G');
+        define('BOLETA','B');
+        define('FACTURA','F');
+    }
+    
     public function getBeforeDay($w) {
         $ww = ($w==0) ? 6 : $w-1;
         return $this->getDay($ww, 0);

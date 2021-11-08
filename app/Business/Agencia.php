@@ -15,12 +15,12 @@ class Agencia extends Model
         'nombre',
         'direccion',
         'telefono',
-        'sede_id',
+        'sede',
     ];
 
-    public function sede()
+    public function sedes()
     {
-        return $this->belongsTo('App\Business\Sede', 'sede_id');
+        return $this->belongsTo('App\Business\Sede', 'sede');
     }
 
 }

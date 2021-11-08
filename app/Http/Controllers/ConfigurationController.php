@@ -14,7 +14,7 @@ class ConfigurationController extends Controller
     
     public function list() {
         $agencia = Agencia::all();
-        $salida = Salida::all()->sortBy("agencia_id");
+        $salida = Salida::all()->sortBy("agencia");
         $vehiculo = Vehiculo::all();
         return view('config.list')->with(['agencia' => $agencia, 'salida' => $salida, 'vehiculo' => $vehiculo]);
     }
@@ -30,10 +30,9 @@ class ConfigurationController extends Controller
         $agenciaId = $request->input("agenciaId");
         $placa =  $request->input("placa");
         $horario = $request->input("horario");
-        date_default_timezone_set('America/Lima');
         $w = date("w");
         $updateSalida = [
-            "agencia_id" => $agenciaId,
+            "agencia" => $agenciaId,
             "horario" => $horario,
             $column => $placa,
             $this->getBeforeDay($w, 0) => "",

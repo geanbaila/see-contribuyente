@@ -65,7 +65,7 @@
                     </thead>
                     <tbody>
                         @foreach ($salida as $item)
-                        @if ($item->agencia->sede->id == $s->id)
+                        @if ($item->agencias->sedes->id == $s->id)
                         <?php
                         $status = ($item->horario < $ahora) ? 'viajando' : 'pronto partirá';
                         $t = explode(':',$item->horario);
@@ -77,7 +77,7 @@
                             <td scope="row" class="text-center">
                                 <a><img src="{{ asset('assets/media/icons/sis/eye.svg') }}"></a>
                             </td>
-                            <td>{{$item->agencia->nombre}}</td>
+                            <td>{{$item->agencias->nombre}}</td>
                             <td>{{$item->$columna}}</td>
                             <td>Gean Carlos Baila Laurente</td>
                             <td>{{$item->horario}}</td>

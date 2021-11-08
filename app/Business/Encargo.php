@@ -29,16 +29,16 @@ class Encargo extends Model
         'agencia_origen',
         'agencia_destino',
 
-        'emisor',
-        'cliente_id',
+        'agencia',
+        'adquiriente',
         'medio_pago',
-        'documento_id',
+        'documento',
         'documento_serie',
-        'documento_numero',
+        'documento_correlativo',
         'documento_fecha',        
         'encargo',
         'subtotal',
-        'importePagar',
+        'importe_pagar',
     ];
 
     public function sedes() {
@@ -46,41 +46,40 @@ class Encargo extends Model
     }
 
     public function documentos() {
-        return $this->belongsTo('App\Business\Documento','documento_id');
+        return $this->belongsTo('App\Business\Documento','documento');
     }
     
-    public function emisores() {
-        return $this->belongsTo('App\Business\Agencia', 'emisor');
+    public function agencias() {
+        return $this->belongsTo('App\Business\Agencia', 'agencia');
     }
     
-    public function clientes() {
-        return $this->belongsTo('App\Business\Cliente', 'cliente_id');
+    public function adquirientes() {
+        return $this->belongsTo('App\Business\Adquiriente', 'adquiriente');
     }
 
     static function findBill($encargoId) {
         $encargo = Encargo::find($encargoId);
-        if ($encargo->documentos->alias === 'B' || $encargo->documentos->alias === 'F') {
+        if ($encargo->documentos->alias === 'F' || $encargo->documentos->alias === 'B') {
             $fecha = explode("-", $encargo->documento_fecha);
             $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
             $documento_fecha_hhiiss = "";
+            
             $data = [
                 'tituloDocumento' => $encargo->documentos->nombre,
+                'emisorNombreComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
+                'emisorRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
+                'emisorDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                'emisorRUC' => env('EMPRESA_RUC','NO DEFINIDO'),
 
-                'empresaComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
-                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
-                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
-                'empresaRuc' => env('EMPRESA_RUC','NO DEFINIDO'),
-
-                'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
-                'emisorAgenciaTelefono' => $encargo->emisores->telefono,
+                'adquirienteRazonSocial' => mb_strtoupper($encargo->adquirientes->razon_social),
+                'adquirienteDireccionFiscal' => $encargo->adquirientes->direccion,
+                'emisorAgenciaDireccion' => mb_strtoupper($encargo->agencias->direccion),
+                'emisorAgenciaTelefono' => $encargo->agencias->telefono,
                 'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
-                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_numero,
-                'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
+                'emisorFechaDocumentoElectronico' => $encargo->documento_fecha, // yyyy-mm-dd
                 'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
 
-                'clienteRazonSocial' => mb_strtoupper($encargo->clientes->razon_social),
-                'clienteDireccion' => $encargo->clientes->direccion,
-                'clienteDocumento' => $encargo->clientes->documento,
                 'consigna' => [
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
@@ -89,6 +88,14 @@ class Encargo extends Model
                 'subtotal' => $encargo->subtotal,
                 'importePagar' => $encargo->importe_pagar,
             ];
+            if($encargo->documentos->alias === 'F') {
+                $data['adquirienteRUC'] = $encargo->adquirientes->documento;
+                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->nombre_comercial);
+            }
+            if($encargo->documentos->alias === 'B') {
+                $data['adquirienteDNI'] = $encargo->adquirientes->documento;
+                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->razon_social);
+            }
         } else {
             $data = [];
         }
@@ -103,22 +110,21 @@ class Encargo extends Model
             $documento_fecha_hhiiss = "00:00:00";
             $data = [
                 'tituloDocumento' => $encargo->documentos->nombre,
-
-                'empresaComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
-                'empresaRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
-                'empresaDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
-                'empresaRuc' => env('EMPRESA_RUC','NO DEFINIDO'),
+                'emisorNombreComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
+                'emisorRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
+                'emisorDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                'emisorRUC' => env('EMPRESA_RUC','NO DEFINIDO'),
 
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
                 'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre),
-                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_numero,
-                'emisorFechaDocumentoElectronico' => $documento_fecha_ddmmyyyy,
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
+                'emisorFechaDocumentoElectronico' => $encargo->documento_fecha,
                 'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
 
-                'clienteRazonSocial' => mb_strtoupper($encargo->clientes->razon_social),
-                'clienteDireccion' => $encargo->clientes->direccion,
-                'clienteDocumento' => $encargo->clientes->documento, // dni o ruc
+                'adquirienteRazonSocial' => mb_strtoupper($encargo->adquirientes->razon_social),
+                'adquirienteDireccionFiscal' => $encargo->adquirientes->direccion,
+                'adquirienteRUC' => $encargo->adquirientes->documento, // dni o ruc
                 'consigna' => [
                     'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
@@ -127,6 +133,13 @@ class Encargo extends Model
                 'subtotal' => $encargo->subtotal,
                 'importePagar' => $encargo->importe_pagar,
             ];
+            if(strlen($encargo->adquirientes->documento) === 11) {
+                $data['adquirienteRUC'] = $encargo->adquirientes->documento;
+                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->nombre_comercial);
+            } else {
+                $data['adquirienteDNI'] = $encargo->adquirientes->documento;
+                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->razon_social);
+            }
         } else {
             $data = [];
         }
@@ -135,7 +148,7 @@ class Encargo extends Model
 
     static function getNextSequence($encargoId, $documentoSerie) {
         $encargo = Encargo::find($encargoId);
-        if(!$encargo->documento_numero) {
+        if(!$encargo->documento_correlativo) {
             $manager = new \MongoDB\Driver\Manager("mongodb://".env('DB_HOST').":".env('DB_PORT'));
             $cmd = new \MongoDB\Driver\Command([
                 "findandmodify" => "sequence",
@@ -147,7 +160,7 @@ class Encargo extends Model
             foreach($cursor as $d){
                 $sequence = $d->value->seq;
             }
-            Catalogo::insert(['documento_serie' => $documentoSerie, 'documento_numero' => $sequence, 'encargo_id' => $encargoId]);
+            Talonario::insert(['documento_serie' => $documentoSerie, 'documento_correlativo' => $sequence, 'encargo_id' => $encargoId]);
         }
         return $sequence;
     }

@@ -18,15 +18,15 @@ class ApiController extends Controller
     }
 
     public function getAgencia(String $sedeId) {
-        $agencia = \App\Business\Agencia::where('sede_id', new ObjectId("$sedeId"))->get();
+        $agencia = \App\Business\Agencia::where('sede', new ObjectId("$sedeId"))->get();
         return response()->json($agencia);
     }
 
     public function getSerie($agenciaOrigenId, $agenciaDestinoId, $documentoId) {
         $documento = \App\Business\Documento::find($documentoId);
         $agencia = ($documento->alias === 'G') ? $agenciaDestinoId : $agenciaOrigenId;
-        $serie = \App\Business\Serie::where('agencia_id', new ObjectId("$agencia"))
-        ->where('documento_id', new ObjectId("$documentoId"))
+        $serie = \App\Business\Serie::where('agencia', new ObjectId("$agencia"))
+        ->where('documento', new ObjectId("$documentoId"))
         ->get();
         return response()->json($serie);
     }
@@ -39,8 +39,16 @@ class ApiController extends Controller
     public function getSunat() {
         $response = [
             'result' =>[
-                'nombre' => 'GEAN CARLOS BAILA LAURENTE'
-            ],
+                'nombre' => 'BITERA EIRL',
+                'nombreComercial' => 'BITERA EIRL',
+                'direccion' => 'LAURA CALLER',
+                'activo' => true,
+                'habido' => true,
+                'ubigeo' => '150117',
+                'departamento' => 'LIMA',
+                'provincia' => 'LIMA',
+                'distrito' => 'LOS OLIVOS',
+            ]
         ];
         return response()->json($response);
     }
@@ -48,7 +56,9 @@ class ApiController extends Controller
     public function getReniec() {
         $response = [
             'result' =>[
-                'nombre' => 'GEAN CARLOS BAILA LAURENTE'
+                'nombre' => 'GEAN CARLOS BAILA LAURENTE',
+                'direccion' => '', 
+                'foto' => '',
             ],
         ];
         return response()->json($response);

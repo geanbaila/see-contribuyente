@@ -6,35 +6,39 @@
         }
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargoId" value="" />
-        <input type="hidden" name="clienteId" value="" />
+        <input type="text" name="encargoId" value="" />
+        <input type="text" name="adquiriente" value="" />
+        <input type="text" name="nombreComercialEnvia" value="" />
+        <input type="text" name="nombreComercialRecibe" value="" />
+        <input type="text" name="direccionEnvia" value="" />
+        <input type="text" name="direccionRecibe" value="" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
-                                <div class="col-xxl-3">
+                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
                                     <input class="form-control" id="docEnvia" name="docEnvia" placeholder="">
                                 </div>
-                                <div class="col-xxl-9">
+                                <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     <input class="form-control" id="nombreEnvia" name="nombreEnvia" placeholder="">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
                                     <input class="form-control" id="celularEnvia" name="celularEnvia" placeholder="">
                                 </div>
-                                <div class="col-xxl-6">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
                                     <input class="form-control" id="emailEnvia" name="emailEnvia" placeholder="">
                                 </div>
-                                <div class="col-xxl-3">
+                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
                                     <input class="form-control" id="fechaEnvia" name="fechaEnvia" placeholder="" disabled>
                                 </div>
@@ -42,7 +46,7 @@
                         </div>
                         <div class="col-xxl-1">
                             <div class="row gy-5">
-                                <div class="col-xxl-2">
+                                <div class="col-xxl-12">
 
                                 </div>
                             </div>
@@ -50,29 +54,29 @@
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
-                                <div class="col-xxl-3">
+                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
                                     <input class="form-control" id="docRecibe" name="docRecibe" placeholder="">
                                 </div>
-                                <div class="col-xxl-9">
+                                <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     <input class="form-control" id="nombreRecibe" name="nombreRecibe" placeholder="">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
                                     <input class="form-control" id="celularRecibe" name="celularRecibe" placeholder="">
                                 </div>
-                                <div class="col-xxl-6">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
                                     <input class="form-control" id="emailRecibe" name="emailRecibe" placeholder="">
                                 </div>
-                                <div class="col-xxl-3">
+                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
                                     <input class="form-control" id="fechaRecibe" name="fechaRecibe" placeholder=""
                                         disabled>
@@ -82,22 +86,18 @@
                         </div>
                         <div class="col-xxl-1">
                             <div class="row gy-5">
-                                <div class="col-xxl-2">
+                                <div class="col-xxl-12">
                                     <label>&nbsp;</label>
-                                    <a class="" onclick="javascript:addReceivesRow()"><img
-                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg"
-                                            width="24"></a>
-                                    <br />
-                                    <!--<a onclick="javascript:removeReceivesRow(this)"><img
-                                                                                        src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/x-circle.svg"
-                                                                                        width="24"></a>-->
+                                    <a class="float-end" onclick="javascript:addReceivesRow()">
+                                        <img src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg" width="24" />
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-5">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Medio de pago:</label>
@@ -161,7 +161,7 @@
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Correlativo:</label>
-                                    <input class="form-control" id="documentoNumero" name="documentoNumero" value=""
+                                    <input class="form-control" id="documentoCorrelativo" name="documentoCorrelativo" value=""
                                         disabled>
                                 </div>
 
@@ -169,15 +169,12 @@
                         </div>
                         <div class="col-xxl-1">
                             <div class="row gy-5">
-                                <div class="col-xxl-2">
+                                <div class="col-xxl-12">
 
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
@@ -211,7 +208,7 @@
                                     <select class="form-select" aria-label="--" name="descripcion"
                                         onchange="javascript:updateChargeDetail(this)">
                                         <option value="--" selected> -- </option>
-                                        @if (isset($carga))
+                                        @if(isset($carga))
                                             @foreach ($carga as $item)
                                                 <option value="{{ $item->id }}" data-price="{{ $item->precio }}">
                                                     {{ $item->nombre }}</option>
@@ -229,10 +226,6 @@
                                 <td><input type="number" class="form-control fw8" name="precio"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                 <td><input type="number" class="form-control fw8" name="total" disabled></td>
-                                <!--<td scope="row" width="80" class="float-right">
-                                                                                <a onclick="javascript:removeChargeRow(this)"><img
-                                                                                        src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>
-                                                                            </td>-->
                             </tr>
                         </tbody>
                         <tfoot>
@@ -255,7 +248,6 @@
                         <div class="col-3">
                             <b>Encomienda:</b> por despachar<br />
                             <b>SUNAT:</b> pendiente<br />
-
                         </div>
                         <div class="col-2">
                             <div class="d-flex align-items-center w-100px w-sm-200px flex-column mt-2">
@@ -280,7 +272,7 @@
                                 <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
                             </a>
                             <a id="btnEmail" class="btn btn-secondary disabled" data-bs-toggle="modal"
-                                data-bs-target="#modalImprimirComprobante" onclick="javascript:sendEmail()">
+                                data-bs-target="#modalEnviarEmail">
                                 <img src="{{ asset('assets/media/icons/sis/email.svg') }}" width="24" />
                             </a>
                             <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
@@ -297,6 +289,15 @@
 @endsection
 @section('scripts')
     <script>
+        const factura = '617122a2a8c74c6bfc5e36e6';
+        const RUC = 11;
+        const DNI = 8;
+        const CE = 12;
+        
+        function sendEmail() {
+            alert('enviando correo..');
+        }
+
         function showSuccessToastr(message) {
             console.log('mostrar success toastr')
             toastr.options = {
@@ -304,7 +305,7 @@
                 "debug": false,
                 "newestOnTop": false,
                 "progressBar": true,
-                "positionClass": "toast-bottom-right",
+                "positionClass": "toast-top-right",
                 "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "30000",
@@ -325,7 +326,7 @@
                 "debug": false,
                 "newestOnTop": false,
                 "progressBar": true,
-                "positionClass": "toast-bottom-right",
+                "positionClass": "toast-top-right",
                 "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "30000",
@@ -441,17 +442,17 @@
             getAgenciaDestino(data.destino, data.agencia_destino);
 
             $("[name='medioPago']").val(data.medio_pago).change();
-            $("[name='documento']").val(data.documento_id).change();
+            $("[name='documento']").val(data.documento).change();
             $("[name='documentoSerie']").val(data.documento_serie);
-            $("[name='documentoNumero']").val(data.documento_numero);
+            $("[name='documentoCorrelativo']").val(data.documento_correlativo);
 
-            $("[name='clienteId']").val(data.cliente_id);
+            $("[name='adquiriente']").val(data.adquiriente);
 
             if (data.encargo.length > 0) {
                 var total = data.encargo.length;
                 _.forEach(data.encargo, function(element, index) {
                     var j = index + 1;
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga_id).change();
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='precio']").val(element.precio);
                     $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger(
                         "onkeyup");
@@ -468,12 +469,16 @@
 
             var docEnvia = $("[name='docEnvia']").val().trim();
             var nombreEnvia = $("[name='nombreEnvia']").val().trim();
+            var nombreComercialEnvia = $("[name='nombreComercialEnvia']").val().trim();
+            var direccionEnvia = $("[name='direccionEnvia']").val().trim();
             var celularEnvia = $("[name='celularEnvia']").val().trim();
             var emailEnvia = $("[name='emailEnvia']").val().trim();
             var fechaEnvia = $("[name='fechaEnvia']").val().trim();
 
             var docRecibe = $("[name='docRecibe']").val().trim();
             var nombreRecibe = $("[name='nombreRecibe']").val().trim();
+            var nombreComercialRecibe = $("[name='nombreComercialRecibe']").val().trim();
+            var direccionRecibe = $("[name='direccionRecibe']").val().trim();
             var celularRecibe = $("[name='celularRecibe']").val().trim();
             var emailRecibe = $("[name='emailRecibe']").val().trim();
             var fechaRecibe = $("[name='fechaRecibe']").val().trim();
@@ -485,26 +490,30 @@
             var medioPago = $("[name='medioPago']").val().trim();
             var documento = $("[name='documento']").val().trim();
             var documentoSerie = $("[name='documentoSerie']").val().trim();
-            var documentoNumero = $("[name='documentoNumero']").val().trim();
-            var importePagar = $("[name='importePagar']").val().trim();
+            var documentoCorrelativo = $("[name='documentoCorrelativo']").val().trim();
             var subtotal = $("[name='subtotal']").val().trim();
+            var importePagar = $("[name='importePagar']").val().trim();
 
             var descripcion = document.getElementsByName("descripcion");
             var cantidad = document.getElementsByName("cantidad");
             var precio = document.getElementsByName("precio");
             var peso = document.getElementsByName("peso");
 
-            var clienteId = $("[name='clienteId']").val().trim();
+            var adquiriente = $("[name='adquiriente']").val().trim();
 
             var data = new FormData();
             data.append("encargoId", encargoId);
             data.append("docEnvia", docEnvia);
             data.append("nombreEnvia", nombreEnvia);
+            data.append("nombreComercialEnvia", nombreComercialEnvia);
+            data.append("direccionEnvia", direccionEnvia);
             data.append("celularEnvia", celularEnvia);
             data.append("emailEnvia", emailEnvia);
             data.append("fechaEnvia", fechaEnvia);
             data.append("docRecibe", docRecibe);
             data.append("nombreRecibe", nombreRecibe);
+            data.append("nombreComercialRecibe", nombreComercialRecibe);
+            data.append("direccionRecibe", direccionRecibe);
             data.append("celularRecibe", celularRecibe);
             data.append("emailRecibe", emailRecibe);
             data.append("fechaRecibe", fechaRecibe);
@@ -515,63 +524,62 @@
             data.append("medioPago", medioPago);
             data.append("documento", documento);
             data.append("documentoSerie", documentoSerie);
-            data.append("documentoNumero", documentoNumero);
-            data.append("importePagar", importePagar);
+            data.append("documentoCorrelativo", documentoCorrelativo);
             data.append("subtotal", subtotal);
+            data.append("importePagar", importePagar);
             var n = descripcion.length;
             for (var i = 0; i < n; i++) {
                 data.append("encargo[]", [descripcion[i].value, peso[i].value, cantidad[i].value, precio[i].value]);
             };
-            data.append("clienteId", clienteId);
+            data.append("adquiriente", adquiriente);
             return data;
         }
 
         function validate(data) {
-            if (data.get('docEnvia').length !== 8 && data.get('docEnvia').length !== 11 && data.get('docEnvia').length !==
-                12) {
-                alert('Documento incorrecto de quien Envía');
+            if (data.get('docEnvia').length !== DNI && data.get('docEnvia').length !== RUC && data.get('docEnvia').length !==
+                CE) {
+                showErrorToastr('Documento incorrecto de quien Envía');
                 return false;
             }
             if (data.get('nombreEnvia').length === 0) {
-                alert('No se dispone de los nombre de quien Envía');
+                showErrorToastr('No se dispone de los nombre de quien Envía');
                 return false;
             }
-            if (data.get('docRecibe').length !== 8 && data.get('docRecibe').length !== 11 && data.get('docRecibe')
-                .length !== 12) {
-                alert('Documento incorrecto de quien Recibe');
+            if (data.get('docRecibe').length !== DNI && data.get('docRecibe').length !== RUC && data.get('docRecibe')
+                .length !== CE) {
+                showErrorToastr('Documento incorrecto de quien Recibe');
                 return false;
             }
             if (data.get('nombreRecibe').length === 0) {
-                alert('No se dispone de los nombre de quien Recibe');
+                showErrorToastr('No se dispone de los nombre de quien Recibe');
                 return false;
             }
             if (data.get('agenciaOrigen').length === 2 && data.get('agenciaOrigen') === '--') {
-                alert('No se dispone del agenciaOrigen');
+                showErrorToastr('No se dispone del agenciaOrigen');
                 return false;
             }
             if (data.get('destino').length === 2 && data.get('destino') === '--') {
-                alert('No se dispone del destino');
+                showErrorToastr('No se dispone del destino');
                 return false;
             }
             if (data.get('agenciaDestino').length === 2 && data.get('agenciaDestino') === '--') {
-                alert('No se dispone del agencia destino');
+                showErrorToastr('No se dispone del agencia destino');
                 return false;
             }
             if (data.get('documento').length === 2) {
-                alert('No se dispone del documento');
+                showErrorToastr('No se dispone del documento');
                 return false;
             }
             if (data.get('documentoSerie').length === 0) {
-                alert('No se dispone del serie');
+                showErrorToastr('No se dispone del serie');
                 return false;
             }
-            const factura = '617122a2a8c74c6bfc5e36e6';
-            if (data.get('documento') === factura && data.get('docEnvia').length !== 11) {
-                alert('No se puede emitir una factura para una persona natural');
+            if (data.get('documento') === factura && data.get('docEnvia').length !== RUC) {
+                showErrorToastr('No se puede emitir una factura para una persona natural');
                 return false;
             }
             if (parseFloat(data.get('importePagar')) > parseFloat(data.get('subtotal'))) {
-                alert('El importe a pagar no puede ser mayor que total (suma de subtotales)');
+                showErrorToastr('El importe a pagar no puede ser mayor que total (suma de subtotales)');
                 return false;
             }
             return true;
@@ -642,7 +650,7 @@
             var docRecibeOenvia = $("#buscaDocRecibeDocEnvia").val();
             var documento = $("#buscaDocumento").val();
 
-            if (docRecibeOenvia.length === 8 || docRecibeOenvia.length === 11 || docRecibeOenvia.length !== 12) {
+            if (docRecibeOenvia.length === DNI || docRecibeOenvia.length === RUC || docRecibeOenvia.length === CE) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",
@@ -666,7 +674,7 @@
                                 '<td>' + element.doc_recibe + '</td>' +
                                 '<td>' + element.agencia_destino + '</td>' +
                                 '<td>' + element.documento_fecha + '</td>' +
-                                '<td>' + element.subtotal + '</td>' +
+                                '<td>' + element.importe_pagar + '</td>' +
                                 '</tr>';
                             $("#responseChargeRow").html(html);
                             putChargeForm(element);
@@ -689,7 +697,6 @@
             $("#btnEmail").addClass("btn-primary");
             $("#btnEliminar").removeClass("disabled btn-secondary");
             $("#btnEliminar").addClass("btn-primary");
-
             $("#btnImprimir").children().attr("src", "{{ asset('assets/media/icons/sis/printer-white.svg') }}");
             $("#btnEmail").children().attr("src", "{{ asset('assets/media/icons/sis/email-white.svg') }}");
             $("#btnEliminar").children().attr("src", "{{ asset('assets/media/icons/sis/trash-2-white.svg') }}");
@@ -715,9 +722,10 @@
                         if (result.result.status === 'OK') {
                             if (data.get('encargoId').length === 0) {
                                 $("[name='encargoId']").val(result.result.encargoId);
-                                $("[name='clienteId']").val(result.result.clienteId);
-                                $("[name='documentoNumero']").val(str_pad(result.result.documentoNumero,
-                                    {{ env('ZEROFILL', 8) }}));
+                                $("[name='adquiriente']").val(result.result.adquiriente);
+                                $("[name='fechaEnvia']").val(result.result.fechaEnvia);
+                                $("[name='documentoCorrelativo']").val(str_pad(result.result.documentoCorrelativo,
+                                {{ env('ZEROFILL', 8) }}));
                                 enabledBtn();
                                 showSuccessToastr(result.result.message);
                             }
@@ -745,8 +753,6 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    contentType: false,
-                    processData: false,
                     dataType: "json"
                 }).done(function(result) {
                     $("#comprobantePago").attr("src", result.result.urlComprobantePago);
@@ -758,7 +764,7 @@
         $("[name='docEnvia']").on('keypress', function(e) {
             if (e.which == 13) {
                 var docEnvia = $("[name='docEnvia']").val().trim();
-                if (docEnvia.length === 8 || docEnvia.length === 12) {
+                if (docEnvia.length === DNI || docEnvia.length === CE) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docEnvia,
@@ -766,14 +772,12 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        contentType: false,
-                        processData: false,
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombreEnvia']").val(result.result.nombre);
                     });
 
-                } else if (docEnvia.length === 11) {
+                } else if (docEnvia.length === RUC) {
                     // consultar a SUNAT
                     $.ajax({
                         url: "{{ url('/api/v1/sunat') }}/" + docEnvia,
@@ -781,15 +785,14 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        contentType: false,
-                        processData: false,
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombreEnvia']").val(result.result.nombre);
+                        $("[name='nombreComercialEnvia']").val(result.result.nombreComercial);
+                        
                     });
                 } else {
-                    // consultar
-                    alert("ha ingresado " + docEnvia.length + " caracteres, complételo por favor.");
+                    showErrorToastr("Ha ingresado " + docEnvia.length + " caracteres, complételo por favor.");
                 }
             }
         });
@@ -797,7 +800,7 @@
         $("[name='docRecibe']").on('keypress', function(e) {
             if (e.which == 13) {
                 var docRecibe = $("[name='docRecibe']").val().trim();
-                if (docRecibe.length === 8 || docRecibe.length === 12) {
+                if (docRecibe.length === DNI || docRecibe.length === CE) {
                     // consultar a RENIEC
                     $.ajax({
                         url: "{{ url('/api/v1/reniec') }}/" + docRecibe,
@@ -805,14 +808,12 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        contentType: false,
-                        processData: false,
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombreRecibe']").val(result.result.nombre);
                     });
 
-                } else if (docRecibe.length === 11) {
+                } else if (docRecibe.length === RUC) {
                     // consultar a SUNAT
                     $.ajax({
                         url: "{{ url('/api/v1/sunat') }}/" + docRecibe,
@@ -820,15 +821,13 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        contentType: false,
-                        processData: false,
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombreRecibe']").val(result.result.nombre);
+                        $("[name='nombreComercialRecibe']").val(result.result.nombreComercial);
                     });
                 } else {
-                    // consultar
-                    alert("ha ingresado " + docRecibe.length + " caracteres, complételo por favor.");
+                    showErrorToastr("Ha ingresado " + docRecibe.length + " caracteres, complételo por favor.");
                 }
             }
         });

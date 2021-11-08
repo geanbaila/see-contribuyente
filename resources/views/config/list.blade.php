@@ -95,9 +95,9 @@
                             $ww = ($w ==6) ? 0 : $w+1;
                             ?>
                             <tr>
-                                <td>{{$item->agencia->nombre}}</td>
+                                <td>{{$item->agencias->nombre}}</td>
                                 <td><input type="text" class="form-control input-sm" name="{{$item->id}}_horario" value="{{$item->horario}}"/></td>
-                                <td class="dia" data-dia="1" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="1" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 1 || $ww == 1)
                                     <div draggable="true" class="box lunes">{{$item->lunes}}
                                         <input type="hidden" name="placa" value="{{$item->lunes}}">
@@ -106,7 +106,7 @@
                                         {{$item->lunes}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="2" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="2" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 2 || $ww == 2)
                                     <div draggable="true" class="box martes">{{$item->martes}}
                                         <input type="hidden" name="placa" value="{{$item->martes}}">
@@ -115,7 +115,7 @@
                                         {{$item->martes}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="3" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="3" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 3 || $ww == 3)
                                     <div draggable="true" class="box miercoles">{{$item->miercoles}}
                                         <input type="hidden" name="placa" value="{{$item->miercoles}}">
@@ -124,7 +124,7 @@
                                         {{$item->miercoles}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="4" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="4" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 4 || $ww == 4)
                                     <div draggable="true" class="box jueves">{{$item->jueves}}
                                         <input type="hidden" name="placa" value="{{$item->jueves}}">
@@ -133,7 +133,7 @@
                                         {{$item->jueves}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="5" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="5" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 5 || $ww == 5)
                                     <div draggable="true" class="box viernes">{{$item->viernes}}
                                         <input type="hidden" name="placa" value="{{$item->viernes}}">
@@ -142,7 +142,7 @@
                                         {{$item->viernes}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="6" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="6" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 6 || $ww == 6)
                                     <div draggable="true" class="box sabado">{{$item->sabado}}
                                         <input type="hidden" name="placa" value="{{$item->sabado}}">
@@ -151,7 +151,7 @@
                                         {{$item->sabado}}
                                     @endif
                                 </td>
-                                <td class="dia" data-dia="0" data-agencia="{{$item->agencia_id}}" data-salida="{{$item->id}}">
+                                <td class="dia" data-dia="0" data-agencia="{{$item->agencia}}" data-salida="{{$item->id}}">
                                     @if ($w == 0 || $ww == 0)
                                     <div draggable="true" class="box domingo">{{$item->domingo}}
                                         <input type="hidden" name="placa" value="{{$item->domingo}}">

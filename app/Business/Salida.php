@@ -12,7 +12,7 @@ class Salida extends Model
     protected $primaryKey = '_id';
 
     protected $fillable = [
-        'agencia_id',
+        'agencia',
         'horario',
         'horario_predeterminado',
         'lunes',
@@ -24,8 +24,8 @@ class Salida extends Model
         'domingo',
     ];
 
-    public function agencia()
+    public function agencias()
     {
-        return $this->belongsTo('App\Business\Agencia', 'agencia_id');
+        return $this->belongsTo('App\Business\Agencia', 'agencia');
     }
 }

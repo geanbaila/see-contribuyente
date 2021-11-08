@@ -9,22 +9,20 @@ use App\Business\Carga;
 use App\Business\Agencia;
 use App\Business\Documento;
 use App\Business\Encargo;
-use App\Business\Cliente;
+use App\Business\Adquiriente;
 use MongoDB\BSON\ObjectId;
 use \PHPQRCode\QRcode;
-
 use PDF;
 
 class SaleController extends Controller
 {
-
     public function register(Request $request) {
         $data = $request->all();
         $var = function() {     
             $data = func_get_arg(0);
             $stack = [];
             foreach($data as $item) {
-                $element = explode(",",$item);
+                $element = explode(",", $item);
                 if ($element[0] !== "--"){
                     $peso = $element[1];
                     $cantidad = $element[2];
@@ -33,7 +31,7 @@ class SaleController extends Controller
                     if ($carga) {
                         $total = number_format($cantidad*$precio*$peso, 2, '.', '');
                         array_push($stack, [
-                            'carga_id' => $carga->id,
+                            'carga' => $carga->id,
                             'descripcion' => $carga->nombre,
                             'cantidad' => $cantidad,
                             'precio' => $precio,
@@ -51,36 +49,38 @@ class SaleController extends Controller
 
         $documento = Documento::find($data['documento']);
 
-        // registrar o actualizar el cliente
+        // registrar o actualizar el adquiriente
         $documento_fecha = date('Y-m-d');
         if ($documento->alias === 'G') {
             // guía de remisión
-            $insertCliente = [
+            $insertAdquiriente = [
                 'documento' => $data['docRecibe'],
                 'razon_social' => $data['nombreRecibe'],
-                'direccion' => '',
+                'nombre_comercial' => $data['nombreComercialRecibe'],
+                'direccion' => $data['direccionRecibe'],
             ];
         } else if ($documento->alias === 'B' || $documento->alias === 'F') {
             // boletas y facturas
-            $insertCliente = [
+            $insertAdquiriente = [
                 'documento' => $data['docEnvia'],
                 'razon_social' => $data['nombreEnvia'],
-                'direccion' => '',
+                'nombre_comercial' => $data['nombreComercialEnvia'],
+                'direccion' => $data['direccionEnvia'],
             ];
         } else {
             // hey, no deberías estar aquí, el validador dice que hay campos obligatorios!
-            $documento_fecha = "";
-            $insertCliente = [];
+            $documento_fecha = '';
+            $insertAdquiriente = [];
         }
         if (strlen($data['encargoId']) > 0) {
-            $clienteId = $data['clienteId'];
+            $adquiriente = $data['adquiriente'];
         } else {
-            $cliente = (Cliente::create($insertCliente));
-            $clienteId = $cliente->id;
+            $adquiriente = (Adquiriente::create($insertAdquiriente));
+            $adquiriente = $adquiriente->id;
         }
         
         // registrar o actualizar el encargo
-        $emisorId = $data['agenciaOrigen']; // agencia que está en sesión. hacer luego
+        $agenciaId = $data['agenciaOrigen']; // agencia que está en sesión. hacer luego
         $insertEncargo = [
             'doc_envia' => $data['docEnvia'],
             'nombre_envia' => $data['nombreEnvia'],
@@ -99,12 +99,12 @@ class SaleController extends Controller
             'agencia_origen' => new ObjectId($data['agenciaOrigen']),
             'agencia_destino' => new ObjectId($data['agenciaDestino']),
             
-            'emisor' => new ObjectId($emisorId),
-            'cliente_id' => new ObjectId($clienteId),
+            'agencia' => new ObjectId($agenciaId),
+            'adquiriente' => new ObjectId($adquiriente),
             'medio_pago' => $data['medioPago'],
-            'documento_id' => new ObjectId($data['documento']),
+            'documento' => new ObjectId($data['documento']),
             'documento_serie' => $data['documentoSerie'],
-            'documento_numero' => $data['documentoNumero'],
+            'documento_correlativo' => $data['documentoCorrelativo'],
             'documento_fecha' => $documento_fecha,
             'encargo' => $var($data['encargo'])[0],
             'subtotal' => number_format($data['subtotal'], 2, '.', ''),
@@ -118,13 +118,14 @@ class SaleController extends Controller
                 return \response()->json(['result' => ['status' => 'fails', 'message' => 'No se pudo grabar los cambios, inténtalo otra vez.']]);
             }
             $encargoId = $data['encargoId']; 
-            $documentoNumero = $data['documentoNumero'];
+            $documentoCorrelativo = $data['documentoCorrelativo'];
         } else {
             $encargo = Encargo::create($insertEncargo);
             $encargoId = $encargo['id'];
             $ObjectId = new ObjectId($encargoId);
-            $documentoNumero = sprintf("%0".env('ZEROFILL',6)."d",Encargo::getNextSequence($encargoId, $data['documentoSerie']));
-            $encargo = Encargo::where('_id', $ObjectId)->update(['documento_numero' => $documentoNumero]);
+            $fechaEnvia = date('Y-m-d');
+            $documentoCorrelativo = sprintf("%0".env('ZEROFILL', 8)."d",Encargo::getNextSequence($encargoId, $data['documentoSerie']));
+            $encargo = Encargo::where('_id', $ObjectId)->update(['fecha_envia' => $fechaEnvia, 'documento_correlativo' => $documentoCorrelativo]);
         }
 
         // registrar o actualizar el PDF
@@ -144,8 +145,9 @@ class SaleController extends Controller
                 'status' => 'OK', 
                 'message' => 'Registro correctamente', 
                 'encargoId' => $encargoId, 
-                'clienteId' => $clienteId, 
-                'documentoNumero' => $documentoNumero
+                'adquiriente' => $adquiriente, 
+                'documentoCorrelativo' => $documentoCorrelativo,
+                'fechaEnvia' => $fechaEnvia,
             ]
         ]);
     }
@@ -198,19 +200,19 @@ class SaleController extends Controller
             PDF::setCellPaddings( $left = '', $top = '0.5', $right = '', $bottom = '0.5');
             
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            PDF::MultiCell($width, $height, $data['empresaComercial'], '', $align_center,  1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorNombreComercial'], '', $align_center,  1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaRazonSocial'], '', $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorRazonSocial'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaDireccionFiscal'], '', $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorDireccionFiscal'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaRuc'], $border, $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorRUC'], $border, $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
@@ -225,18 +227,18 @@ class SaleController extends Controller
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, "OPERADOR: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "OPERADOR: ".$data['adquirienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width/2, $height, "FECHA: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'L', 0);
             PDF::Cell($width/2, $height, "HORA: 00:00:00" . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'R', 0);
             // -------------
             
-            $dniruc = (strlen($data['clienteDocumento']) === 8) ? 'DNI/CE' : 'RUC';
+            $dniruc = (strlen($data['adquirienteRUC']) === 8) ? 'DNI/CE' : 'RUC';
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, "CLIENTE: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquirienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
-            PDF::MultiCell($width, $height, "$dniruc: " . $data['clienteDocumento'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "$dniruc: " . $data['adquirienteRUC'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
@@ -244,10 +246,10 @@ class SaleController extends Controller
             // -------------
 
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            foreach($data['consigna'] as $nombre) {
+            foreach($data['consigna'] as $nombre):
                 PDF::MultiCell($width, $height, $nombre, '', $align_left, 1, 0, $x, $y);
                 PDF::Ln();
-            }
+            endforeach;
 
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell(20, $height, "DESTINO:", '', $align_left, 1, 0, $x, $y);
@@ -262,16 +264,17 @@ class SaleController extends Controller
             PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
+
             $importeTotal = 0.00;
             PDF::SetFont('times', '', $fontSizeRegular);
-            foreach($data['encargoDetalle'] as $encargo){
+            foreach($data['encargoDetalle'] as $encargo):
                 $importeTotal += $encargo['total'];
                 PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
                 PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(12, $height, $encargo['precio'], '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(10, $height, $encargo['total'], '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
-            }
+            endforeach;
             
             $importePagar = number_format($data['importePagar'], 2, '.', '');
             $igv = number_format($importePagar * env('IGV', 0.18), 2, '.', '');
@@ -327,7 +330,7 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, "Representación impresa de ".$data['emisorTipoDocumentoElectronico'].". Puede descargarlo y/o consultarlo desde www.enlacesbus.com.pe/see", $border, $align_center, 1, 0, $x, $y);
             PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
-            $year = substr($data['emisorFechaDocumentoElectronico'], -4);
+            $year = substr($data['emisorFechaDocumentoElectronico'], 0, 4);
             $filename = "pruebas/" . $year . "/" . $encargoId . ".pdf";
             if (file_exists(base_path("public/" . $filename))) { unlink(base_path("public/" . $filename)); }
             PDF::Output(public_path($filename), 'F');
@@ -361,19 +364,19 @@ class SaleController extends Controller
             PDF::setCellPaddings( $left = '', $top = '0.5', $right = '', $bottom = '0.5');
             
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            PDF::MultiCell($width, $height, $data['empresaComercial'], '', $align_center,  1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorNombreComercial'], '', $align_center,  1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaRazonSocial'], '', $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorRazonSocial'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaDireccionFiscal'], '', $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorDireccionFiscal'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, $data['empresaRuc'], $border, $align_center, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $data['emisorRUC'], $border, $align_center, 1, 0, $x, $y);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeRegular);
@@ -392,18 +395,18 @@ class SaleController extends Controller
             PDF::Ln(20);
 
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, "OPERADOR: ".$data['clienteRazonSocial'], 'T', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "OPERADOR: ".$data['adquirienteRazonSocial'], 'T', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width/2, $height, "FECHA: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'L', 0);
             PDF::Cell($width/2, $height, "HORA: 00:00:00" . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'R', 0);
             // -------------
             
-            $dniruc = (strlen($data['clienteDocumento']) === 8) ? 'DNI/CE' : 'RUC';
+            $dniruc = (strlen($data['adquirienteRUC']) === 8) ? 'DNI/CE' : 'RUC';
             PDF::SetFont('times', '', $fontSizeRegular);
-            PDF::MultiCell($width, $height, "CLIENTE: ".$data['clienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquirienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
-            PDF::MultiCell($width, $height, "$dniruc: " . $data['clienteDocumento'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, "$dniruc: " . $data['adquirienteRUC'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
@@ -411,10 +414,10 @@ class SaleController extends Controller
             // -------------
 
             PDF::SetFont('times', 'B', $fontSizeGrande);
-            foreach($data['consigna'] as $nombre) {
+            foreach($data['consigna'] as $nombre):
                 PDF::MultiCell($width, $height, $nombre, '', $align_left, 1, 0, $x, $y);
                 PDF::Ln();
-            }
+            endforeach;
 
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell(20, $height, "DESTINO:", '', $align_left, 1, 0, $x, $y);
@@ -429,16 +432,17 @@ class SaleController extends Controller
             PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
+
             $importeTotal = 0.00;
             PDF::SetFont('times', '', $fontSizeRegular);
-            foreach($data['encargoDetalle'] as $encargo){
+            foreach($data['encargoDetalle'] as $encargo):
                 $importeTotal += $encargo['total'];
                 PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
                 PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(12, $height, $encargo['precio'], '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(10, $height, $encargo['total'], '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
-            }
+            endforeach;
             
             $importePagar = number_format($data['importePagar'], 2, '.', '');
             $igv = number_format($importePagar * env('IGV', 0.18), 2, '.', '');
@@ -725,7 +729,7 @@ class SaleController extends Controller
             $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
             $nodeSignatoryParty->appendChild($nodePartyIdentification);
             
-            $nodeID = $dom->createElement('cbc:ID', $data['empresaRuc']);
+            $nodeID = $dom->createElement('cbc:ID', $data['emisorRUC']);
             $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
             $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
             $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
@@ -735,7 +739,7 @@ class SaleController extends Controller
             $nodePartyName = $dom->createElement('cac:PartyName');
             $nodeSignatoryParty->appendChild($nodePartyName);
             
-            $nodeName = $dom->createElement('cbc:Name', htmlspecialchars('<![CDATA['.$data['empresaRazonSocial'].']]>', ENT_QUOTES));
+            $nodeName = $dom->createElement('cbc:Name', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
             $nodePartyName->appendChild($nodeName);
 
             $nodeDigitalSignatureAttachment = $dom->createElement('cac:DigitalSignatureAttachment');
@@ -778,16 +782,16 @@ class SaleController extends Controller
                 $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
                 $nodeParty->appendChild($nodePartyIdentification);
                 
-                $d = '123'; // $data['empresaRUC'];
+                $d = '123'; // $data['emisorRUC'];
                 $nodeID = $dom->createElement('cbc:ID', $d);
                 $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
                 $nodePartyIdentification->appendChild($nodeID);
 
-                if($data['empresaComercial']):
+                if($data['emisorNombreComercial']):
                     // Nombre Comercial del emisor
                     $nodePartyName = $dom->createElement('cac:PartyName');
                     $nodeParty->appendChild($nodePartyName);
-                    $emisorNombreComersial = $data['empresaComercial'];
+                    $emisorNombreComersial = $data['emisorNombreComercial'];
                     $nodeName = $dom->createElement('cbc:Name', '<![CDATA['.$emisorNombreComersial.']]>');
                     $nodePartyName->appendChild($nodeName);
                 endif;
@@ -796,11 +800,11 @@ class SaleController extends Controller
                 $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
                 $nodeParty->appendChild($nodePartyTaxScheme);
 
-                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['empresaRazonSocial'].']]>', ENT_QUOTES));
+                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
                 $nodePartyTaxScheme->appendChild($nodeRegistrationName);
 
                 // Tipo y Número de RUC del emisor
-                $emisorRUC = $data['empresaRuc'];
+                $emisorRUC = $data['emisorRUC'];
                 $nodeCompanyID = $dom->createElement('CompanyID', $emisorRUC);
                 $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID','6'));
                 $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName','SUNAT:Identificador de Documento de Identidad'));
@@ -834,7 +838,7 @@ class SaleController extends Controller
                 $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
                 $nodeParty->appendChild($nodePartyIdentification);
                 
-                $nodeID = $dom->createElement('cbc:ID', $data['clienteDocumento']);
+                $nodeID = $dom->createElement('cbc:ID', $data['adquirienteRUC']);
                 $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6')); // para RUC
                 $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
                 $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
@@ -847,23 +851,23 @@ class SaleController extends Controller
                 $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
                 $nodeParty->appendChild($nodePartyLegalEntity);
                 
-                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['clienteRazonSocial'].']]>', ENT_QUOTES));
+                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['adquirienteRazonSocial'].']]>', ENT_QUOTES));
                 $nodePartyLegalEntity->appendChild($nodeRegistrationName);
                 
-                $clienteRazonSocial = $data['clienteRazonSocial'];
-                $nodeName = $dom->createElement('cbc:Name','<![CDATA['.$clienteRazonSocial.']]>');
+                $adquirienteRazonSocial = $data['adquirienteRazonSocial'];
+                $nodeName = $dom->createElement('cbc:Name','<![CDATA['.$adquirienteRazonSocial.']]>');
                 $nodePartyName->appendChild($nodeName);
 
                 $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
                 $nodeParty->appendChild($nodePartyTaxScheme);
                 
                 // Apellidos y nombres, denominación o razón social del adquirente o usuario
-                $adquirienteRazonSocial = $data['clienteRazonSocial']; // apellidos y nombres o denominación o razón social
+                $adquirienteRazonSocial = $data['adquirienteRazonSocial']; // apellidos y nombres o denominación o razón social
                 $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', '<![CDATA['.$adquirienteRazonSocial.']]>');
                 $nodePartyTaxScheme->appendChild($nodeRegistrationName);
 
                 // Tipo y número de documento de identidad del adquirente o usuario
-                $adquirienteRUC = $data['clienteDocumento'];
+                $adquirienteRUC = $data['adquirienteRUC'];
                 $nodeCompanyID = $dom->createElement('cbc:CompanyID', '<![CDATA['.$adquirienteRUC.']]>');
                 $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID', '6')); // 6:RUC, 1:DNI, 4:Carnet de extranjería, 0:NN
                 $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Documento de Identidad')); // Tipo de Documento de Identificación
@@ -1370,7 +1374,7 @@ class SaleController extends Controller
 
             $dom->appendChild($root);
 
-            $file = $data['empresaRuc'].'_01_'.$data['emisorNumeroDocumentoElectronico'].'.xml';
+            $file = $data['emisorRUC'].'_01_'.$data['emisorNumeroDocumentoElectronico'].'.xml';
             $xml_file_name = base_path('public/pruebas/').$file;
             $dom->save($xml_file_name);
         }
@@ -1378,7 +1382,7 @@ class SaleController extends Controller
 
     public function getQR($data) {
         $hash = "";
-        $value = $data['empresaRuc'].'|03|'.$data['emisorNumeroDocumentoElectronico'].'|IGV|'.$data['subtotal'].'|'.$data['emisorFechaDocumentoElectronico'].'|1|'.$data['clienteDocumento'].'|'.$hash;
+        $value = $data['emisorRUC'].'|03|'.$data['emisorNumeroDocumentoElectronico'].'|IGV|'.$data['subtotal'].'|'.$data['emisorFechaDocumentoElectronico'].'|1|'.$data['adquirienteRUC'].'|'.$hash;
         $img = base_path('public/pruebas/qrcode.png');
         return ['value' => $value, 'img' => $img];
     }

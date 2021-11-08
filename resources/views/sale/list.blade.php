@@ -26,7 +26,7 @@
                                         <a href="{{ url('/venta/editar/' . $item->_id) }}"><img
                                                 src="{{ asset('/assets/media/icons/sis/edit.svg') }}" width="24" /></a>
                                     </th>
-                                    <td>{{ $item->documento_serie }}-{{ $item->documento_numero }}</td>
+                                    <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
                                     <td>{{ $item->subtotal }}</td>
                                     <td>{{ $item->nombre_envia }}</td>
                                     <td>{{ $item->nombre_recibe }}</td>
