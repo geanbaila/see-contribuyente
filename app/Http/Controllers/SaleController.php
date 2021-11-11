@@ -30,6 +30,7 @@ class SaleController extends Controller
                     $carga = Carga::find($element[0]);
                     if ($carga) {
                         $total = number_format($cantidad*$precio*$peso, 2, '.', '');
+                        $importePagar = number_format($cantidad*$precio*$peso, 2, '.', '');
                         array_push($stack, [
                             'carga' => $carga->id,
                             'descripcion' => $carga->nombre,
@@ -37,6 +38,14 @@ class SaleController extends Controller
                             'precio' => $precio,
                             'peso' => $peso,
                             'total' => $total,
+
+                            'precioConIGV' => $precio,
+                            'precioSinIGV' => $precio*0.82,
+                            'precioIGV' => $precio*0.18,
+
+                            'importePagarConIGV' => $importePagar,
+                            'importePagarSinIGV' => $importePagar*0.82,
+                            'importePagarIGV' => $importePagar*0.18,
                         ]);
                     }
                 }
@@ -109,6 +118,11 @@ class SaleController extends Controller
             'encargo' => $var($data['encargo'])[0],
             'subtotal' => number_format($data['subtotal'], 2, '.', ''),
             'importe_pagar' => number_format($data['importePagar'], 2, '.', ''),
+
+            'importe_pagar_con_igv' => number_format($data['importePagar'], 2, '.', ''),
+            'importe_pagar_sin_igv' => number_format($data['importePagar']*0.82, 2, '.', ''),
+            'importe_pagar_igv' => number_format($data['importePagar']*0.18, 2, '.', ''),
+
         ];
         
         if (strlen($data['encargoId']) > 0) {
@@ -117,6 +131,7 @@ class SaleController extends Controller
             if (!$encargo) {
                 return \response()->json(['result' => ['status' => 'fails', 'message' => 'No se pudo grabar los cambios, inténtalo otra vez.']]);
             }
+            $fechaEnvia = $data['fechaEnvia'];
             $encargoId = $data['encargoId']; 
             $documentoCorrelativo = $data['documentoCorrelativo'];
         } else {
@@ -177,6 +192,13 @@ class SaleController extends Controller
     public function writeBill($encargoId) {
         $data = Encargo::findBill($encargoId);
         if ($data) {
+            if(isset($data['adquirienteRUC']) && strlen($data['adquirienteRUC']) === 11) {
+                $textodniruc = 'RUC: '.$data['adquirienteRUC'];
+            }
+            if(isset($data['adquirienteDNI']) && (strlen($data['adquirienteDNI']) === 8 || strlen($data['adquirienteDNI']) === 12)) {
+                $textodniruc = 'DNI/CE: '.$data['adquirienteDNI'];
+            }
+            
             PDF::SetTitle($data['tituloDocumento']);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
@@ -232,13 +254,11 @@ class SaleController extends Controller
             PDF::Cell($width/2, $height, "FECHA: " . $data['emisorFechaDocumentoElectronico'], 'B', 0, 'L', 0);
             PDF::Cell($width/2, $height, "HORA: 00:00:00" . $data['emisorHoraDocumentoElectronico'], 'B', 1, 'R', 0);
             // -------------
-            
-            $dniruc = (strlen($data['adquirienteRUC']) === 8) ? 'DNI/CE' : 'RUC';
             PDF::SetFont('times', '', $fontSizeRegular);
             PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquirienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
-            PDF::MultiCell($width, $height, "$dniruc: " . $data['adquirienteRUC'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
@@ -276,10 +296,7 @@ class SaleController extends Controller
                 PDF::Ln();
             endforeach;
             
-            $importePagar = number_format($data['importePagar'], 2, '.', '');
-            $igv = number_format($importePagar * env('IGV', 0.18), 2, '.', '');
-            $subtotal = number_format($importePagar - $igv, 2, '.', '');
-            $descuentos = number_format($importePagar - $importeTotal, 2, '.', '');
+            $descuentos = number_format($data['importePagarConIGV'] - $importeTotal, 2, '.', '');
          
             PDF::Cell(35, $height, "DESCUENTOS", 'T', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
@@ -288,12 +305,12 @@ class SaleController extends Controller
 
             PDF::Cell(35, $height, "SUBTOTAL", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $data['importePagarSinIGV'], '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell(35, $height, "OP.GRAVADA", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $data['importePagarSinIGV'], '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::Cell(35, $height, "OP.EXONERADA", '', 0, 'L', 1);
@@ -308,14 +325,14 @@ class SaleController extends Controller
 
             PDF::Cell(35, $height, "IGV 18%", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $igv, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $data['importePagarIGV'], '', 0, 'R', 1);
             PDF::Ln();
             
             PDF::SetFont('times', 'B', $fontSizeGrande);
             PDF::Cell(35, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
             PDF::SetFont('times', 'B', $fontSizeGigante);
-            PDF::Cell(20, $height, $importePagar, '', 0, 'R', 1);
+            PDF::Cell(20, $height, $data['importePagarConIGV'], '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $fontSizeGrande);
@@ -494,7 +511,6 @@ class SaleController extends Controller
             PDF::Output(public_path($filename), 'F');
             PDF::reset();
         }
-        
     }
 
     public function writeXMLBill($encargoId) {
@@ -505,6 +521,24 @@ class SaleController extends Controller
             $X509Certificate = 'MIIF9TCCBN2gAwIBAgIGAK0oRTg/MA0GCSqGSIb3DQEBCwUAMFkxCzAJBgNVBAYTAlRSMUowSAYDVQQDDEFNYWxpIE3DvGjDvHIgRWxla3Ryb25payBTZXJ0aWZpa2EgSGl6bWV0IFNhxJ9sYXnEsWPEsXPEsSAtIFRlc3QgMTAeFw0wOTEwMjAxMTM3MTJaFw0xNDEwMTkxMTM3MTJaMIGgMRowGAYDVQQLDBFHZW5lbCBNw7xkw7xybMO8azEUMBIGA1UEBRMLMTAwMDAwMDAwMDIxbDBqBgNVBAMMY0F5ZMSxbiBHcm91cCAtIFR1cml6bSDEsHRoYWxhdCDEsGhyYWNhdCBUZWtzdGlsIMSwbsWfYWF0IFBhemFyiMwtPnC2DRjdsyGv3bxwRZr9wXMRrMNwRjyFe9JPA7bSscEgaXwzDUG5FCvfS/PNT+XCce+VECAx6Q3R1ZRSA49fYz6tDB4Ia5HVBXZODmrCs26XisHF6kuS5N/yGg8E7VC1BRr/SmxXeLTdjQYAfo7lxCz4dT6wP5TOiBvF+lyWW1bi9nbliXyb/e5HjCp4k/ra9LTskjbY/Ukl5O8G9JEAViZkjvxDX7T0yVRHgMGiioIKVMwU6Lrtln607BNurLwED0OeoZ4wBgkBiB5vXofreXrfN2pHZ2=';
             $tipoMoneda = 'PEN';
             $n = 3;
+            $firma = 'SB209-128311'; // Identificador de la firma
+            if(isset($data['adquirienteRUC'])) {
+                $adquirienteDNIoRUC = $data['adquirienteRUC'];
+                $adquirienteCatalogo6 = '6'; // ruc
+                $facturaOboletea = '01';
+            }
+            if(isset($data['adquirienteDNI'])) {
+                $adquirienteDNIoRUC = $data['adquirienteDNI'];
+                // dni
+                if(strlen($data['adquirienteDNI'])=== 8){
+                    $adquirienteCatalogo6 = '1'; // dni
+                }
+                // carnet de extranjería
+                if(strlen($data['adquirienteDNI'])=== 12){
+                    $adquirienteCatalogo6 = '4'; // ce
+                }
+                $facturaOboletea = '03';
+            }
 
             $dom = new \DOMDocument();
             $dom->encoding = 'utf-8';
@@ -522,60 +556,60 @@ class SaleController extends Controller
             $root->setAttributeNode(new \DOMAttr('xmlns:udt','urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2'));
             $root->setAttributeNode(new \DOMAttr('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance'));
 
-            // begin 1 -firma digital
+            //begin 1
                 $nodeUBLExtensions = $dom->createElement('ext:UBLExtensions');
                 $root->appendChild($nodeUBLExtensions);
 
-                $nodeUBLExtensions1 = $dom->createElement('ext:UBLExtension');
-                $nodeUBLExtensions->appendChild($nodeUBLExtensions1);
+                    $nodeUBLExtensions1 = $dom->createElement('ext:UBLExtension');
+                    $nodeUBLExtensions->appendChild($nodeUBLExtensions1);
 
-                $nodeExtensionContent = $dom->createElement('ext:ExtensionContent');
-                $nodeUBLExtensions1->appendChild($nodeExtensionContent);
+                        $nodeExtensionContent = $dom->createElement('ext:ExtensionContent');
+                        $nodeUBLExtensions1->appendChild($nodeExtensionContent);
 
-                $nodeSignature = $dom->createElement('ds:Signature');
-                $nodeSignature->setAttributeNode(new \DOMAttr('Id','SignatureSP'));
-                $nodeExtensionContent->appendChild($nodeSignature);
+                            $nodeSignature = $dom->createElement('ds:Signature');
+                            $nodeSignature->setAttributeNode(new \DOMAttr('Id','SignatureSP'));
+                            $nodeExtensionContent->appendChild($nodeSignature);
 
-                $nodeSignedInfo = $dom->createElement('ds:SignedInfo');
-                $nodeSignature->appendChild($nodeSignedInfo);
+                                $nodeSignedInfo = $dom->createElement('ds:SignedInfo');
+                                $nodeSignature->appendChild($nodeSignedInfo);
 
-                $nodeCanonicalizationMethod = $dom->createElement('ds:CanonicalizationMethod');
-                $nodeCanonicalizationMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'));
-                $nodeSignedInfo->appendChild($nodeCanonicalizationMethod);
+                                    $nodeCanonicalizationMethod = $dom->createElement('ds:CanonicalizationMethod');
+                                    $nodeCanonicalizationMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'));
+                                    $nodeSignedInfo->appendChild($nodeCanonicalizationMethod);
 
-                $nodeSignatureMethod = $dom->createElement('ds:SignatureMethod');
-                $nodeSignatureMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'));
-                $nodeSignedInfo->appendChild($nodeSignatureMethod);
+                                    $nodeSignatureMethod = $dom->createElement('ds:SignatureMethod');
+                                    $nodeSignatureMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'));
+                                    $nodeSignedInfo->appendChild($nodeSignatureMethod);
 
-                $nodeReference = $dom->createElement('ds:Reference');
-                $nodeReference->setAttributeNode(new \DOMAttr('URI', ''));
-                $nodeSignedInfo->appendChild($nodeReference);
+                                    $nodeReference = $dom->createElement('ds:Reference');
+                                    $nodeReference->setAttributeNode(new \DOMAttr('URI', ''));
+                                    $nodeSignedInfo->appendChild($nodeReference);
 
-                $nodeTransforms = $dom->createElement('ds:Transforms');
-                $nodeReference->appendChild($nodeTransforms);
+                                        $nodeTransforms = $dom->createElement('ds:Transforms');
+                                        $nodeReference->appendChild($nodeTransforms);
 
-                $nodeTransforms1 = $dom->createElement('ds:Transform');
-                $nodeTransforms1->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'));
-                $nodeTransforms->appendChild($nodeTransforms1);
+                                            $nodeTransforms1 = $dom->createElement('ds:Transform');
+                                            $nodeTransforms1->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'));
+                                            $nodeTransforms->appendChild($nodeTransforms1);
 
-                $nodeDigestMethod = $dom->createElement('ds:DigestMethod');
-                $nodeDigestMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1'));
-                $nodeReference->appendChild($nodeDigestMethod);
+                                        $nodeDigestMethod = $dom->createElement('ds:DigestMethod');
+                                        $nodeDigestMethod->setAttributeNode(new \DOMAttr('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1'));
+                                        $nodeReference->appendChild($nodeDigestMethod);
 
-                $nodeDigestValue = $dom->createElement('ds:DigestValue', '+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=');
-                $nodeReference->appendChild($nodeDigestValue);
+                                        $nodeDigestValue = $dom->createElement('ds:DigestValue', '+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=');
+                                        $nodeReference->appendChild($nodeDigestValue);
 
-                $nodeSignatureValue = $dom->createElement('ds:SignatureValue', 'Oatv5xMfFInuGqiX9SoLDTy2yuLf0tTlMFkWtkdw1z/Ss6kiDz+vIgZhgKfIaxp+JbVy57GT52f10VLMLatdwPVRbrWmz1/NIy5CWp1xWMaM6fC/9SXV0O1Lqopk0UeX2I2yuf05QhmVfjgUu6GnS3m6o6zM9J36iDvMVZyj7vbJTwI8SfWjTSNqxXlqPQ==');
-                $nodeSignature->appendChild($nodeSignatureValue);
+                                $nodeSignatureValue = $dom->createElement('ds:SignatureValue', 'Oatv5xMfFInuGqiX9SoLDTy2yuLf0tTlMFkWtkdw1z/Ss6kiDz+vIgZhgKfIaxp+JbVy57GT52f10VLMLatdwPVRbrWmz1/NIy5CWp1xWMaM6fC/9SXV0O1Lqopk0UeX2I2yuf05QhmVfjgUu6GnS3m6o6zM9J36iDvMVZyj7vbJTwI8SfWjTSNqxXlqPQ==');
+                                $nodeSignature->appendChild($nodeSignatureValue);
 
-                $nodeKeyInfo = $dom->createElement('ds:KeyInfo');
-                $nodeSignature->appendChild($nodeKeyInfo);
+                                $nodeKeyInfo = $dom->createElement('ds:KeyInfo');
+                                $nodeSignature->appendChild($nodeKeyInfo);
 
-                $nodeX509Data = $dom->createElement('ds:X509Data');
-                $nodeKeyInfo->appendChild($nodeX509Data);
+                                    $nodeX509Data = $dom->createElement('ds:X509Data');
+                                    $nodeKeyInfo->appendChild($nodeX509Data);
 
-                $nodeX509Certificate = $dom->createElement('ds:X509Certificate', $X509Certificate);
-                $nodeX509Data->appendChild($nodeX509Certificate);
+                                        $nodeX509Certificate = $dom->createElement('ds:X509Certificate', $X509Certificate);
+                                        $nodeX509Data->appendChild($nodeX509Certificate);
             // end 1
 
             // begin 2 - Versión del UB
@@ -589,32 +623,32 @@ class SaleController extends Controller
             // end 3
 
             // begin 4 - codificicación de tipo de operación **
-                /* catálogo 51,
-                0101: Venta interna Factura, Boletas
-                0102: Venta Interna – Anticipos Factura, Boletas
-                0103: Venta interna - Itinerante Factura, Boletas
-                0110: Venta Interna - Sustenta Traslado de Mercadería - Remitente Factura, Boletas
-                0111: Venta Interna - Sustenta Traslado de Mercadería - Transportista Factura, Boletas
-                0112: Venta Interna - Sustenta Gastos Deducibles Persona Natural Factura
-                0120: Venta Interna - Sujeta al IVAP Factura, Boletas
-                0121: Venta Interna - Sujeta al FISE Todos
-                0122: Venta Interna - Sujeta a otros impuestos Todos
-                0130: Venta Interna - Realizadas al Estado Factura, Boletas
-                0200: Exportación de Bienes Factura, Boletas
-                0201: Exportación de Servicios – Prestación servicios realizados Factura, Boletas íntegramente en el país
-                0202: Exportación de Servicios – Prestación de servicios de hospedaje No Domiciliado Factura, Boletas
-                0203: Exportación de Servicios – Transporte de navieras Factura, Boletas
-                0204: Exportación de Servicios – Servicios a naves y aeronaves de bandera extranjera Factura, Boletas
-                0205: Exportación de Servicios - Servicios que conformen un Paquete Turístico Factura, Boletas
-                0206: Exportación de Servicios – Servicios complementarios al transporte de carga Factura, Boletas
-                0207: Exportación de Servicios – Suministro de energía eléctrica a favor de sujetos domiciliados en ZED Factura, Boletas
-                0208: Exportación de Servicios – Prestación servicios realizados parcialmente en el extranjero Factura, Boletas
-                0301: Operaciones con Carta de porte aéreo (emitidas en el ámbito nacional) Factura, Boletas
-                0302: Operaciones de Transporte ferroviario de pasajeros Factura, Boletas
-                0303: Operaciones de Pago de regalía petrolera Factura, Boletas
-                1001: Operación Sujeta a Detracción Factura, Boletas
-                1002: Operación Sujeta a Detracción- Recursos Hidrobiológicos Factura, Boletas
-                */
+                //  catálogo 51,
+                // 0101: Venta interna Factura, Boletas
+                // 0102: Venta Interna – Anticipos Factura, Boletas
+                // 0103: Venta interna - Itinerante Factura, Boletas
+                // 0110: Venta Interna - Sustenta Traslado de Mercadería - Remitente Factura, Boletas
+                // 0111: Venta Interna - Sustenta Traslado de Mercadería - Transportista Factura, Boletas
+                // 0112: Venta Interna - Sustenta Gastos Deducibles Persona Natural Factura
+                // 0120: Venta Interna - Sujeta al IVAP Factura, Boletas
+                // 0121: Venta Interna - Sujeta al FISE Todos
+                // 0122: Venta Interna - Sujeta a otros impuestos Todos
+                // 0130: Venta Interna - Realizadas al Estado Factura, Boletas
+                // 0200: Exportación de Bienes Factura, Boletas
+                // 0201: Exportación de Servicios – Prestación servicios realizados Factura, Boletas íntegramente en el país
+                // 0202: Exportación de Servicios – Prestación de servicios de hospedaje No Domiciliado Factura, Boletas
+                // 0203: Exportación de Servicios – Transporte de navieras Factura, Boletas
+                // 0204: Exportación de Servicios – Servicios a naves y aeronaves de bandera extranjera Factura, Boletas
+                // 0205: Exportación de Servicios - Servicios que conformen un Paquete Turístico Factura, Boletas
+                // 0206: Exportación de Servicios – Servicios complementarios al transporte de carga Factura, Boletas
+                // 0207: Exportación de Servicios – Suministro de energía eléctrica a favor de sujetos domiciliados en ZED Factura, Boletas
+                // 0208: Exportación de Servicios – Prestación servicios realizados parcialmente en el extranjero Factura, Boletas
+                // 0301: Operaciones con Carta de porte aéreo (emitidas en el ámbito nacional) Factura, Boletas
+                // 0302: Operaciones de Transporte ferroviario de pasajeros Factura, Boletas
+                // 0303: Operaciones de Pago de regalía petrolera Factura, Boletas
+                // 1001: Operación Sujeta a Detracción Factura, Boletas
+                // 1002: Operación Sujeta a Detracción- Recursos Hidrobiológicos Factura, Boletas
+                
                 $nodeProfileID = $dom->createElement('cbc:ProfileID', '0101'); // catálogo 51, 0101: Venta interna
                 $nodeProfileID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Tipo de Operación')); // Identificador de Código de tipo de operación
                 $nodeProfileID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
@@ -623,8 +657,7 @@ class SaleController extends Controller
             // end 4
 
             // begin 5 - Numeración, conformada por serie y número correlativo
-                $facturaCorrelativo = $data['emisorNumeroDocumentoElectronico'];
-                $nodeID = $dom->createElement('cbc:ID', $facturaCorrelativo);
+                $nodeID = $dom->createElement('cbc:ID', $data['emisorNumeroDocumentoElectronico']);
                 $root->appendChild($nodeID);
             // end 5
 
@@ -640,44 +673,42 @@ class SaleController extends Controller
                 $root->appendChild($nodeIssueTime);
             // end 7
 
-            // begin 8 - fecha de vencimiento ** opcional
-                /* 
-                $facturaFechaVence = '2017-05-28';
-                $nodeDueDate = $dom->createElement('cbc:DueDate', $facturaFechaVence);
-                $root->appendChild($nodeDueDate);
-                */
+            // begin 8 - fecha de vencimiento ** opcional    
+                // $facturaFechaVence = 'yyyy-mm-dd';
+                // $nodeDueDate = $dom->createElement('cbc:DueDate', $facturaFechaVence);
+                // $root->appendChild($nodeDueDate);
+                
             // end 8
 
             // begin 9 - tipo de documento (Factura) **
-                /*
-                01: Factura **
-                03: Boleta de venta **
-                06: Carta de porte aéreo
-                07: Nota de crédito **
-                08: Nota de débito
-                09: Guia de remisión remitente **
-                12: Ticket de maquina registradora
-                13: Documento emitido por bancos, instituciones financieras, crediticias y de seguros que se encuentren
-                ba:jo el control de la superintendencia de banca y seguros
-                14: Recibo de servicios públicos
-                15: Boletos emitidos por el servicio de transporte terrestre regular urbano de pasajeros y el ferroviario
-                pú:blico de pasajeros prestado en vía férrea local.
-                16: Boleto de viaje emitido por las empresas de transporte público interprovincial de pasajeros
-                18: Documentos emitidos por las afp
-                20: Comprobante de retencion
-                21: Conocimiento de embarque por el servicio de transporte de carga marítima
-                24: Certificado de pago de regalías emitidas por perupetro s.a.
-                31: Guía de remisión transportista **
-                37: Documentos que emitan los concesionarios del servicio de revisiones técnicas
-                40: Comprobante de percepción
-                41: Comprobante de percepción – venta interna (físico - formato impreso)
-                43: Boleto de compañias de aviación transporte aéreo no regular
-                45: Documentos emitidos por centros educativos y culturales, universidades, asociaciones y fundaciones.
-                56: Comprobante de pago seae
-                71: Guia de remisión remitente complementaria
-                72: Guia de remisión transportista complementaria
-                */
-                $nodeInvoiceTypeCode = $dom->createElement('cbc:InvoiceTypeCode', '01'); // 01:Factura
+                // 01: Factura **
+                // 03: Boleta de venta **
+                // 06: Carta de porte aéreo
+                // 07: Nota de crédito **
+                // 08: Nota de débito
+                // 09: Guia de remisión remitente **
+                // 12: Ticket de maquina registradora
+                // 13: Documento emitido por bancos, instituciones financieras, crediticias y de seguros que se encuentren
+                // ba:jo el control de la superintendencia de banca y seguros
+                // 14: Recibo de servicios públicos
+                // 15: Boletos emitidos por el servicio de transporte terrestre regular urbano de pasajeros y el ferroviario
+                // pú:blico de pasajeros prestado en vía férrea local.
+                // 16: Boleto de viaje emitido por las empresas de transporte público interprovincial de pasajeros
+                // 18: Documentos emitidos por las afp
+                // 20: Comprobante de retencion
+                // 21: Conocimiento de embarque por el servicio de transporte de carga marítima
+                // 24: Certificado de pago de regalías emitidas por perupetro s.a.
+                // 31: Guía de remisión transportista **
+                // 37: Documentos que emitan los concesionarios del servicio de revisiones técnicas
+                // 40: Comprobante de percepción
+                // 41: Comprobante de percepción – venta interna (físico - formato impreso)
+                // 43: Boleto de compañias de aviación transporte aéreo no regular
+                // 45: Documentos emitidos por centros educativos y culturales, universidades, asociaciones y fundaciones.
+                // 56: Comprobante de pago seae
+                // 71: Guia de remisión remitente complementaria
+                // 72: Guia de remisión transportista complementaria
+                
+                $nodeInvoiceTypeCode = $dom->createElement('cbc:InvoiceTypeCode', $facturaOboletea); // 01:Factura
                 $nodeInvoiceTypeCode->setAttributeNode(new \DOMAttr('listID', '0101')); // revisado en otras boletas y facturas
                 $nodeInvoiceTypeCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
                 $nodeInvoiceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Identificador de Tipo de Documento')); // Código de tipo de documento autorizado para efectos tributarios
@@ -685,11 +716,11 @@ class SaleController extends Controller
                 $root->appendChild($nodeInvoiceTypeCode);
             // end 9
 
-            // begin 10 - leyendas, catálogo 52
-                $subtotal = explode('.', $data['subtotal']);
+            // begin 10 - leyendas, catálogo 52 ++ OK ++
+                $importePagarConIGV = explode('.', $data['importePagarConIGV']);
                 $formatterES = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
-                $valorNumericoLetras = $formatterES->format($subtotal[0]);
-                $nodeNote = $dom->createElement('cbc:Note', htmlspecialchars('<![CDATA['.mb_strtoupper($valorNumericoLetras) .' CON '.$subtotal[1].'/100 SOLES]]>', ENT_QUOTES));
+                $valorNumericoLetras = $formatterES->format($importePagarConIGV[0]);
+                $nodeNote = $dom->createElement('cbc:Note', htmlspecialchars('<![CDATA['.mb_strtoupper($valorNumericoLetras) .' CON '.$importePagarConIGV[1].'/100 SOLES]]>', ENT_QUOTES));
                 $nodeNote->setAttributeNode(new \DOMAttr('languageLocaleID', '1000'));
                 $root->appendChild($nodeNote);
 
@@ -707,7 +738,7 @@ class SaleController extends Controller
                 endif;
             // end 10
             
-            // begin 11 - Tipo de moneda en la cual se emite la factura electrónica
+            // begin 11 - Tipo de moneda en la cual se emite la factura electrónica ++ OK ++
                 $nodeDocumentCurrencyCode = $dom->createElement('cbc:DocumentCurrencyCode', $tipoMoneda);
                 $nodeDocumentCurrencyCode->setAttributeNode(new \DOMAttr('listID', 'ISO 4217 Alpha'));
                 $nodeDocumentCurrencyCode->setAttributeNode(new \DOMAttr('listName', 'Currency'));
@@ -715,184 +746,252 @@ class SaleController extends Controller
                 $root->appendChild($nodeDocumentCurrencyCode);
             // end 11
 
-            // firmando otra vez..
-            $nodeSignature = $dom->createElement('cac:Signature');
-            $root->appendChild($nodeSignature);
-            
-            $firma = 'SB209-128311'; // Identificador de la firma
-            $nodeID = $dom->createElement('cbc:ID', $firma);
-            $nodeSignature->appendChild($nodeID);
-            
-            $nodeSignatoryParty = $dom->createElement('cac:SignatoryParty');
-            $nodeSignature->appendChild($nodeSignatoryParty);
-            
-            $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
-            $nodeSignatoryParty->appendChild($nodePartyIdentification);
-            
-            $nodeID = $dom->createElement('cbc:ID', $data['emisorRUC']);
-            $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
-            $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
-            $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
-            $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
-            $nodePartyIdentification->appendChild($nodeID);
-            
-            $nodePartyName = $dom->createElement('cac:PartyName');
-            $nodeSignatoryParty->appendChild($nodePartyName);
-            
-            $nodeName = $dom->createElement('cbc:Name', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
-            $nodePartyName->appendChild($nodeName);
+            // Signature
+                $nodeSignature = $dom->createElement('cac:Signature');
+                $root->appendChild($nodeSignature);
+                
+                $nodeID = $dom->createElement('cbc:ID', $firma);
+                $nodeSignature->appendChild($nodeID);
+                
+                $nodeSignatoryParty = $dom->createElement('cac:SignatoryParty');
+                $nodeSignature->appendChild($nodeSignatoryParty);
+                
+                    $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
+                    $nodeSignatoryParty->appendChild($nodePartyIdentification);
+                    
+                        $nodeID = $dom->createElement('cbc:ID', $data['emisorRUC']);
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                        $nodePartyIdentification->appendChild($nodeID);
+                    
+                    $nodePartyName = $dom->createElement('cac:PartyName');
+                    $nodeSignatoryParty->appendChild($nodePartyName);
+                    
+                        $nodeName = $dom->createElement('cbc:Name', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
+                        $nodePartyName->appendChild($nodeName);
 
-            $nodeDigitalSignatureAttachment = $dom->createElement('cac:DigitalSignatureAttachment');
-            $nodeSignature->appendChild($nodeDigitalSignatureAttachment);
+                $nodeDigitalSignatureAttachment = $dom->createElement('cac:DigitalSignatureAttachment');
+                $nodeSignature->appendChild($nodeDigitalSignatureAttachment);
+                
+                    $nodeExternalReference = $dom->createElement('cac:ExternalReference');
+                    $nodeDigitalSignatureAttachment->appendChild($nodeExternalReference);
+                    
+                    $nodeURI = $dom->createElement('cbc:URI','#SignatureSP');
+                    $nodeDigitalSignatureAttachment->appendChild($nodeURI);
+            // end Signature
             
-            $nodeExternalReference = $dom->createElement('cac:ExternalReference');
-            $nodeDigitalSignatureAttachment->appendChild($nodeExternalReference);
-            
-            $nodeURI = $dom->createElement('cbc:URI','#SignatureSP');
-            $nodeDigitalSignatureAttachment->appendChild($nodeURI);
- 
-            /*
-            12 y 13 omitidos
-            qwe: requiero una explicación
-            12 Tipo y número de la guía de remisión relacionada con la operación que se factura
-            <cac:DespatchDocumentReference>
-            <cbc:ID>031-002020</cbc:ID>
-            <cbc:DocumentTypeCode
-            listAgencyName="PE:SUNAT"
-            listName="SUNAT:Identificador de guía relacionada"
-            listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DocumentTypeCode>
-            </cac:DespatchDocumentReference>
-            13 Tipo y número de otro documento y código relacionado con la operación que se factura
-            <cac:AdditionalDocumentReference>
-            <cbc:ID>024099</cbc:ID>
-            <cbc:DocumentTypeCode
-            listAgencyName="PE:SUNAT"
-            listName="SUNAT: Identificador de documento relacionado"
-            listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo12">99</cbc:DocumentTypeCode>
-            </cac:AdditionalDocumentReference>
-            */
+            // begin 12 y 13 omitidos
+                // qwe: requiero una explicación
+                // 12 Tipo y número de la guía de remisión relacionada con la operación que se factura
+                // <cac:DespatchDocumentReference>
+                // <cbc:ID>031-002020</cbc:ID>
+                // <cbc:DocumentTypeCode
+                // listAgencyName="PE:SUNAT"
+                // listName="SUNAT:Identificador de guía relacionada"
+                // listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DocumentTypeCode>
+                // </cac:DespatchDocumentReference>
+                // 13 Tipo y número de otro documento y código relacionado con la operación que se factura
+                // <cac:AdditionalDocumentReference>
+                // <cbc:ID>024099</cbc:ID>
+                // <cbc:DocumentTypeCode
+                // listAgencyName="PE:SUNAT"
+                // listName="SUNAT: Identificador de documento relacionado"
+                // listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo12">99</cbc:DocumentTypeCode>
+                // </cac:AdditionalDocumentReference>
+            // end 12 y 13
 
             // begin 14-17 (emisor)
                 $nodeAccountingSupplierParty = $dom->createElement('cac:AccountingSupplierParty');
                 $root->appendChild($nodeAccountingSupplierParty);
 
-                $nodeParty = $dom->createElement('cac:Party');
+                $nodeParty = $dom->createElement('cac:Party'); // OK
                 $nodeAccountingSupplierParty->appendChild($nodeParty);
                 
-                $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
-                $nodeParty->appendChild($nodePartyIdentification);
-                
-                $d = '123'; // $data['emisorRUC'];
-                $nodeID = $dom->createElement('cbc:ID', $d);
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
-                $nodePartyIdentification->appendChild($nodeID);
+                    $nodePartyIdentification = $dom->createElement('cac:PartyIdentification'); // OK
+                    $nodeParty->appendChild($nodePartyIdentification);
+                    
+                        $nodeID = $dom->createElement('cbc:ID', $data['emisorRUC']); // OK
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                        $nodePartyIdentification->appendChild($nodeID);
 
-                if($data['emisorNombreComercial']):
+                if(strlen($data['emisorNombreComercial'])>0):
                     // Nombre Comercial del emisor
-                    $nodePartyName = $dom->createElement('cac:PartyName');
+                    $nodePartyName = $dom->createElement('cac:PartyName'); // OK
                     $nodeParty->appendChild($nodePartyName);
-                    $emisorNombreComersial = $data['emisorNombreComercial'];
-                    $nodeName = $dom->createElement('cbc:Name', '<![CDATA['.$emisorNombreComersial.']]>');
-                    $nodePartyName->appendChild($nodeName);
+
+                        $nodeName = $dom->createElement('cbc:Name', '<![CDATA['. $data['emisorNombreComercial'] .']]>');
+                        $nodePartyName->appendChild($nodeName);
                 endif;
 
-                // Apellidos y nombres, denominación o razón social del emisor
-                $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
-                $nodeParty->appendChild($nodePartyTaxScheme);
+                    // Apellidos y nombres, denominación o razón social del emisor
+                    $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme'); // OK
+                    $nodeParty->appendChild($nodePartyTaxScheme);
 
-                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
-                $nodePartyTaxScheme->appendChild($nodeRegistrationName);
+                        $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES)); // OK
+                        $nodePartyTaxScheme->appendChild($nodeRegistrationName);
 
-                // Tipo y Número de RUC del emisor
-                $emisorRUC = $data['emisorRUC'];
-                $nodeCompanyID = $dom->createElement('CompanyID', $emisorRUC);
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID','6'));
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName','SUNAT:Identificador de Documento de Identidad'));
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeAgencyName','PE:SUNAT'));
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeURI','urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
-                $nodePartyTaxScheme->appendChild($nodeCompanyID);
+                        // Tipo y Número de RUC del emisor
+                        $nodeCompanyID = $dom->createElement('cbc:CompanyID', $data['emisorRUC']); // OK
+                        $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID','6'));
+                        $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName','SUNAT:Identificador de Documento de Identidad'));
+                        $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeAgencyName','PE:SUNAT'));
+                        $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeURI','urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                        $nodePartyTaxScheme->appendChild($nodeCompanyID);
 
-                $nodeTaxScheme = $dom->createElement('cac:TaxScheme');
-                $nodePartyTaxScheme->appendChild($nodeTaxScheme);
+                        $nodeTaxScheme = $dom->createElement('cac:TaxScheme'); // OK
+                        $nodePartyTaxScheme->appendChild($nodeTaxScheme);
 
-                $nodeID = $dom->createElement('cbc:ID','-');
-                $nodeTaxScheme->appendChild($nodeID);
+                            $nodeID = $dom->createElement('cbc:ID', $data['emisorRUC']); // OK
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Documento de Identidad'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                            $nodeTaxScheme->appendChild($nodeID);
 
-                // Código del domicilio fiscal o de local anexo del emisor ** opcional
-                $nodeRegistrationAddress = $dom->createElement('cac:RegistrationAddress');
-                $nodePartyTaxScheme->appendChild($nodeRegistrationAddress);
+                    $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
+                    $nodeParty->appendChild($nodePartyLegalEntity);
 
-                $emisorUbigeo = '0001'; // 0000 en caso no se tenga
-                $nodeAddressTypeCode = $dom->createElement('cbc:AddressTypeCode', $emisorUbigeo);
-                $nodeRegistrationAddress->appendChild($nodeAddressTypeCode);
+                        $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['emisorRazonSocial'].']]>', ENT_QUOTES));
+                        $nodePartyLegalEntity->appendChild($nodeRegistrationName);
+
+                        $nodeRegistrationAddress = $dom->createElement('cac:RegistrationAddress');
+                        $nodePartyLegalEntity->appendChild($nodeRegistrationAddress);
+                    
+                            $nodeID = $dom->createElement('cbc:ID', $data['emisorUbigeo']);
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Ubigeos'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:INEI'));
+                            $nodeRegistrationAddress->appendChild($nodeID);
+                            
+                            // Código del domicilio fiscal o de local anexo del emisor.
+                            $nodeID = $dom->createElement('cbc:AddressTypeCode', '0000'); // 0000 en caso no se tenga
+                            $nodeID->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
+                            $nodeID->setAttributeNode(new \DOMAttr('listName', 'Establecimientos anexos'));
+                            $nodeRegistrationAddress->appendChild($nodeID);
+                            
+                            $nodeCityName = $dom->createElement('cbc:CityName', '<![CDATA['. $data['emisorDireccionDepartamento'] .']]>');
+                            $nodeRegistrationAddress->appendChild($nodeCityName);
+                            
+                            $nodeCountrySubentity = $dom->createElement('cbc:CountrySubentity', '<![CDATA[' . $data['emisorDireccionProvincia'] .']]>');
+                            $nodeRegistrationAddress->appendChild($nodeCountrySubentity);
+
+                            $nodeDistrict = $dom->createElement('cbc:District', '<![CDATA['. $data['emisorDireccionDistrito'] .']]>');
+                            $nodeRegistrationAddress->appendChild($nodeDistrict);
+                            
+                            $nodeAddressLine = $dom->createElement('cac:AddressLine');
+                            $nodeRegistrationAddress->appendChild($nodeAddressLine);
+                            
+                            $nodeLine = $dom->createElement('cbc:Line', '<![CDATA['. $data['emisorDireccion'] .']]>');
+                            $nodeAddressLine->appendChild($nodeLine);
+                            
+                            $nodeCountry = $dom->createElement('cac:Country');
+                            $nodeRegistrationAddress->appendChild($nodeCountry);
+                    
+                                $nodeIdentificationCode = $dom->createElement('cbc:IdentificationCode', $data['emisorDireccionPais']);
+                                $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listID', 'ISO 3166-1'));
+                                $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listAgencyName', 'United Nations Economic Commission for Europe'));
+                                $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listName', 'Country'));
+                                $nodeCountry->appendChild($nodeIdentificationCode);
             // end 14-17
 
             // begin 18-19 (adquiriente)
                 $nodeAccountingCustomerParty = $dom->createElement('cac:AccountingCustomerParty');
                 $root->appendChild($nodeAccountingCustomerParty);
 
-                $nodeParty = $dom->createElement('cac:Party');
-                $nodeAccountingCustomerParty->appendChild($nodeParty);
+                    $nodeParty = $dom->createElement('cac:Party');
+                    $nodeAccountingCustomerParty->appendChild($nodeParty);
 
-                // homologacion con otros xmls
-                $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
-                $nodeParty->appendChild($nodePartyIdentification);
+                        // homologacion con otros xmls
+                        $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
+                        $nodeParty->appendChild($nodePartyIdentification);
+
+                            $nodeID = $dom->createElement('cbc:ID', $adquirienteDNIoRUC);
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeID', $adquirienteCatalogo6));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                            $nodePartyIdentification->appendChild($nodeID);
+
+                        $nodePartyName = $dom->createElement('cac:PartyName');
+                        $nodeParty->appendChild($nodePartyName);
+
+                            $nodeName = $dom->createElement('cbc:Name', htmlspecialchars('<![CDATA['.$data['adquirienteRazonSocial'].']]>', ENT_QUOTES));
+                            $nodePartyName->appendChild($nodeName);
+
+                        $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
+                        $nodeParty->appendChild($nodePartyLegalEntity);
+
+                            $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['adquirienteRazonSocial'].']]>', ENT_QUOTES));
+                            $nodePartyLegalEntity->appendChild($nodeRegistrationName);
+                        
+                            $nodeRegistrationAddress = $dom->createElement('cac:RegistrationAddress');
+                            $nodePartyLegalEntity->appendChild($nodeRegistrationAddress);
+                            
+                                $nodeCityName = $dom->createElement('cbc:CityName', htmlspecialchars('<![CDATA['.$data['adquirienteDireccionDepartamento'].']]>', ENT_QUOTES));
+                                $nodeRegistrationAddress->appendChild($nodeCityName);
+                                
+                                $nodeCitySubdivisionName = $dom->createElement('cbc:CountrySubentity', htmlspecialchars('<![CDATA['.$data['adquirienteDireccionProvincia'].']]>', ENT_QUOTES));
+                                $nodeRegistrationAddress->appendChild($nodeCitySubdivisionName);
+                                
+                                $nodeDistrict = $dom->createElement('cbc:District', htmlspecialchars('<![CDATA['.$data['adquirienteDireccionDistrito'].']]>', ENT_QUOTES));
+                                $nodeRegistrationAddress->appendChild($nodeDistrict);
+                            
+                                $nodeAddressLine = $dom->createElement('cac:AddressLine');
+                                $nodeRegistrationAddress->appendChild($nodeAddressLine);
+                                
+                                    $nodeLine = $dom->createElement('cbc:Line', htmlspecialchars('<![CDATA['.$data['adquirienteDireccion'].']]>', ENT_QUOTES));
+                                    $nodeAddressLine->appendChild($nodeLine);
+                        
+                                $nodeCountry = $dom->createElement('cac:Country');
+                                $nodeRegistrationAddress->appendChild($nodeCountry);
                 
-                $nodeID = $dom->createElement('cbc:ID', $data['adquirienteRUC']);
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', '6')); // para RUC
-                $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
-                $nodePartyIdentification->appendChild($nodeID);
+                                    $nodeIdentificationCode = $dom->createElement('cbc:IdentificationCode', $data['adquirienteDireccionPais']);
+                                    $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listID', 'ISO 3166-1'));
+                                    $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listAgencyName', 'United Nations Economic Commission for Europe'));
+                                    $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listName', 'Country'));
+                                    $nodeCountry->appendChild($nodeIdentificationCode);
 
-                $nodePartyName = $dom->createElement('cac:PartyName');
-                $nodeParty->appendChild($nodePartyName);
-
-                $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
-                $nodeParty->appendChild($nodePartyLegalEntity);
+                        $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
+                        $nodeParty->appendChild($nodePartyTaxScheme);
                 
-                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['adquirienteRazonSocial'].']]>', ENT_QUOTES));
-                $nodePartyLegalEntity->appendChild($nodeRegistrationName);
-                
-                $adquirienteRazonSocial = $data['adquirienteRazonSocial'];
-                $nodeName = $dom->createElement('cbc:Name','<![CDATA['.$adquirienteRazonSocial.']]>');
-                $nodePartyName->appendChild($nodeName);
+                            // Apellidos y nombres, denominación o razón social del adquirente o usuario
+                            $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', htmlspecialchars('<![CDATA['.$data['adquirienteRazonSocial'].']]>', ENT_QUOTES));
+                            $nodePartyTaxScheme->appendChild($nodeRegistrationName);
 
-                $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
-                $nodeParty->appendChild($nodePartyTaxScheme);
-                
-                // Apellidos y nombres, denominación o razón social del adquirente o usuario
-                $adquirienteRazonSocial = $data['adquirienteRazonSocial']; // apellidos y nombres o denominación o razón social
-                $nodeRegistrationName = $dom->createElement('cbc:RegistrationName', '<![CDATA['.$adquirienteRazonSocial.']]>');
-                $nodePartyTaxScheme->appendChild($nodeRegistrationName);
+                            // Tipo y número de documento de identidad del adquirente o usuario
+                            $nodeCompanyID = $dom->createElement('cbc:CompanyID', $adquirienteDNIoRUC);
+                            $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID', $adquirienteCatalogo6)); // 6:RUC, 1:DNI, 4:Carnet de extranjería, 0:NN
+                            $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Documento de Identidad')); // Tipo de Documento de Identificación
+                            $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                            $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                            $nodePartyTaxScheme->appendChild($nodeCompanyID);
 
-                // Tipo y número de documento de identidad del adquirente o usuario
-                $adquirienteRUC = $data['adquirienteRUC'];
-                $nodeCompanyID = $dom->createElement('cbc:CompanyID', '<![CDATA['.$adquirienteRUC.']]>');
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeID', '6')); // 6:RUC, 1:DNI, 4:Carnet de extranjería, 0:NN
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Documento de Identidad')); // Tipo de Documento de Identificación
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
-                $nodeCompanyID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
-                $nodePartyTaxScheme->appendChild($nodeCompanyID);
+                            $nodeTaxScheme = $dom->createElement('cac:TaxScheme');
+                            $nodePartyTaxScheme->appendChild($nodeTaxScheme);
 
-                $nodeTaxScheme = $dom->createElement('cac:TaxScheme');
-                $nodePartyTaxScheme->appendChild($nodeTaxScheme);
-
-                $nodeID = $dom->createElement('cbc:ID', '-');
-                $nodeTaxScheme->appendChild($nodeID);
+                                $nodeID = $dom->createElement('cbc:ID', $adquirienteDNIoRUC);
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeID', $adquirienteCatalogo6));
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'SUNAT:Identificador de Documento de Identidad'));
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
+                                $nodeTaxScheme->appendChild($nodeID);
             // end 18-19
 
             // 20 omitidos ** opcional
-            /* /Invoice/cac:DeliveryTerms/cac:DeliveryLocation/cac:Address
-                <cac:DeliveryTerms> <cac:DeliveryLocation >
-                <cac:Address>
-                <cbc:StreetName>CALLE NEGOCIOS # 420</cbc:StreetName> <cbc:CitySubdivisionName/>
-                <cbc:CityName>LIMA</cbc:CityName> <cbc:CountrySubentity>LIMA</cbc:CountrySubentity> <cbc:CountrySubentityCode>150141</cbc:CountrySubentityCode> <cbc:District>SURQUILLO</cbc:District>
-                <cac:Country>
-                <cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode> </cac:Country>
-                </cac:Address> </cac:DeliveryLocation >
-                </cac:DeliveryTerms>
-            */
+                // /Invoice/cac:DeliveryTerms/cac:DeliveryLocation/cac:Address
+                // <cac:DeliveryTerms> <cac:DeliveryLocation >
+                // <cac:Address>
+                // <cbc:StreetName>CALLE NEGOCIOS # 420</cbc:StreetName> <cbc:CitySubdivisionName/>
+                // <cbc:CityName>LIMA</cbc:CityName> <cbc:CountrySubentity>LIMA</cbc:CountrySubentity> <cbc:CountrySubentityCode>150141</cbc:CountrySubentityCode> <cbc:District>SURQUILLO</cbc:District>
+                // <cac:Country>
+                // <cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode> </cac:Country>
+                // </cac:Address> </cac:DeliveryLocation >
+                // </cac:DeliveryTerms>
+            // end 20
 
             // begin 21 - Información de descuentos Globales **opcional
                 $factor = 0.10;
@@ -920,15 +1019,13 @@ class SaleController extends Controller
                 $nodeAllowanceCharge->appendChild($nodeBaseAmount);
             // end 21
 
-            // begin 22-29
+            // begin 22-29 ++ OK ++
                 $nodeTaxTotal = $dom->CreateElement('cac:TaxTotal');
                 $root->appendChild($nodeTaxTotal);
-
-                $igp = 0.18;
-                $montoTotal = $baseAmount;
-                $montoTotalImpuesto = round($montoTotal*$igp, 2);
+ 
                 // Monto total de impuestos **opcional
-                $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount',$montoTotalImpuesto);
+                $montoTotalImpuesto = round($data['importePagarIGV'], 2);
+                $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $montoTotalImpuesto);
                 $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeTaxTotal->appendChild($nodeTaxAmount);
 
@@ -936,117 +1033,121 @@ class SaleController extends Controller
                 $nodeTaxSubtotal = $dom->CreateElement('cac:TaxSubtotal');
                 $nodeTaxTotal->appendChild($nodeTaxSubtotal);
 
-                $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', $montoTotal);
-                $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
+                    $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', $data['importePagarSinIGV']);
+                    $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                    $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
 
-                $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $montoTotalImpuesto);
-                $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeTaxSubtotal->appendChild($nodeTaxAmount);
+                    $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $montoTotalImpuesto);
+                    $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                    $nodeTaxSubtotal->appendChild($nodeTaxAmount);
 
-                $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
-                $nodeTaxSubtotal->appendChild($nodeTaxCategory);
+                    $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
+                    $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
-                $nodeID = $dom->CreateElement('cbc:ID', 'S');
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
-                $nodeTaxCategory->appendChild($nodeID);
+                        $nodeID = $dom->CreateElement('cbc:ID', 'S'); // catalogo 5, S:IGV
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
+                        $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
+                        $nodeTaxCategory->appendChild($nodeID);
 
-                $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
-                $nodeTaxCategory->appendChild($nodeTaxScheme);
+                        $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
+                        $nodeTaxCategory->appendChild($nodeTaxScheme);
 
-                $nodeID = $dom->CreateElement('cbc:ID','1000'); // catálogo 5, 1000: Igv impuesto general a las ventas
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyID', '6'));
-                $nodeTaxScheme->appendChild($nodeID);
+                            $nodeID = $dom->CreateElement('cbc:ID','1000'); // catálogo 5, 1000: Igv impuesto general a las ventas
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
+                            $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyID', '6')); //qwe. indicado así en la guía de factura pero no especifica para boletas
+                            $nodeTaxScheme->appendChild($nodeID);
 
-                $nodeName = $dom->CreateElement('cbc:Name','IGV'); // Nombre del Tributo
-                $nodeTaxScheme->appendChild($nodeName);
+                            $nodeName = $dom->CreateElement('cbc:Name','IGV'); // Nombre del Tributo
+                            $nodeTaxScheme->appendChild($nodeName);
 
-                $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode','VAT'); // UN/ECE 5153- Duty or tax or fee type name code
-                $nodeTaxScheme->appendChild($nodeTaxTypeCode);
+                            $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode','VAT'); // UN/ECE 5153- Duty or tax or fee type name code
+                            $nodeTaxScheme->appendChild($nodeTaxTypeCode);
 
                 // Monto las operaciones Exonerada **opcional , no aplica
                 /*
-                $nodeTaxSubtotal = $dom->CreateElement('cac:TaxSubtotal');
-                $nodeTaxTotal->appendChild($nodeTaxSubtotal);
-                
-                $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', '320.00');
-                $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
-                
-                $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', '0.00');
-                $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeTaxSubtotal->appendChild($nodeTaxAmount);
+                    $nodeTaxSubtotal = $dom->CreateElement('cac:TaxSubtotal');
+                    $nodeTaxTotal->appendChild($nodeTaxSubtotal);
+                    
+                    $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', '320.00');
+                    $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                    $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
+                    
+                    $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', '0.00');
+                    $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                    $nodeTaxSubtotal->appendChild($nodeTaxAmount);
 
-                $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
-                $nodeTaxSubtotal->appendChild($nodeTaxCategory);
-                
-                $nodeID = $dom->CreateElement('cbc:ID', 'E');
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
-                $nodeTaxCategory->appendChild($nodeID);
-                
-                $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
-                $nodeTaxCategory->appendChild($nodeTaxScheme);
-                
-                $nodeID = $dom->CreateElement('cbc:ID','9997'); // catálogo 5, 9997:Exonerado
-                $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
-                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyID', '6'));
-                $nodeTaxScheme->appendChild($nodeID);
-                
-                $nodeEXONERADO = $dom->CreateElement('cbc:Name','EXONERADO'); // Nombre del Tributo
-                $nodeTaxScheme->appendChild($nodeEXONERADO);
-                
-                $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode','VAT'); // UN/ECE 5153- Duty or tax or fee type name code
-                $nodeTaxScheme->appendChild($nodeTaxTypeCode);
+                    $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
+                    $nodeTaxSubtotal->appendChild($nodeTaxCategory);
+                    
+                    $nodeID = $dom->CreateElement('cbc:ID', 'E');
+                    $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
+                    $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
+                    $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
+                    $nodeTaxCategory->appendChild($nodeID);
+                    
+                    $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
+                    $nodeTaxCategory->appendChild($nodeTaxScheme);
+                    
+                    $nodeID = $dom->CreateElement('cbc:ID','9997'); // catálogo 5, 9997:Exonerado
+                    $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
+                    $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyID', '6'));
+                    $nodeTaxScheme->appendChild($nodeID);
+                    
+                    $nodeEXONERADO = $dom->CreateElement('cbc:Name','EXONERADO'); // Nombre del Tributo
+                    $nodeTaxScheme->appendChild($nodeEXONERADO);
+                    
+                    $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode','VAT'); // UN/ECE 5153- Duty or tax or fee type name code
+                    $nodeTaxScheme->appendChild($nodeTaxTypeCode);
                 */
             
             // end 22-29
             
-            // begin 30-34 **opcional
+            // begin 30-34 **opcional ++ OK ++
                 $nodeLegalMonetaryTotal = $dom->CreateElement('cac:LegalMonetaryTotal'); 
                 $root->appendChild($nodeLegalMonetaryTotal);
 
                 // Total valor de venta **opcional -- OK
-                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', $data['subtotal']*0.82); 
+                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', $data['importePagarSinIGV']); 
                 $nodeLineExtensionAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodeLineExtensionAmount);
 
+                // Total precio de venta (impuestos solamente) **opcional -- OK
+                $nodeTaxExclusiveAmount = $dom->CreateElement('cbc:TaxExclusiveAmount', $data['importePagarIGV']); 
+                $nodeTaxExclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                $nodeLegalMonetaryTotal->appendChild($nodeTaxExclusiveAmount);
+                
                 // Total precio de venta (incluye impuestos) **opcional -- OK
-                $nodeTaxInclusiveAmount = $dom->CreateElement('cbc:TaxInclusiveAmount', $data['subtotal']); 
+                $nodeTaxInclusiveAmount = $dom->CreateElement('cbc:TaxInclusiveAmount', $data['importePagarConIGV']); 
                 $nodeTaxInclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodeTaxInclusiveAmount);
 
-                /*
-                // Monto total de descuentos del comprobante **opcional -- podría usar este
-                $nodeAllowanceTotalAmount = $dom->CreateElement('cbc:AllowanceTotalAmount', '60.00'); 
-                $nodeAllowanceTotalAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeLegalMonetaryTotal->appendChild($nodeAllowanceTotalAmount);
+                // // Monto total de descuentos del comprobante **opcional -- podría usar este
+                // $nodeAllowanceTotalAmount = $dom->CreateElement('cbc:AllowanceTotalAmount', '60.00'); 
+                // $nodeAllowanceTotalAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                // $nodeLegalMonetaryTotal->appendChild($nodeAllowanceTotalAmount);
 
-                // Monto total de otros cargos del comprobante **opcional
-                $nodeChargeTotalAmount = $dom->CreateElement('cbc:ChargeTotalAmount', '320.00'); 
-                $nodeChargeTotalAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeLegalMonetaryTotal->appendChild($nodeChargeTotalAmount);
+                // // Monto total de otros cargos del comprobante **opcional
+                // $nodeChargeTotalAmount = $dom->CreateElement('cbc:ChargeTotalAmount', '320.00'); 
+                // $nodeChargeTotalAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                // $nodeLegalMonetaryTotal->appendChild($nodeChargeTotalAmount);
 
-                // Monto total de otros cargos del comprobante **opcional
-                $nodePrepaidAmount = $dom->CreateElement('cbc:PrepaidAmount', '100.00'); 
-                $nodePrepaidAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                $nodeLegalMonetaryTotal->appendChild($nodePrepaidAmount);
-                */
+                // // Monto total de otros cargos del comprobante **opcional
+                // $nodePrepaidAmount = $dom->CreateElement('cbc:PrepaidAmount', '100.00'); 
+                // $nodePrepaidAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                // $nodeLegalMonetaryTotal->appendChild($nodePrepaidAmount);
 
                 // Importe total de la venta, cesión en uso o del servicio prestado  **opcional -- OK
-                $nodePayableAmount = $dom->CreateElement('cbc:PayableAmount', $data['subtotal']); 
+                $nodePayableAmount = $dom->CreateElement('cbc:PayableAmount', $data['importePagarConIGV']); 
                 $nodePayableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodePayableAmount);
             // end 30-34
 
-            // begin 35 - 37
-                $nodeInvoiceLine = $dom->CreateElement('cac:InvoiceLine'); 
-                $root->appendChild($nodeInvoiceLine);
+            // begin 35 - 38 ++ OK ++
                 foreach($data['encargoDetalle'] as $i => $item):
+                    $nodeInvoiceLine = $dom->CreateElement('cac:InvoiceLine'); 
+                    $root->appendChild($nodeInvoiceLine);
+
                     // Número de orden del Ítem
                     $nodeID = $dom->CreateElement('cbc:ID', $i+1); 
                     $nodeInvoiceLine->appendChild($nodeID);
@@ -1054,83 +1155,75 @@ class SaleController extends Controller
                     // Cantidad y Unidad de medida por ítem
                     $cantidadVenta = round($item['cantidad'], 2);
                     $nodeInvoicedQuantity = $dom->CreateElement('cbc:InvoicedQuantity', $cantidadVenta); // cantidad de eso
-                    $nodeInvoicedQuantity->setAttributeNode(new \DOMAttr('unitCode', 'NIU')); // catálogo 3, NIU: UNIDAD (BIENES)
+                    $nodeInvoicedQuantity->setAttributeNode(new \DOMAttr('unitCode', 'ZZ')); // catálogo 3, NIU: UNIDAD (BIENES), ZZ: pieza o parte de algo
                     $nodeInvoicedQuantity->setAttributeNode(new \DOMAttr('unitCodeListID', 'UN/ECE rec 20'));
                     $nodeInvoicedQuantity->setAttributeNode(new \DOMAttr('unitCodeListAgencyName', 'United Nations Economic Commission for Europe'));
                     $nodeInvoiceLine->appendChild($nodeInvoicedQuantity);
 
                     // Valor de venta del ítem
-                    $valorVenta = round($item['total']*0.82, 2);
+                    $valorVenta = round($item['importePagarSinIGV'], 2);
                     $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', $valorVenta);
                     $nodeLineExtensionAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                     $nodeInvoiceLine->appendChild($nodeLineExtensionAmount);
-                endforeach;
-            // end 35-37
-
-            // begin 38 - Precio de venta unitario por item y código
-                /* catálogo 16,
-                    01: Precio unitario (incluye el IGV)
-                    02: Valor referencial unitario en operaciones no onerosas
-                */
                 
-                foreach($data['encargoDetalle'] as $i => $item):
                     $nodePricingReference = $dom->CreateElement('cac:PricingReference'); 
                     $nodeInvoiceLine->appendChild($nodePricingReference);
+                    
+                        $nodeAlternativeConditionPrice = $dom->CreateElement('cac:AlternativeConditionPrice'); 
+                        $nodePricingReference->appendChild($nodeAlternativeConditionPrice);
+                        
+                            // Precio de venta unitario por item y código
+                            $precioUnitario = $item['precioConIGV']; // precio individual de cada producto con IGV
+                            $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', $precioUnitario); 
+                            $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                            $nodeAlternativeConditionPrice->appendChild($nodePriceAmount);
 
-                    $nodeAlternativeConditionPrice = $dom->CreateElement('cac:AlternativeConditionPrice'); 
-                    $nodePricingReference->appendChild($nodeAlternativeConditionPrice);
-
-                    // Precio de venta unitario por item y código
-                    $precioUnitario = $item['precio']; // creo que ponemos la suma agrupado por ítems
-                    $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', $precioUnitario); 
-                    $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                    $nodeAlternativeConditionPrice->appendChild($nodePriceAmount);
-
-                    $nodePriceTypeCode = $dom->CreateElement('cbc:PriceTypeCode', '01'); // 01: Precio unitario (incluye el IGV)
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16'));
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
-                    $nodeAlternativeConditionPrice->appendChild($nodePriceTypeCode);
-                endforeach;
-            // end 38
+                            // catálogo 16,
+                            //     01: Precio unitario (incluye el IGV)
+                            //     02: Valor referencial unitario en operaciones no onerosas
+                            $nodePriceTypeCode = $dom->CreateElement('cbc:PriceTypeCode', '01'); // 01: Precio unitario (incluye el IGV)
+                            $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
+                            $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
+                            $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16'));
+                            $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
+                            $nodeAlternativeConditionPrice->appendChild($nodePriceTypeCode);
+                
+            // end 35-38
 
             // begin 39 - Valor referencial unitario por ítem en operaciones no onerosas ** opcional - no aplica
-            /*
-                $nodeInvoiceLine = $dom->CreateElement('cbc:InvoiceLine');
-                $root->appendChild($nodeInvoiceLine);
-                
-                for($i = 0; $i < $n; $i++):
-                    $nodePricingReference = $dom->CreateElement('cac:PricingReference');
-                    $nodeInvoiceLine->appendChild($nodePricingReference);
-                    
-                    $nodeAlternativeConditionPrice = $dom->CreateElement('cac:AlternativeConditionPrice');
-                    $nodePricingReference->appendChild($nodeAlternativeConditionPrice);
-                    
-                    $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', 250.00);
-                    $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                    $nodeAlternativeConditionPrice->appendChild($nodePriceAmount);
+            
+                // $nodeInvoiceLine = $dom->CreateElement('cbc:InvoiceLine');
+                // $root->appendChild($nodeInvoiceLine);
 
-                    $nodePriceTypeCode = $dom->CreateElement('cbc:PriceTypeCode', '02'); // 02: Valor referencial unitario en operaciones no onerosas
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
-                    $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16'));
-                    $nodeAlternativeConditionPrice->appendChild($nodePriceTypeCode);
-                endfor;
-            */
+                // for($i = 0; $i < $n; $i++):
+                //     $nodePricingReference = $dom->CreateElement('cac:PricingReference');
+                //     $nodeInvoiceLine->appendChild($nodePricingReference);
+                    
+                //     $nodeAlternativeConditionPrice = $dom->CreateElement('cac:AlternativeConditionPrice');
+                //     $nodePricingReference->appendChild($nodeAlternativeConditionPrice);
+                    
+                //     $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', 250.00);
+                //     $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                //     $nodeAlternativeConditionPrice->appendChild($nodePriceAmount);
+
+                //     $nodePriceTypeCode = $dom->CreateElement('cbc:PriceTypeCode', '02'); // 02: Valor referencial unitario en operaciones no onerosas
+                //     $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Indicador de Tipo de Precio'));
+                //     $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
+                //     $nodePriceTypeCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16'));
+                //     $nodeAlternativeConditionPrice->appendChild($nodePriceTypeCode);
+                // endfor;
+            
             // end 39
 
             // begin 40 - descuentos por items **opcional
-                /* catálogo 53, 
-                00: OTROS DESCUENTOS | Descuentos que afectan la base imponible del IGV Global e Item Todos
-                01: Descuentos que no afectan la base imponible del IGV Global e Item Todos
-                02: Descuentos globales que afectan la base imponible del IGV Global Todos
-                03: Descuentos globales que no afectan la base imponible del IGV
-                45: FISE Global Todos
-                46: Recargo al consumo y/o propinas Global
-                47: Cargos que afectan la base imponible del IGV
-                */
-                
+                // catálogo 53, 
+                // 00: OTROS DESCUENTOS | Descuentos que afectan la base imponible del IGV Global e Item Todos
+                // 01: Descuentos que no afectan la base imponible del IGV Global e Item Todos
+                // 02: Descuentos globales que afectan la base imponible del IGV Global Todos
+                // 03: Descuentos globales que no afectan la base imponible del IGV
+                // 45: FISE Global Todos
+                // 46: Recargo al consumo y/o propinas Global
+                // 47: Cargos que afectan la base imponible del IGV
 
                 $nodeAllowanceCharge = $dom->CreateElement('cac:AllowanceCharge');
                 $nodeInvoiceLine->appendChild($nodeAllowanceCharge);
@@ -1179,79 +1272,77 @@ class SaleController extends Controller
             */
             // end 41
             
-            // begin 42 - Afectación al IGV por ítem
-                /* catálogo 7,
-                10: Gravado - Operación Onerosa
-                11: Gravado – Retiro por premio
-                12: Gravado – Retiro por donación
-                13: Gravado – Retiro
-                14: Gravado – Retiro por publicidad
-                15: Gravado – Bonificaciones
-                16: Gravado – Retiro por entrega a trabajadores
-                17: Gravado – IVAP
-                20: Exonerado - Operación Onerosa
-                21: Exonerado – Transferencia Gratuita
-                30: Inafecto - Operación Onerosa
-                31: Inafecto – Retiro por Bonificación
-                32: Inafecto – Retiro
-                33: Inafecto – Retiro por Muestras Médicas
-                34: Inafecto - Retiro por Convenio Colectivo
-                35: Inafecto – Retiro por premio
-                36: Inafecto - Retiro por publicidad
-                40: Exportación de bienes o servicios
-                */
-                
-                foreach($data['encargoDetalle'] as $i => $item):
+            // begin 42 - Afectación al IGV por ítem ++ OK ++
+                // catálogo 7,
+                // 10: Gravado - Operación Onerosa
+                // 11: Gravado – Retiro por premio
+                // 12: Gravado – Retiro por donación
+                // 13: Gravado – Retiro
+                // 14: Gravado – Retiro por publicidad
+                // 15: Gravado – Bonificaciones
+                // 16: Gravado – Retiro por entrega a trabajadores
+                // 17: Gravado – IVAP
+                // 20: Exonerado - Operación Onerosa
+                // 21: Exonerado – Transferencia Gratuita
+                // 30: Inafecto - Operación Onerosa
+                // 31: Inafecto – Retiro por Bonificación
+                // 32: Inafecto – Retiro
+                // 33: Inafecto – Retiro por Muestras Médicas
+                // 34: Inafecto - Retiro por Convenio Colectivo
+                // 35: Inafecto – Retiro por premio
+                // 36: Inafecto - Retiro por publicidad
+                // 40: Exportación de bienes o servicios
+
                     $nodeTaxTotal = $dom->CreateElement('cac:TaxTotal');
                     $nodeInvoiceLine->appendChild($nodeTaxTotal);
                     
-                    $nodeTaxAmount = $dom->CreateElement('cac:TaxAmount', $item['total']*0.18);
-                    $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                    $nodeTaxTotal->appendChild($nodeTaxAmount);
+                        $nodeTaxAmount = $dom->CreateElement('cac:TaxAmount', $item['precioIGV']);
+                        $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                        $nodeTaxTotal->appendChild($nodeTaxAmount);
+                        
+                        $nodeTaxSubtotal = $dom->CreateElement('cac:TaxSubtotal');
+                        $nodeTaxTotal->appendChild($nodeTaxSubtotal);
                     
-                    $nodeTaxSubtotal = $dom->CreateElement('cac:TaxSubtotal');
-                    $nodeTaxTotal->appendChild($nodeTaxSubtotal);
-                    
-                    $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', $item['total']*0.82);
-                    $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                    $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
-                    
-                    $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $item['total']*0.18);
-                    $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                    $nodeTaxSubtotal->appendChild($nodeTaxAmount);
-                    
-                    $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
-                    $nodeTaxSubtotal->appendChild($nodeTaxCategory);
+                            $nodeTaxableAmount = $dom->CreateElement('cbc:TaxableAmount', $item['precioSinIGV']);
+                            $nodeTaxableAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                            $nodeTaxSubtotal->appendChild($nodeTaxableAmount);
+                            
+                            $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $item['precioIGV']);
+                            $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                            $nodeTaxSubtotal->appendChild($nodeTaxAmount);
+                            
+                            $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
+                            $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
-                    $nodeID = $dom->CreateElement('cbc:ID', 'S'); // catálogo 5
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
-                    $nodeTaxCategory->appendChild($nodeID);
+                                $nodeID = $dom->CreateElement('cbc:ID', 'S'); // catálogo 5
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5305'));
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Category Identifier'));
+                                $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
+                                $nodeTaxCategory->appendChild($nodeID);
 
-                    $nodePercent = $dom->CreateElement('cbc:Percent', '18.00');
-                    $nodeTaxCategory->appendChild($nodePercent);
+                                $nodePercent = $dom->CreateElement('cbc:Percent', '18.00');
+                                $nodeTaxCategory->appendChild($nodePercent);
+                                
+                                $nodeTaxExemptionReasonCode = $dom->CreateElement('cbc:TaxExemptionReasonCode', '10'); // catálogo 7, 10: Gravado - Operación Onerosa
+                                $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
+                                $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Codigo de Tipo de Afectación del IGV'));
+                                $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07'));
+                                $nodeTaxCategory->appendChild($nodeTaxExemptionReasonCode);
+
+                                $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
+                                $nodeTaxCategory->appendChild($nodeTaxScheme);
                     
-                    $nodeTaxExemptionReasonCode = $dom->CreateElement('cbc:TaxExemptionReasonCode', '10'); // catálogo 7, 10: Gravado - Operación Onerosa
-                    $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listAgencyName', 'PE:SUNAT'));
-                    $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listName', 'SUNAT:Codigo de Tipo de Afectación del IGV'));
-                    $nodeTaxExemptionReasonCode->setAttributeNode(new \DOMAttr('listURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07'));
-                    $nodeTaxCategory->appendChild($nodeTaxExemptionReasonCode);
+                                    $nodeID = $dom->CreateElement('cbc:ID', '1000'); // catálogo 5, 1000: Igv impuesto general a las ventas
+                                    $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5153'));
+                                    $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Scheme Identifier'));
+                                    $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
+                                    $nodeTaxScheme->appendChild($nodeID);
 
-                    $nodeTaxScheme = $dom->CreateElement('cac:TaxScheme');
-                    $nodeTaxCategory->appendChild($nodeTaxScheme);
-                    
-                    $nodeID = $dom->CreateElement('cbc:ID', '1000'); // catálogo 5, 1000: Igv impuesto general a las ventas
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeID', 'UN/ECE 5153'));
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Tax Scheme Identifier'));
-                    $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'United Nations Economic Commission for Europe'));
-                    $nodeTaxScheme->appendChild($nodeID);
+                                    $nodeName = $dom->CreateElement('cbc:Name', 'IGV'); // catálogo 5, UN/ECE 5153- Duty or tax or fee type name code
+                                    $nodeTaxScheme->appendChild($nodeName);
 
-                    $nodeName = $dom->CreateElement('cbc:Name', 'IGV'); // catálogo 5, UN/ECE 5153- Duty or tax or fee type name code
-                    $nodeTaxScheme->appendChild($nodeName);
-
-                    $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode', 'VAT'); // catálogo 5, Nombre del Tributo
-                    $nodeTaxScheme->appendChild($nodeTaxTypeCode);
+                                    $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode', 'VAT'); // catálogo 5, Nombre del Tributo
+                                    $nodeTaxScheme->appendChild($nodeTaxTypeCode);
                 endforeach;
             // end 42
 
@@ -1372,6 +1463,7 @@ class SaleController extends Controller
             
 
 
+            
             $dom->appendChild($root);
 
             $file = $data['emisorRUC'].'_01_'.$data['emisorNumeroDocumentoElectronico'].'.xml';
@@ -1382,7 +1474,8 @@ class SaleController extends Controller
 
     public function getQR($data) {
         $hash = "";
-        $value = $data['emisorRUC'].'|03|'.$data['emisorNumeroDocumentoElectronico'].'|IGV|'.$data['subtotal'].'|'.$data['emisorFechaDocumentoElectronico'].'|1|'.$data['adquirienteRUC'].'|'.$hash;
+        $dniruc = (isset($data['adquirienteRUC']))? $data['adquirienteRUC'] : $data['adquirienteDNI'];
+        $value = $data['emisorRUC'].'|03|'.$data['emisorNumeroDocumentoElectronico'].'|IGV|'.$data['subtotal'].'|'.$data['emisorFechaDocumentoElectronico'].'|1|'.$dniruc.'|'.$hash;
         $img = base_path('public/pruebas/qrcode.png');
         return ['value' => $value, 'img' => $img];
     }

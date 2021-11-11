@@ -38,6 +38,9 @@ class Encargo extends Model
         'documento_fecha',        
         'encargo',
         'subtotal',
+        'importe_pagar_con_igv',
+        'importe_pagar_sin_igv',
+        'importe_pagar_igv',
         'importe_pagar',
     ];
 
@@ -70,9 +73,21 @@ class Encargo extends Model
                 'emisorRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
                 'emisorDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 'emisorRUC' => env('EMPRESA_RUC','NO DEFINIDO'),
+                'emisorUbigeo' =>'150101',
+                'emisorDireccionPais' => 'PE',
+                'emisorDireccionDepartamento' => 'LIMA',
+                'emisorDireccionProvincia' => 'LIMA',
+                'emisorDireccionDistrito' => 'SAN BORJA',
+                'emisorDireccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
 
                 'adquirienteRazonSocial' => mb_strtoupper($encargo->adquirientes->razon_social),
                 'adquirienteDireccionFiscal' => $encargo->adquirientes->direccion,
+                'adquirienteDireccionDepartamento' => $encargo->adquirientes->departamento,
+                'adquirienteDireccionProvincia' => $encargo->adquirientes->provincia,
+                'adquirienteDireccionDistrito' => $encargo->adquirientes->distrito,
+                'adquirienteDireccion' => '',
+                'adquirienteDireccionPais' => 'PE',
+                
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->agencias->direccion),
                 'emisorAgenciaTelefono' => $encargo->agencias->telefono,
                 'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
@@ -85,8 +100,11 @@ class Encargo extends Model
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
                 'encargoDetalle' => $encargo->encargo,
+
+                'importePagarConIGV' => $encargo->importe_pagar_con_igv,
+                'importePagarSinIGV' => $encargo->importe_pagar_sin_igv,
+                'importePagarIGV' => $encargo->importe_pagar_igv,
                 'subtotal' => $encargo->subtotal,
-                'importePagar' => $encargo->importe_pagar,
             ];
             if($encargo->documentos->alias === 'F') {
                 $data['adquirienteRUC'] = $encargo->adquirientes->documento;
@@ -114,6 +132,12 @@ class Encargo extends Model
                 'emisorRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
                 'emisorDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 'emisorRUC' => env('EMPRESA_RUC','NO DEFINIDO'),
+                'emisorUbigeo' =>'150101',
+                'emisorDireccionPais' => 'PE',
+                'emisorDireccionDepartamento' => 'LIMA',
+                'emisorDireccionProvincia' => 'LIMA',
+                'emisorDireccionDistrito' => 'SAN BORJA',
+                'emisorDireccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
 
                 'emisorAgenciaDireccion' => mb_strtoupper($encargo->emisores->direccion),
                 'emisorAgenciaTelefono' => $encargo->emisores->telefono,
