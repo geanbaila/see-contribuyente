@@ -8,16 +8,18 @@
 		<meta name="robots" content="noindex, nosnippet, nofollow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta charset="utf-8" />
-		<link rel="shortcut icon" href="{{asset('assets/media/logos/favicon.ico')}}" />
+		<link rel="canonical" href="Https://preview.keenthemes.com/metronic8" />
+
+		<link rel="shortcut icon" href="{{asset('assets/metronic/media/logos/favicon.ico')}}" />
 		<!--begin::Fonts-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
 		<!--end::Fonts-->
 		<!--begin::Page Vendor Stylesheets(used by this page)-->
-		<link href="{{asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
+		<link href="{{asset('assets/metronic/plugins/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
 		<!--end::Page Vendor Stylesheets-->
 		<!--begin::Global Stylesheets Bundle(used by all pages)-->
-		<link href="{{asset('assets/plugins/global/plugins.bundle.css')}}" rel="stylesheet" type="text/css" />
-		<link href="{{asset('assets/css/style.bundle.css')}}" rel="stylesheet" type="text/css" />
+		<link href="{{asset('assets/metronic/plugins/global/plugins.bundle.css')}}" rel="stylesheet" type="text/css" />
+		<link href="{{asset('assets/metronic/css/style.bundle.css')}}" rel="stylesheet" type="text/css" />
 		<!--end::Global Stylesheets Bundle-->
 		<style>
 			.yield-content{
@@ -44,7 +46,7 @@
 							<!--begin::Logo-->
 							<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15">
 								<a href="../../demo1/dist/index.html">
-									<img alt="Logo" src="{{asset('assets/media/logos/logo.jpeg')}}" class="h-20px h-lg-30px" />
+									<img alt="Logo" src="{{asset('assets/metronic/media/logos/logo.jpeg')}}" class="h-20px h-lg-30px" />
 								</a>
 							</div>
 							<!--end::Logo-->
@@ -165,7 +167,7 @@
 																<a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
-																		<img src="assets/media/avatars/150-1.jpg" alt="" />
+																		<img src="{{asset('assets/metronic/media/avatars/150-1.jpg')}}" alt="" />
 																	</div>
 																	<!--end::Symbol-->
 																	<!--begin::Title-->
@@ -180,7 +182,7 @@
 																<a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
-																		<img src="assets/media/avatars/150-3.jpg" alt="" />
+																		<img src="{{asset('assets/metronic/media/avatars/150-3.jpg')}}" alt="" />
 																	</div>
 																	<!--end::Symbol-->
 																	<!--begin::Title-->
@@ -195,7 +197,7 @@
 																<a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
-																		<img src="assets/media/avatars/150-8.jpg" alt="" />
+																		<img src="{{asset('assets/metronic/media/avatars/150-8.jpg')}}" alt="" />
 																	</div>
 																	<!--end::Symbol-->
 																	<!--begin::Title-->
@@ -210,7 +212,7 @@
 																<a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
-																		<img src="assets/media/avatars/150-11.jpg" alt="" />
+																		<img src="{{asset('assets/metronic/media/avatars/150-11.jpg')}}" alt="" />
 																	</div>
 																	<!--end::Symbol-->
 																	<!--begin::Title-->
@@ -225,7 +227,7 @@
 																<a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
-																		<img src="assets/media/avatars/150-12.jpg" alt="" />
+																		<img src="{{asset('assets/metronic/media/avatars/150-12.jpg')}}" alt="" />
 																	</div>
 																	<!--end::Symbol-->
 																	<!--begin::Title-->
@@ -244,7 +246,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<img class="w-20px h-20px" src="assets/media/svg/brand-logos/volicity-9.svg" alt="" />
+																			<img class="w-20px h-20px" src="{{asset('assets/metronic/media/svg/brand-logos/volicity-9.svg')}}" alt="" />
 																		</span>
 																	</div>
 																	<!--end::Symbol-->
@@ -261,7 +263,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<img class="w-20px h-20px" src="assets/media/svg/brand-logos/tvit.svg" alt="" />
+																			<img class="w-20px h-20px" src="{{asset('assets/metronic/media/svg/brand-logos/tvit.svg')}}" alt="" />
 																		</span>
 																	</div>
 																	<!--end::Symbol-->
@@ -278,7 +280,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<img class="w-20px h-20px" src="assets/media/svg/misc/infography.svg" alt="" />
+																			<img class="w-20px h-20px" src="{{asset('assets/metronic/media/svg/misc/infography.svg')}}" alt="" />
 																		</span>
 																	</div>
 																	<!--end::Symbol-->
@@ -295,7 +297,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<img class="w-20px h-20px" src="assets/media/svg/brand-logos/leaf.svg" alt="" />
+																			<img class="w-20px h-20px" src="{{asset('assets/metronic/media/svg/brand-logos/leaf.svg')}}" alt="" />
 																		</span>
 																	</div>
 																	<!--end::Symbol-->
@@ -312,7 +314,7 @@
 																	<!--begin::Symbol-->
 																	<div class="symbol symbol-40px me-4">
 																		<span class="symbol-label bg-light">
-																			<img class="w-20px h-20px" src="assets/media/svg/brand-logos/tower.svg" alt="" />
+																			<img class="w-20px h-20px" src="{{asset('assets/metronic/media/svg/brand-logos/tower.svg')}}" alt="" />
 																		</span>
 																	</div>
 																	<!--end::Symbol-->
@@ -462,126 +464,6 @@
 																	<div class="d-flex flex-column">
 																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">BoomApp by Keenthemes</a>
 																		<span class="fs-7 text-muted fw-bold">#45789</span>
-																	</div>
-																	<!--end::Title-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex align-items-center mb-5">
-																	<!--begin::Symbol-->
-																	<div class="symbol symbol-40px me-4">
-																		<span class="symbol-label bg-light">
-																			<!--begin::Svg Icon | path: icons/duotune/graphs/gra001.svg-->
-																			<span class="svg-icon svg-icon-2 svg-icon-primary">
-																				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																					<path opacity="0.3" d="M14 3V21H10V3C10 2.4 10.4 2 11 2H13C13.6 2 14 2.4 14 3ZM7 14H5C4.4 14 4 14.4 4 15V21H8V15C8 14.4 7.6 14 7 14Z" fill="black" />
-																					<path d="M21 20H20V8C20 7.4 19.6 7 19 7H17C16.4 7 16 7.4 16 8V20H3C2.4 20 2 20.4 2 21C2 21.6 2.4 22 3 22H21C21.6 22 22 21.6 22 21C22 20.4 21.6 20 21 20Z" fill="black" />
-																				</svg>
-																			</span>
-																			<!--end::Svg Icon-->
-																		</span>
-																	</div>
-																	<!--end::Symbol-->
-																	<!--begin::Title-->
-																	<div class="d-flex flex-column">
-																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">"Kept API Project Meeting</a>
-																		<span class="fs-7 text-muted fw-bold">#84050</span>
-																	</div>
-																	<!--end::Title-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex align-items-center mb-5">
-																	<!--begin::Symbol-->
-																	<div class="symbol symbol-40px me-4">
-																		<span class="symbol-label bg-light">
-																			<!--begin::Svg Icon | path: icons/duotune/graphs/gra006.svg-->
-																			<span class="svg-icon svg-icon-2 svg-icon-primary">
-																				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																					<path d="M13 5.91517C15.8 6.41517 18 8.81519 18 11.8152C18 12.5152 17.9 13.2152 17.6 13.9152L20.1 15.3152C20.6 15.6152 21.4 15.4152 21.6 14.8152C21.9 13.9152 22.1 12.9152 22.1 11.8152C22.1 7.01519 18.8 3.11521 14.3 2.01521C13.7 1.91521 13.1 2.31521 13.1 3.01521V5.91517H13Z" fill="black" />
-																					<path opacity="0.3" d="M19.1 17.0152C19.7 17.3152 19.8 18.1152 19.3 18.5152C17.5 20.5152 14.9 21.7152 12 21.7152C9.1 21.7152 6.50001 20.5152 4.70001 18.5152C4.30001 18.0152 4.39999 17.3152 4.89999 17.0152L7.39999 15.6152C8.49999 16.9152 10.2 17.8152 12 17.8152C13.8 17.8152 15.5 17.0152 16.6 15.6152L19.1 17.0152ZM6.39999 13.9151C6.19999 13.2151 6 12.5152 6 11.8152C6 8.81517 8.2 6.41515 11 5.91515V3.01519C11 2.41519 10.4 1.91519 9.79999 2.01519C5.29999 3.01519 2 7.01517 2 11.8152C2 12.8152 2.2 13.8152 2.5 14.8152C2.7 15.4152 3.4 15.7152 4 15.3152L6.39999 13.9151Z" fill="black" />
-																				</svg>
-																			</span>
-																			<!--end::Svg Icon-->
-																		</span>
-																	</div>
-																	<!--end::Symbol-->
-																	<!--begin::Title-->
-																	<div class="d-flex flex-column">
-																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">"KPI Monitoring App Launch</a>
-																		<span class="fs-7 text-muted fw-bold">#84250</span>
-																	</div>
-																	<!--end::Title-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex align-items-center mb-5">
-																	<!--begin::Symbol-->
-																	<div class="symbol symbol-40px me-4">
-																		<span class="symbol-label bg-light">
-																			<!--begin::Svg Icon | path: icons/duotune/graphs/gra002.svg-->
-																			<span class="svg-icon svg-icon-2 svg-icon-primary">
-																				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																					<path opacity="0.3" d="M20 8L12.5 5L5 14V19H20V8Z" fill="black" />
-																					<path d="M21 18H6V3C6 2.4 5.6 2 5 2C4.4 2 4 2.4 4 3V18H3C2.4 18 2 18.4 2 19C2 19.6 2.4 20 3 20H4V21C4 21.6 4.4 22 5 22C5.6 22 6 21.6 6 21V20H21C21.6 20 22 19.6 22 19C22 18.4 21.6 18 21 18Z" fill="black" />
-																				</svg>
-																			</span>
-																			<!--end::Svg Icon-->
-																		</span>
-																	</div>
-																	<!--end::Symbol-->
-																	<!--begin::Title-->
-																	<div class="d-flex flex-column">
-																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">Project Reference FAQ</a>
-																		<span class="fs-7 text-muted fw-bold">#67945</span>
-																	</div>
-																	<!--end::Title-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex align-items-center mb-5">
-																	<!--begin::Symbol-->
-																	<div class="symbol symbol-40px me-4">
-																		<span class="symbol-label bg-light">
-																			<!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
-																			<span class="svg-icon svg-icon-2 svg-icon-primary">
-																				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																					<path d="M6 8.725C6 8.125 6.4 7.725 7 7.725H14L18 11.725V12.925L22 9.725L12.6 2.225C12.2 1.925 11.7 1.925 11.4 2.225L2 9.725L6 12.925V8.725Z" fill="black" />
-																					<path opacity="0.3" d="M22 9.72498V20.725C22 21.325 21.6 21.725 21 21.725H3C2.4 21.725 2 21.325 2 20.725V9.72498L11.4 17.225C11.8 17.525 12.3 17.525 12.6 17.225L22 9.72498ZM15 11.725H18L14 7.72498V10.725C14 11.325 14.4 11.725 15 11.725Z" fill="black" />
-																				</svg>
-																			</span>
-																			<!--end::Svg Icon-->
-																		</span>
-																	</div>
-																	<!--end::Symbol-->
-																	<!--begin::Title-->
-																	<div class="d-flex flex-column">
-																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">"FitPro App Development</a>
-																		<span class="fs-7 text-muted fw-bold">#84250</span>
-																	</div>
-																	<!--end::Title-->
-																</div>
-																<!--end::Item-->
-																<!--begin::Item-->
-																<div class="d-flex align-items-center mb-5">
-																	<!--begin::Symbol-->
-																	<div class="symbol symbol-40px me-4">
-																		<span class="symbol-label bg-light">
-																			<!--begin::Svg Icon | path: icons/duotune/finance/fin001.svg-->
-																			<span class="svg-icon svg-icon-2 svg-icon-primary">
-																				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																					<path d="M20 19.725V18.725C20 18.125 19.6 17.725 19 17.725H5C4.4 17.725 4 18.125 4 18.725V19.725H3C2.4 19.725 2 20.125 2 20.725V21.725H22V20.725C22 20.125 21.6 19.725 21 19.725H20Z" fill="black" />
-																					<path opacity="0.3" d="M22 6.725V7.725C22 8.325 21.6 8.725 21 8.725H18C18.6 8.725 19 9.125 19 9.725C19 10.325 18.6 10.725 18 10.725V15.725C18.6 15.725 19 16.125 19 16.725V17.725H15V16.725C15 16.125 15.4 15.725 16 15.725V10.725C15.4 10.725 15 10.325 15 9.725C15 9.125 15.4 8.725 16 8.725H13C13.6 8.725 14 9.125 14 9.725C14 10.325 13.6 10.725 13 10.725V15.725C13.6 15.725 14 16.125 14 16.725V17.725H10V16.725C10 16.125 10.4 15.725 11 15.725V10.725C10.4 10.725 10 10.325 10 9.725C10 9.125 10.4 8.725 11 8.725H8C8.6 8.725 9 9.125 9 9.725C9 10.325 8.6 10.725 8 10.725V15.725C8.6 15.725 9 16.125 9 16.725V17.725H5V16.725C5 16.125 5.4 15.725 6 15.725V10.725C5.4 10.725 5 10.325 5 9.725C5 9.125 5.4 8.725 6 8.725H3C2.4 8.725 2 8.325 2 7.725V6.725L11 2.225C11.6 1.925 12.4 1.925 13.1 2.225L22 6.725ZM12 3.725C11.2 3.725 10.5 4.425 10.5 5.225C10.5 6.025 11.2 6.725 12 6.725C12.8 6.725 13.5 6.025 13.5 5.225C13.5 4.425 12.8 3.725 12 3.725Z" fill="black" />
-																				</svg>
-																			</span>
-																			<!--end::Svg Icon-->
-																		</span>
-																	</div>
-																	<!--end::Symbol-->
-																	<!--begin::Title-->
-																	<div class="d-flex flex-column">
-																		<a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">Shopix Mobile App</a>
-																		<span class="fs-7 text-muted fw-bold">#45690</span>
 																	</div>
 																	<!--end::Title-->
 																</div>
@@ -837,7 +719,8 @@
 											<!--begin::Menu-->
 											<div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px" data-kt-menu="true">
 												<!--begin::Heading-->
-												<div class="d-flex flex-column bgi-no-repeat rounded-top" style="background-image:url('assets/media/misc/pattern-1.jpg')">
+												<div class="d-flex flex-column bgi-no-repeat rounded-top">
+													<!-- style="background-image:url('/assets/media/misc/pattern-1.jpg')"-->
 													<!--begin::Title-->
 													<h3 class="text-white fw-bold px-9 mt-10 mb-6">Notifications
 													<span class="fs-8 opacity-75 ps-3">24 reports</span></h3>
@@ -1121,7 +1004,7 @@
 															<!--end::Section-->
 															<!--begin::Illustration-->
 															<div class="text-center px-4">
-																<img class="mw-100 mh-200px" alt="metronic" src="assets/media/illustrations/sketchy-1/1.png" />
+																<img class="mw-100 mh-200px" alt="metronic" src="{{asset('assets/metronic/media/illustrations/sketchy-')}}1/1.png" />
 															</div>
 															<!--end::Illustration-->
 														</div>
@@ -1360,24 +1243,6 @@
 											<!--end::Menu wrapper-->
 										</div>
 										<!--end::Notifications-->
-										<!--begin::Chat-->
-										<div class="d-flex align-items-center ms-1 ms-lg-3">
-											<!--begin::Menu wrapper-->
-											<div class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px" id="kt_drawer_chat_toggle">
-												<!--begin::Svg Icon | path: icons/duotune/communication/com012.svg-->
-												<span class="svg-icon svg-icon-1">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-														<path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="black" />
-														<rect x="6" y="12" width="7" height="2" rx="1" fill="black" />
-														<rect x="6" y="7" width="12" height="2" rx="1" fill="black" />
-													</svg>
-												</span>
-												<!--end::Svg Icon-->
-												<span class="bullet bullet-dot bg-success h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink"></span>
-											</div>
-											<!--end::Menu wrapper-->
-										</div>
-										<!--end::Chat-->
 										<!--begin::Quick links-->
 										<div class="d-flex align-items-center ms-1 ms-lg-3">
 											<!--begin::Menu wrapper-->
@@ -1396,7 +1261,8 @@
 											<!--begin::Menu-->
 											<div class="menu menu-sub menu-sub-dropdown menu-column w-250px w-lg-325px" data-kt-menu="true">
 												<!--begin::Heading-->
-												<div class="d-flex flex-column flex-center bgi-no-repeat rounded-top px-9 py-10" style="background-image:url('assets/media/misc/pattern-1.jpg')">
+												<div class="d-flex flex-column flex-center bgi-no-repeat rounded-top px-9 py-10">
+													<!--  style="background-image:url('assets/media/misc/pattern-1.jpg')"-->
 													<!--begin::Title-->
 													<h3 class="text-white fw-bold mb-3">Quick Links</h3>
 													<!--end::Title-->
@@ -1495,7 +1361,7 @@
 										<div class="d-flex align-items-center ms-1 ms-lg-3" id="kt_header_user_menu_toggle">
 											<!--begin::Menu wrapper-->
 											<div class="cursor-pointer symbol symbol-30px symbol-md-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
-												<img src="{{asset('assets/media/avatars/150-27.jpg')}}" alt="metronic" />
+												<img src="{{asset('assets/metronic/media/avatars/150-27.jpg')}}" alt="metronic" />
 											</div>
 											<!--begin::Menu-->
 											<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px" data-kt-menu="true">
@@ -1504,7 +1370,7 @@
 													<div class="menu-content d-flex align-items-center px-3">
 														<!--begin::Avatar-->
 														<div class="symbol symbol-50px me-5">
-															<img alt="Logo" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
+															<img alt="Logo" src="{{asset('assets/metronic/media/avatars/150-27.jpg')}}" />
 														</div>
 														<!--end::Avatar-->
 														<!--begin::Username-->
@@ -1524,124 +1390,10 @@
 												<div class="menu-item px-5">
 													<a href="../../demo1/dist/account/overview.html" class="menu-link px-5">My Profile</a>
 												</div>
-												<!--end::Menu item-->
-												<!--begin::Menu item-->
-												<div class="menu-item px-5">
-													<a href="../../demo1/dist/pages/projects/list.html" class="menu-link px-5">
-														<span class="menu-text">My Projects</span>
-														<span class="menu-badge">
-															<span class="badge badge-light-danger badge-circle fw-bolder fs-7">3</span>
-														</span>
-													</a>
-												</div>
-												<!--end::Menu item-->
-												<!--begin::Menu item-->
-												<div class="menu-item px-5" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start" data-kt-menu-flip="bottom, top">
-													<a href="#" class="menu-link px-5">
-														<span class="menu-title">My Subscription</span>
-														<span class="menu-arrow"></span>
-													</a>
-													<!--begin::Menu sub-->
-													<div class="menu-sub menu-sub-dropdown w-175px py-4">
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/referrals.html" class="menu-link px-5">Referrals</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/billing.html" class="menu-link px-5">Billing</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/statements.html" class="menu-link px-5">Payments</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/statements.html" class="menu-link d-flex flex-stack px-5">Statements
-															<i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="View your statements"></i></a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu separator-->
-														<div class="separator my-2"></div>
-														<!--end::Menu separator-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<div class="menu-content px-3">
-																<label class="form-check form-switch form-check-custom form-check-solid">
-																	<input class="form-check-input w-30px h-20px" type="checkbox" value="1" checked="checked" name="notifications" />
-																	<span class="form-check-label text-muted fs-7">Notifications</span>
-																</label>
-															</div>
-														</div>
-														<!--end::Menu item-->
-													</div>
-													<!--end::Menu sub-->
-												</div>
-												<!--end::Menu item-->
-												<!--begin::Menu item-->
-												<div class="menu-item px-5">
-													<a href="../../demo1/dist/account/statements.html" class="menu-link px-5">My Statements</a>
-												</div>
-												<!--end::Menu item-->
+												<!--end::Menu item--> 
 												<!--begin::Menu separator-->
 												<div class="separator my-2"></div>
 												<!--end::Menu separator-->
-												<!--begin::Menu item-->
-												<div class="menu-item px-5" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start" data-kt-menu-flip="bottom, top">
-													<a href="#" class="menu-link px-5">
-														<span class="menu-title position-relative">Language
-														<span class="fs-8 rounded bg-light px-3 py-2 position-absolute translate-middle-y top-50 end-0">English
-														<img class="w-15px h-15px rounded-1 ms-2" src="assets/media/flags/united-states.svg" alt="" /></span></span>
-													</a>
-													<!--begin::Menu sub-->
-													<div class="menu-sub menu-sub-dropdown w-175px py-4">
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/settings.html" class="menu-link d-flex px-5 active">
-															<span class="symbol symbol-20px me-4">
-																<img class="rounded-1" src="assets/media/flags/united-states.svg" alt="" />
-															</span>English</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/settings.html" class="menu-link d-flex px-5">
-															<span class="symbol symbol-20px me-4">
-																<img class="rounded-1" src="assets/media/flags/spain.svg" alt="" />
-															</span>Spanish</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/settings.html" class="menu-link d-flex px-5">
-															<span class="symbol symbol-20px me-4">
-																<img class="rounded-1" src="assets/media/flags/germany.svg" alt="" />
-															</span>German</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/settings.html" class="menu-link d-flex px-5">
-															<span class="symbol symbol-20px me-4">
-																<img class="rounded-1" src="assets/media/flags/japan.svg" alt="" />
-															</span>Japanese</a>
-														</div>
-														<!--end::Menu item-->
-														<!--begin::Menu item-->
-														<div class="menu-item px-3">
-															<a href="../../demo1/dist/account/settings.html" class="menu-link d-flex px-5">
-															<span class="symbol symbol-20px me-4">
-																<img class="rounded-1" src="assets/media/flags/france.svg" alt="" />
-															</span>French</a>
-														</div>
-														<!--end::Menu item-->
-													</div>
-													<!--end::Menu sub-->
-												</div>
-												<!--end::Menu item-->
 												<!--begin::Menu item-->
 												<div class="menu-item px-5 my-1">
 													<a href="../../demo1/dist/account/settings.html" class="menu-link px-5">Account Settings</a>
@@ -1652,20 +1404,7 @@
 													<a href="../../demo1/dist/authentication/flows/basic/sign-in.html" class="menu-link px-5">Sign Out</a>
 												</div>
 												<!--end::Menu item-->
-												<!--begin::Menu separator-->
-												<div class="separator my-2"></div>
-												<!--end::Menu separator-->
-												<!--begin::Menu item-->
-												<div class="menu-item px-5">
-													<div class="menu-content px-5">
-														<label class="form-check form-switch form-check-custom form-check-solid pulse pulse-success" for="kt_user_menu_dark_mode_toggle">
-															<input class="form-check-input w-30px h-20px" type="checkbox" value="1" name="mode" id="kt_user_menu_dark_mode_toggle" data-kt-url="../../demo1/dist/index.html" />
-															<span class="pulse-ring ms-n1"></span>
-															<span class="form-check-label text-gray-600 fs-7">Dark Mode</span>
-														</label>
-													</div>
-												</div>
-												<!--end::Menu item-->
+												
 											</div>
 											<!--end::Menu-->
 											<!--end::Menu wrapper-->
@@ -1778,7 +1517,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Nina Nilson">
-												<img src="assets/media/avatars/150-11.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-11.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -1801,12 +1540,12 @@
 											<div class="symbol-group symbol-hover flex-nowrap flex-grow-1 min-w-100px pe-2">
 												<!--begin::User-->
 												<div class="symbol symbol-circle symbol-25px">
-													<img src="assets/media/avatars/150-3.jpg" alt="img" />
+													<img src="{{asset('assets/metronic/media/avatars/150-3.jpg')}}" />
 												</div>
 												<!--end::User-->
 												<!--begin::User-->
 												<div class="symbol symbol-circle symbol-25px">
-													<img src="assets/media/avatars/150-11.jpg" alt="img" />
+													<img src="{{asset('assets/metronic/media/avatars/150-11.jpg')}}"/>
 												</div>
 												<!--end::User-->
 												<!--begin::User-->
@@ -1840,7 +1579,7 @@
 											<div class="symbol-group symbol-hover flex-nowrap flex-grow-1 min-w-100px">
 												<!--begin::User-->
 												<div class="symbol symbol-circle symbol-25px">
-													<img src="assets/media/avatars/150-5.jpg" alt="img" />
+													<img src="{{asset('assets/metronic/media/avatars/150-5.jpg')}}" />
 												</div>
 												<!--end::User-->
 												<!--begin::User-->
@@ -1899,7 +1638,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Alan Nilson">
-												<img src="assets/media/avatars/150-2.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-2.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -1943,7 +1682,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Jan Hummer">
-												<img src="assets/media/avatars/150-6.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-6.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -1956,7 +1695,7 @@
 											<!--begin::Item-->
 											<div class="d-flex flex-aligns-center pe-10 pe-lg-20">
 												<!--begin::Icon-->
-												<img alt="" class="w-30px me-3" src="assets/media/svg/files/pdf.svg" />
+												<img alt="" class="w-30px me-3" src="{{asset('assets/metronic/media/svg/file')}}s/pdf.svg" />
 												<!--end::Icon-->
 												<!--begin::Info-->
 												<div class="ms-1 fw-bold">
@@ -1973,7 +1712,7 @@
 											<!--begin::Item-->
 											<div class="d-flex flex-aligns-center pe-10 pe-lg-20">
 												<!--begin::Icon-->
-												<img alt="" class="w-30px me-3" src="assets/media/svg/files/doc.svg" />
+												<img alt="" class="w-30px me-3" src="{{asset('assets/metronic/media/svg/file')}}s/doc.svg" />
 												<!--end::Icon-->
 												<!--begin::Info-->
 												<div class="ms-1 fw-bold">
@@ -1990,7 +1729,7 @@
 											<!--begin::Item-->
 											<div class="d-flex flex-aligns-center">
 												<!--begin::Icon-->
-												<img alt="" class="w-30px me-3" src="assets/media/svg/files/css.svg" />
+												<img alt="" class="w-30px me-3" src="{{asset('assets/metronic/media/svg/file')}}s/css.svg" />
 												<!--end::Icon-->
 												<!--begin::Info-->
 												<div class="ms-1 fw-bold">
@@ -2046,7 +1785,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Nina Nilson">
-												<img src="assets/media/avatars/150-11.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-11.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -2090,7 +1829,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Marcus Dotson">
-												<img src="assets/media/avatars/150-3.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-3.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -2104,7 +1843,7 @@
 											<div class="overlay me-10">
 												<!--begin::Image-->
 												<div class="overlay-wrapper">
-													<img alt="img" class="rounded w-200px" src="assets/media/demos/demo1.png" />
+													<img alt="img" class="rounded w-200px" src="{{asset('assets/metronic/media/demo')}}s/demo1.png" />
 												</div>
 												<!--end::Image-->
 												<!--begin::Link-->
@@ -2118,7 +1857,7 @@
 											<div class="overlay me-10">
 												<!--begin::Image-->
 												<div class="overlay-wrapper">
-													<img alt="img" class="rounded w-200px" src="assets/media/demos/demo2.png" />
+													<img alt="img" class="rounded w-200px" src="{{asset('assets/metronic/media/demo')}}s/demo2.png" />
 												</div>
 												<!--end::Image-->
 												<!--begin::Link-->
@@ -2132,7 +1871,7 @@
 											<div class="overlay">
 												<!--begin::Image-->
 												<div class="overlay-wrapper">
-													<img alt="img" class="rounded w-200px" src="assets/media/demos/demo3.png" />
+													<img alt="img" class="rounded w-200px" src="{{asset('assets/metronic/media/demo')}}s/demo3.png" />
 												</div>
 												<!--end::Image-->
 												<!--begin::Link-->
@@ -2229,7 +1968,7 @@
 											<!--end::Info-->
 											<!--begin::User-->
 											<div class="symbol symbol-circle symbol-25px" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="Robert Rich">
-												<img src="assets/media/avatars/150-14.jpg" alt="img" />
+												<img src="{{asset('assets/metronic/media/avatars/150-14.jpg')}}" />
 											</div>
 											<!--end::User-->
 										</div>
@@ -2337,375 +2076,7 @@
 			</div>
 		</div>
 		<!--end::Activities drawer-->
-		<!--begin::Chat drawer-->
-		<div id="kt_drawer_chat" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="chat" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'300px', 'md': '500px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_drawer_chat_toggle" data-kt-drawer-close="#kt_drawer_chat_close">
-			<!--begin::Messenger-->
-			<div class="card w-100 rounded-0" id="kt_drawer_chat_messenger">
-				<!--begin::Card header-->
-				<div class="card-header pe-5" id="kt_drawer_chat_messenger_header">
-					<!--begin::Title-->
-					<div class="card-title">
-						<!--begin::User-->
-						<div class="d-flex justify-content-center flex-column me-3">
-							<a href="#" class="fs-4 fw-bolder text-gray-900 text-hover-primary me-1 mb-2 lh-1">Brian Cox</a>
-							<!--begin::Info-->
-							<div class="mb-0 lh-1">
-								<span class="badge badge-success badge-circle w-10px h-10px me-1"></span>
-								<span class="fs-7 fw-bold text-muted">Active</span>
-							</div>
-							<!--end::Info-->
-						</div>
-						<!--end::User-->
-					</div>
-					<!--end::Title-->
-					<!--begin::Card toolbar-->
-					<div class="card-toolbar">
-						<!--begin::Menu-->
-						<div class="me-2">
-							<button class="btn btn-sm btn-icon btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
-								<i class="bi bi-three-dots fs-3"></i>
-							</button>
-							<!--begin::Menu 3-->
-							<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3" data-kt-menu="true">
-								<!--begin::Heading-->
-								<div class="menu-item px-3">
-									<div class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase">Contacts</div>
-								</div>
-								<!--end::Heading-->
-								<!--begin::Menu item-->
-								<div class="menu-item px-3">
-									<a href="#" class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#kt_modal_users_search">Add Contact</a>
-								</div>
-								<!--end::Menu item-->
-								<!--begin::Menu item-->
-								<div class="menu-item px-3">
-									<a href="#" class="menu-link flex-stack px-3" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends">Invite Contacts
-									<i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Specify a contact email to send an invitation"></i></a>
-								</div>
-								<!--end::Menu item-->
-								<!--begin::Menu item-->
-								<div class="menu-item px-3" data-kt-menu-trigger="hover" data-kt-menu-placement="right-start" data-kt-menu-flip="left, center, top">
-									<a href="#" class="menu-link px-3">
-										<span class="menu-title">Groups</span>
-										<span class="menu-arrow"></span>
-									</a>
-									<!--begin::Menu sub-->
-									<div class="menu-sub menu-sub-dropdown w-175px py-4">
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3" data-bs-toggle="tooltip" title="Coming soon">Create Group</a>
-										</div>
-										<!--end::Menu item-->
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3" data-bs-toggle="tooltip" title="Coming soon">Invite Members</a>
-										</div>
-										<!--end::Menu item-->
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3" data-bs-toggle="tooltip" title="Coming soon">Settings</a>
-										</div>
-										<!--end::Menu item-->
-									</div>
-									<!--end::Menu sub-->
-								</div>
-								<!--end::Menu item-->
-								<!--begin::Menu item-->
-								<div class="menu-item px-3 my-1">
-									<a href="#" class="menu-link px-3" data-bs-toggle="tooltip" title="Coming soon">Settings</a>
-								</div>
-								<!--end::Menu item-->
-							</div>
-							<!--end::Menu 3-->
-						</div>
-						<!--end::Menu-->
-						<!--begin::Close-->
-						<div class="btn btn-sm btn-icon btn-active-light-primary" id="kt_drawer_chat_close">
-							<!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-							<span class="svg-icon svg-icon-2">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-									<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
-									<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
-								</svg>
-							</span>
-							<!--end::Svg Icon-->
-						</div>
-						<!--end::Close-->
-					</div>
-					<!--end::Card toolbar-->
-				</div>
-				<!--end::Card header-->
-				<!--begin::Card body-->
-				<div class="card-body" id="kt_drawer_chat_messenger_body">
-					<!--begin::Messages-->
-					<div class="scroll-y me-n5 pe-5" data-kt-element="messages" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_drawer_chat_messenger_header, #kt_drawer_chat_messenger_footer" data-kt-scroll-wrappers="#kt_drawer_chat_messenger_body" data-kt-scroll-offset="0px">
-						<!--begin::Message(in)-->
-						<div class="d-flex justify-content-start mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-start">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
-									</div>
-									<!--end::Avatar-->
-									<!--begin::Details-->
-									<div class="ms-3">
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary me-1">Brian Cox</a>
-										<span class="text-muted fs-7 mb-1">2 mins</span>
-									</div>
-									<!--end::Details-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">How likely are you to recommend our company to your friends and family ?</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(in)-->
-						<!--begin::Message(out)-->
-						<div class="d-flex justify-content-end mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-end">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Details-->
-									<div class="me-3">
-										<span class="text-muted fs-7 mb-1">5 mins</span>
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary ms-1">You</a>
-									</div>
-									<!--end::Details-->
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
-									</div>
-									<!--end::Avatar-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end" data-kt-element="message-text">Hey there, we’re just writing to let you know that you’ve been subscribed to a repository on GitHub.</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(out)-->
-						<!--begin::Message(in)-->
-						<div class="d-flex justify-content-start mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-start">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
-									</div>
-									<!--end::Avatar-->
-									<!--begin::Details-->
-									<div class="ms-3">
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary me-1">Brian Cox</a>
-										<span class="text-muted fs-7 mb-1">1 Hour</span>
-									</div>
-									<!--end::Details-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">Ok, Understood!</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(in)-->
-						<!--begin::Message(out)-->
-						<div class="d-flex justify-content-end mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-end">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Details-->
-									<div class="me-3">
-										<span class="text-muted fs-7 mb-1">2 Hours</span>
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary ms-1">You</a>
-									</div>
-									<!--end::Details-->
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
-									</div>
-									<!--end::Avatar-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end" data-kt-element="message-text">You’ll receive notifications for all issues, pull requests!</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(out)-->
-						<!--begin::Message(in)-->
-						<div class="d-flex justify-content-start mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-start">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
-									</div>
-									<!--end::Avatar-->
-									<!--begin::Details-->
-									<div class="ms-3">
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary me-1">Brian Cox</a>
-										<span class="text-muted fs-7 mb-1">3 Hours</span>
-									</div>
-									<!--end::Details-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">You can unwatch this repository immediately by clicking here:
-								<a href="https://keenthemes.com">Keenthemes.com</a></div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(in)-->
-						<!--begin::Message(out)-->
-						<div class="d-flex justify-content-end mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-end">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Details-->
-									<div class="me-3">
-										<span class="text-muted fs-7 mb-1">4 Hours</span>
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary ms-1">You</a>
-									</div>
-									<!--end::Details-->
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
-									</div>
-									<!--end::Avatar-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end" data-kt-element="message-text">Most purchased Business courses during this sale!</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(out)-->
-						<!--begin::Message(in)-->
-						<div class="d-flex justify-content-start mb-10">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-start">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
-									</div>
-									<!--end::Avatar-->
-									<!--begin::Details-->
-									<div class="ms-3">
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary me-1">Brian Cox</a>
-										<span class="text-muted fs-7 mb-1">5 Hours</span>
-									</div>
-									<!--end::Details-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">Company BBQ to celebrate the last quater achievements and goals. Food and drinks provided</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(in)-->
-						<!--begin::Message(template for out)-->
-						<div class="d-flex justify-content-end mb-10 d-none" data-kt-element="template-out">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-end">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Details-->
-									<div class="me-3">
-										<span class="text-muted fs-7 mb-1">Just now</span>
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary ms-1">You</a>
-									</div>
-									<!--end::Details-->
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
-									</div>
-									<!--end::Avatar-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-primary text-dark fw-bold mw-lg-400px text-end" data-kt-element="message-text"></div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(template for out)-->
-						<!--begin::Message(template for in)-->
-						<div class="d-flex justify-content-start mb-10 d-none" data-kt-element="template-in">
-							<!--begin::Wrapper-->
-							<div class="d-flex flex-column align-items-start">
-								<!--begin::User-->
-								<div class="d-flex align-items-center mb-2">
-									<!--begin::Avatar-->
-									<div class="symbol symbol-35px symbol-circle">
-										<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
-									</div>
-									<!--end::Avatar-->
-									<!--begin::Details-->
-									<div class="ms-3">
-										<a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary me-1">Brian Cox</a>
-										<span class="text-muted fs-7 mb-1">Just now</span>
-									</div>
-									<!--end::Details-->
-								</div>
-								<!--end::User-->
-								<!--begin::Text-->
-								<div class="p-5 rounded bg-light-info text-dark fw-bold mw-lg-400px text-start" data-kt-element="message-text">Right before vacation season we have the next Big Deal for you.</div>
-								<!--end::Text-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
-						<!--end::Message(template for in)-->
-					</div>
-					<!--end::Messages-->
-				</div>
-				<!--end::Card body-->
-				<!--begin::Card footer-->
-				<div class="card-footer pt-4" id="kt_drawer_chat_messenger_footer">
-					<!--begin::Input-->
-					<textarea class="form-control form-control-flush mb-3" rows="1" data-kt-element="input" placeholder="Type a message"></textarea>
-					<!--end::Input-->
-					<!--begin:Toolbar-->
-					<div class="d-flex flex-stack">
-						<!--begin::Actions-->
-						<div class="d-flex align-items-center me-2">
-							<button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="Coming soon">
-								<i class="bi bi-paperclip fs-3"></i>
-							</button>
-							<button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="Coming soon">
-								<i class="bi bi-upload fs-3"></i>
-							</button>
-						</div>
-						<!--end::Actions-->
-						<!--begin::Send-->
-						<button class="btn btn-primary" type="button" data-kt-element="send">Send</button>
-						<!--end::Send-->
-					</div>
-					<!--end::Toolbar-->
-				</div>
-				<!--end::Card footer-->
-			</div>
-			<!--end::Messenger-->
-		</div>
-		<!--end::Chat drawer-->
+
 		<!--begin::Exolore drawer toggle-->
 		<button id="kt_explore_toggle" class="explore-toggle btn btn-sm bg-body btn-color-gray-700 btn-active-primary shadow-sm position-fixed px-5 fw-bolder zindex-2 top-50 mt-10 end-0 transform-90 fs-6 rounded-top-0" title="Explore Metronic" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-trigger="hover">
 			<span id="kt_explore_toggle_label">Explorar</span>
@@ -2812,7 +2183,7 @@
 						<!--end::Heading-->
 						<!--begin::Google Contacts Invite-->
 						<div class="btn btn-light-primary fw-bolder w-100 mb-8">
-						<img alt="Logo" src="assets/media/svg/brand-logos/google-icon.svg" class="h-20px me-3" />Invite Gmail Contacts</div>
+						<img alt="Logo" src="{{asset('assets/metronic/media/svg/brand-logos/google-icon.svg')}}"  class="h-20px me-3" />Invite Gmail Contacts</div>
 						<!--end::Google Contacts Invite-->
 						<!--begin::Separator-->
 						<div class="separator d-flex flex-center mb-8">
@@ -2835,7 +2206,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-1.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-1.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -2891,7 +2262,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="{{asset('assets/media/avatars/150-27.jpg')}}" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/150-27.jpg')}}" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -2919,7 +2290,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-4.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-4.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -2947,7 +2318,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-15.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-15.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3003,7 +2374,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-8.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-8.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3087,7 +2458,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-6.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-6.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3143,7 +2514,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-7.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-7.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3199,7 +2570,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-17.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-17.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3255,7 +2626,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="assets/media/avatars/150-10.jpg" />
+											<img alt="Pic" src="{{asset('assets/metronic/media/avatars/15')}}0-10.jpg" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->
@@ -3852,18 +3223,20 @@
 		<!--end::Main-->
 		<!--begin::Javascript-->
 		<!--begin::Global Javascript Bundle(used by all pages)-->
-		<script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
-		<script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
+		<script src="{{asset('assets/metronic/plugins/global/plugins.bundle.js')}}"></script>
+		<script src="{{asset('assets/metronic/js/scripts.bundle.js')}}"></script>
 		<!--end::Global Javascript Bundle-->
 		<!--begin::Page Vendors Javascript(used by this page)-->
-		<script src="{{asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js')}}"></script>
+		<script src="{{asset('assets/metronic/plugins/custom/fullcalendar/fullcalendar.bundle.js')}}"></script>
 		<!--end::Page Vendors Javascript-->
 		<!--begin::Page Custom Javascript(used by this page)-->
-		<script src="{{asset('assets/js/custom/widgets.js')}}"></script>
-		<!--<script src="{{asset('assets/js/custom/apps/chat/chat.js')}}"></script>
-		<script src="{{asset('assets/js/custom/modals/create-app.js')}}"></script>
-		<script src="{{asset('assets/js/custom/modals/upgrade-plan.js')}}"></script> -->
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="{{asset('assets/metronic/js/custom/widgets.js')}}"></script>
+		
+		{{-- <script src="{{asset('assets/metronic/js/custom/apps/chat/chat.js')}}"></script>
+		<script src="{{asset('assets/metronic/js/custom/modals/create-app.js')}}"></script>
+		<script src="{{asset('assets/metronic/js/custom/modals/upgrade-plan.js')}}"></script> --}}
+		
+		<script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
 		<script src="{{asset('assets/js/lodash.js')}}"></script>
 		<!--end::Page Custom Javascript-->
 		<!--end::Javascript-->

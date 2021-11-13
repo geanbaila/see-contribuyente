@@ -38,10 +38,11 @@ class SaleController extends Controller
                             'precio' => $precio,
                             'peso' => $peso,
                             'total' => $total,
-
-                            'precioConIGV' => $precio,
-                            'precioSinIGV' => $precio*0.82,
-                            'precioIGV' => $precio*0.18,
+                            
+                            'precioUnitarioConIGV' => $precio,
+                            'precioConIGV' => $cantidad*$precio,
+                            'precioSinIGV' => $cantidad*$precio*0.82,
+                            'precioIGV' => $cantidad*$precio*0.18,
 
                             'importePagarConIGV' => $importePagar,
                             'importePagarSinIGV' => $importePagar*0.82,
@@ -145,11 +146,14 @@ class SaleController extends Controller
 
         // registrar o actualizar el PDF
         if ($documento->alias === 'G') {
-            $this->writeRemition($encargoId);
-            $this->writeXMLBill($encargoId);
-        } else if ($documento->alias === 'B' || $documento->alias === 'F') {
-            $this->writeBill($encargoId);
-            $this->writeXMLBill($encargoId);
+            $this->escribirGuiaRemision($encargoId);
+            $this->escribirXMLGuiaRemision($encargoId);
+        } else if($documento->alias === 'B') {
+            $this->escribirBoleta($encargoId);
+            $this->escribirXMLBoleta($encargoId);
+        } else if($documento->alias === 'F') {
+            $this->escribirFactura($encargoId);
+            $this->escribirXMLFactura($encargoId);
         } else {
             // no escribir PDF
         }
@@ -189,8 +193,8 @@ class SaleController extends Controller
         return view('sale.list')->with([ 'encargo' => $encargo ]);
     }
 
-    public function writeBill($encargoId) {
-        $data = Encargo::findBill($encargoId);
+    public function escribirBoleta($encargoId) {
+        $data = Encargo::buscarBoleta($encargoId);
         if ($data) {
             if(isset($data['adquirienteRUC']) && strlen($data['adquirienteRUC']) === 11) {
                 $textodniruc = 'RUC: '.$data['adquirienteRUC'];
@@ -258,6 +262,7 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquirienteRazonSocial'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
+            
             PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
@@ -355,8 +360,8 @@ class SaleController extends Controller
         }
     }
 
-    public function writeRemition($encargoId) {
-        $data = Encargo::findRemition($encargoId);
+    public function escribirGuiaRemision($encargoId) {
+        $data = Encargo::buscarGuiaRemision($encargoId);
         if ($data) {
             PDF::SetTitle($data['tituloDocumento']);
             PDF::setPrintHeader(false);
@@ -513,8 +518,8 @@ class SaleController extends Controller
         }
     }
 
-    public function writeXMLBill($encargoId) {
-        $data = Encargo::findBill($encargoId);
+    public function escribirXMLFactura($encargoId) {
+        $data = Encargo::buscarBoleta($encargoId);
         if ($data) {
             // IMPORTANTE: La factura electrónica deberá tener información de los por lo menos uno de siguientes campos definidos como opcionales: 18. Total valor de venta – operaciones gravadas, 19. Total valor de venta – operaciones inafectas o 20. Total valor de vento - operaciones exoneradas
             // variables
@@ -1173,7 +1178,7 @@ class SaleController extends Controller
                         $nodePricingReference->appendChild($nodeAlternativeConditionPrice);
                         
                             // Precio de venta unitario por item y código
-                            $precioUnitario = $item['precioConIGV']; // precio individual de cada producto con IGV
+                            $precioUnitario = $item['precioUnitarioConIGV']; // precio individual de cada producto con IGV sin multiplicar con cantidad
                             $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', $precioUnitario); 
                             $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                             $nodeAlternativeConditionPrice->appendChild($nodePriceAmount);
@@ -1272,7 +1277,7 @@ class SaleController extends Controller
             */
             // end 41
             
-            // begin 42 - Afectación al IGV por ítem ++ OK ++
+            // begin 42-48 - Afectación al IGV por ítem ++ OK ++
                 // catálogo 7,
                 // 10: Gravado - Operación Onerosa
                 // 11: Gravado – Retiro por premio
@@ -1343,9 +1348,8 @@ class SaleController extends Controller
 
                                     $nodeTaxTypeCode = $dom->CreateElement('cbc:TaxTypeCode', 'VAT'); // catálogo 5, Nombre del Tributo
                                     $nodeTaxScheme->appendChild($nodeTaxTypeCode);
-                endforeach;
-            // end 42
-
+               
+            
             // begin 43 - Afectación al ISC por ítem **opcional  - no aplica
             /*
                 $nodeInvoiceLine = $dom->CreateElement('cac:InvoiceLine');
@@ -1409,15 +1413,23 @@ class SaleController extends Controller
             */
             // end 43
 
-            // begin 44 - Descripción detallada del servicio prestado, bien vendido o cedido en uso, indicando las características
-                foreach($data['encargoDetalle'] as $i => $item):
+                    // begin 44 - Descripción detallada del servicio prestado, bien vendido o cedido en uso, indicando las características
                     $nodeItem = $dom->CreateElement('cac:Item');
                     $nodeInvoiceLine->appendChild($nodeItem);
                     
-                    $nodeDescription = $dom->CreateElement('cbc:Description','<![CDATA['.$item['descripcion'].']]>');
-                    $nodeItem->appendChild($nodeDescription);
+                        $nodeDescription = $dom->CreateElement('cbc:Description','<![CDATA[XXXX'.$item['descripcion'].']]>');
+                        $nodeItem->appendChild($nodeDescription);
+
+                    // 48 - Valor unitario del ítem
+                    $nodePrice = $dom->CreateElement('cac:Price');
+                    $nodeInvoiceLine->appendChild($nodePrice);
+
+                        $precioUnitario = $item['total']*0.82; // no debe incluir el igp
+                        $nodePriceAmount = $dom->CreateElement('cac:PriceAmount', $precioUnitario); 
+                        $nodePriceAmount->setAttributeNode(new \DOMAttr('CurrencyID', $tipoMoneda));
+                        $nodePrice->appendChild($nodePriceAmount);
                 endforeach;
-            // end 44
+            // end 42-48
 
             // begin 45 - Código de producto del Ítem **opcional -- no aplica
                 /*
@@ -1450,19 +1462,7 @@ class SaleController extends Controller
 
             // 47 - Propiedades Adicionales del Ítem - no aplica
             
-            // 48 - Valor unitario del ítem
-                foreach($data['encargoDetalle'] as $i => $item):
-                    $nodePrice = $dom->CreateElement('cac:Price');
-                    $nodeInvoiceLine->appendChild($nodePrice);
-
-                    $precioUnitario = $item['total']*0.82; // no debe incluir el igp
-                    $nodePriceAmount = $dom->CreateElement('cac:PriceAmount', $precioUnitario); 
-                    $nodePriceAmount->setAttributeNode(new \DOMAttr('CurrencyID', $tipoMoneda));
-                    $nodePrice->appendChild($nodePriceAmount);
-                endforeach;
-            
-
-
+                     
             
             $dom->appendChild($root);
 

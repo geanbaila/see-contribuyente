@@ -210,7 +210,7 @@
                                         <option value="--" selected> -- </option>
                                         @if(isset($carga))
                                             @foreach ($carga as $item)
-                                                <option value="{{ $item->id }}" data-price="{{ $item->precio }}">
+                                                <option value="{{ $item->id }}" data-amount="{{ $item->importe }}" data-taxamount="{{ $item->importe_impuesto }}" data-priceamount="{{ $item->importe_precio }}">
                                                     {{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
@@ -223,7 +223,7 @@
                                     <input type="number" class="form-control fw8" name="cantidad"
                                         onkeyup="javascript:calculatePayChargeDetail(this);">
                                 </td>
-                                <td><input type="number" class="form-control fw8" name="precio"
+                                <td><input type="number" class="form-control fw8" name="importe"
                                         onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                 <td><input type="number" class="form-control fw8" name="total" disabled></td>
                             </tr>
@@ -343,14 +343,14 @@
 
         function updateChargeDetail(element) {
             var tr = $(element).parent().parent();
-            var precio = '0';
+            var importe = 0;
             if (element.value === '6175bf2e8f1a2809dcb499c9') {
-                // ABRIR EL PRECIO PARA *OTROS*
-                $(tr).find("td [name='precio']").removeAttr("disabled");
+                // ABRIR EL importe PARA *OTROS*
+                $(tr).find("td [name='importe']").removeAttr("disabled");
             } else {
-                precio = $("[name='descripcion'] option[value='" + element.value + "']").data("price");
+                importe = $("[name='descripcion'] option[value='" + element.value + "']").data("amount");
             }
-            $(tr).find("td [name='precio']").val(precio);
+            $(tr).find("td [name='importe']").val(importe);
 
             var cantidad = $(tr).find("td [name='cantidad']").val();
             if (cantidad === '') {
@@ -361,10 +361,10 @@
 
         function calculatePayChargeDetail(element) {
             var tr = $(element).parent().parent();
-            var precio = parseFloat($(tr).find("td [name='precio']").val());
+            var importe = parseFloat($(tr).find("td [name='importe']").val());
             var cantidad = parseFloat($(tr).find("td [name='cantidad']").val());
             var peso = parseFloat($(tr).find("td [name='peso']").val());
-            var total = precio * cantidad * peso;
+            var total = importe * cantidad * peso;
             $(tr).find("td [name='total']").val(total.toFixed(2));
             reCalculatePayChargeDetail();
         }
@@ -382,7 +382,7 @@
             var options = '<option value="--" selected> -- </option>';
             @if (isset($carga))
                 @foreach ($carga as $item)
-                    options +='<option value="{{ $item->id }}" data-price="{{ $item->precio }}">';
+                    options +='<option value="{{ $item->id }}" data-amount="{{ $item->importe }}" data-taxamount="{{ $item->importe_impuesto }}"  data-priceamount="{{ $item->importe_precio }}">';
                         options +='{{ $item->nombre }}'
                         options +='</option>';
                 @endforeach
@@ -395,7 +395,7 @@
                 // '<td><input type="number" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
                 '<td><input type="hidden" class="form-control fw8" name="peso" onkeyup="javascript:calculatePayChargeDetail(this)" value="1">' +
                 '<input type="number" class="form-control fw8" name="cantidad" onkeyup="javascript:calculatePayChargeDetail(this)"></td>' +
-                '<td><input type="number" class="form-control fw8" name="precio" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
+                '<td><input type="number" class="form-control fw8" name="importe" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
                 '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
@@ -453,7 +453,9 @@
                 _.forEach(data.encargo, function(element, index) {
                     var j = index + 1;
                     $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga).change();
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='precio']").val(element.precio);
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='importe']").val(element.importe);
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='importe_precio']").val(element.importe_precio);
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='importe_impuesto']").val(element.importe_impuesto);
                     $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger(
                         "onkeyup");
                     // $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
@@ -488,6 +490,7 @@
             var agenciaOrigen = $("[name='agenciaOrigen']").val().trim();
             var agenciaDestino = $("[name='agenciaDestino']").val().trim();
             var medioPago = $("[name='medioPago']").val().trim();
+            var adquiriente = $("[name='adquiriente']").val().trim();
             var documento = $("[name='documento']").val().trim();
             var documentoSerie = $("[name='documentoSerie']").val().trim();
             var documentoCorrelativo = $("[name='documentoCorrelativo']").val().trim();
@@ -496,89 +499,95 @@
 
             var descripcion = document.getElementsByName("descripcion");
             var cantidad = document.getElementsByName("cantidad");
-            var precio = document.getElementsByName("precio");
+            var importe = document.getElementsByName("importe");
             var peso = document.getElementsByName("peso");
-
-            var adquiriente = $("[name='adquiriente']").val().trim();
-
-            var data = new FormData();
-            data.append("encargoId", encargoId);
-            data.append("docEnvia", docEnvia);
-            data.append("nombreEnvia", nombreEnvia);
-            data.append("nombreComercialEnvia", nombreComercialEnvia);
-            data.append("direccionEnvia", direccionEnvia);
-            data.append("celularEnvia", celularEnvia);
-            data.append("emailEnvia", emailEnvia);
-            data.append("fechaEnvia", fechaEnvia);
-            data.append("docRecibe", docRecibe);
-            data.append("nombreRecibe", nombreRecibe);
-            data.append("nombreComercialRecibe", nombreComercialRecibe);
-            data.append("direccionRecibe", direccionRecibe);
-            data.append("celularRecibe", celularRecibe);
-            data.append("emailRecibe", emailRecibe);
-            data.append("fechaRecibe", fechaRecibe);
-            // data.append("origen", origen);
-            data.append("destino", destino);
-            data.append("agenciaOrigen", agenciaOrigen);
-            data.append("agenciaDestino", agenciaDestino);
-            data.append("medioPago", medioPago);
-            data.append("documento", documento);
-            data.append("documentoSerie", documentoSerie);
-            data.append("documentoCorrelativo", documentoCorrelativo);
-            data.append("subtotal", subtotal);
-            data.append("importePagar", importePagar);
             var n = descripcion.length;
+            var encargo = [];
             for (var i = 0; i < n; i++) {
-                data.append("encargo[]", [descripcion[i].value, peso[i].value, cantidad[i].value, precio[i].value]);
+                encargo.push({
+                    'descripcion': descripcion[i].value, 
+                    'peso': peso[i].value, 
+                    'cantidad': cantidad[i].value, 
+                    'importe': importe[i].value
+                    });
+            }
+            var data = {
+                encargoId: encargoId,
+                docEnvia: docEnvia,
+                nombreEnvia: nombreEnvia,
+                nombreComercialEnvia: nombreComercialEnvia,
+                direccionEnvia: direccionEnvia,
+                celularEnvia: celularEnvia,
+                emailEnvia: emailEnvia,
+                fechaEnvia: fechaEnvia,
+
+                docRecibe: docRecibe,
+                nombreRecibe: nombreRecibe,
+                nombreComercialRecibe: nombreComercialRecibe,
+                direccionRecibe: direccionRecibe,
+                celularRecibe: celularRecibe,
+                emailRecibe: emailRecibe,
+                fechaRecibe: fechaRecibe,
+
+                // data.push("origen", origen);
+                destino: destino,
+                agenciaOrigen: agenciaOrigen,
+                agenciaDestino: agenciaDestino,
+                medioPago: medioPago,
+                adquiriente: adquiriente,
+                documento: documento,
+                documentoSerie: documentoSerie,
+                documentoCorrelativo: documentoCorrelativo,
+                subtotal: subtotal,
+                importePagar: importePagar,
+                encargo: encargo
             };
-            data.append("adquiriente", adquiriente);
             return data;
         }
 
         function validate(data) {
-            if (data.get('docEnvia').length !== DNI && data.get('docEnvia').length !== RUC && data.get('docEnvia').length !==
-                CE) {
-                showErrorToastr('Documento incorrecto de quien Envía');
+            if (data.docEnvia.length !== DNI && data.docEnvia.length !== RUC && data.docEnvia.length !== CE) {
+                showErrorToastr('Documento incorrecto, has ingresado '+data.docEnvia.length+' caracteres.');
                 return false;
             }
-            if (data.get('nombreEnvia').length === 0) {
-                showErrorToastr('No se dispone de los nombre de quien Envía');
+            if (data.nombreEnvia.length === 0) {
+                showErrorToastr('Completa los nombre de quien Envía.');
                 return false;
             }
-            if (data.get('docRecibe').length !== DNI && data.get('docRecibe').length !== RUC && data.get('docRecibe')
+            if (data.docRecibe.length !== DNI && data.docRecibe.length !== RUC && data.docRecibe
                 .length !== CE) {
-                showErrorToastr('Documento incorrecto de quien Recibe');
+                showErrorToastr('Documento incorrecto, has ingresado '+data.docRecibe.length+' caracteres.');
                 return false;
             }
-            if (data.get('nombreRecibe').length === 0) {
-                showErrorToastr('No se dispone de los nombre de quien Recibe');
+            if (data.nombreRecibe.length === 0) {
+                showErrorToastr('Completa los nombre de quien Recibe.');
                 return false;
             }
-            if (data.get('agenciaOrigen').length === 2 && data.get('agenciaOrigen') === '--') {
-                showErrorToastr('No se dispone del agenciaOrigen');
+            if (data.agenciaOrigen.length === 2 && data.agenciaOrigen === '--') {
+                showErrorToastr('Especifica la agencia de origen.');
                 return false;
             }
-            if (data.get('destino').length === 2 && data.get('destino') === '--') {
-                showErrorToastr('No se dispone del destino');
+            if (data.destino.length === 2 && data.destino === '--') {
+                showErrorToastr('Especifica la agencia de destino.');
                 return false;
             }
-            if (data.get('agenciaDestino').length === 2 && data.get('agenciaDestino') === '--') {
-                showErrorToastr('No se dispone del agencia destino');
+            if (data.agenciaDestino.length === 2 && data.agenciaDestino === '--') {
+                showErrorToastr('Especifica la agencia de destino.');
                 return false;
             }
-            if (data.get('documento').length === 2) {
-                showErrorToastr('No se dispone del documento');
+            if (data.documento.length === 2) {
+                showErrorToastr('Selecciona una opción: Boleta, Factura o Guía de Remisión.');
                 return false;
             }
-            if (data.get('documentoSerie').length === 0) {
+            if (data.documentoSerie.length === 0) {
                 showErrorToastr('No se dispone del serie');
                 return false;
             }
-            if (data.get('documento') === factura && data.get('docEnvia').length !== RUC) {
+            if (data.documento === factura && data.docEnvia.length !== RUC) {
                 showErrorToastr('No se puede emitir una factura para una persona natural');
                 return false;
             }
-            if (parseFloat(data.get('importePagar')) > parseFloat(data.get('subtotal'))) {
+            if (parseFloat(data.importePagar) > parseFloat(data.subtotal)) {
                 showErrorToastr('El importe a pagar no puede ser mayor que total (suma de subtotales)');
                 return false;
             }
@@ -715,8 +724,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         data: data,
-                        contentType: false,
-                        processData: false,
                         dataType: "json"
                     }).done(function(result) {
                         if (result.result.status === 'OK') {

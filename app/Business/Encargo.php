@@ -60,9 +60,9 @@ class Encargo extends Model
         return $this->belongsTo('App\Business\Adquiriente', 'adquiriente');
     }
 
-    static function findBill($encargoId) {
+    static function buscarBoleta($encargoId) {
         $encargo = Encargo::find($encargoId);
-        if ($encargo->documentos->alias === 'F' || $encargo->documentos->alias === 'B') {
+        if ($encargo->documentos->alias === 'B') {
             $fecha = explode("-", $encargo->documento_fecha);
             $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
             $documento_fecha_hhiiss = "";
@@ -80,6 +80,62 @@ class Encargo extends Model
                 'emisorDireccionDistrito' => 'SAN BORJA',
                 'emisorDireccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
 
+                'adquirienteRUCoDNIoCE' => $encargo->adquirientes->documento,
+                'adquirienteNombreComerial' => mb_strtoupper($encargo->adquirientes->razon_social),
+                'adquirienteRazonSocial' => mb_strtoupper($encargo->adquirientes->razon_social),
+                'adquirienteDireccionFiscal' => $encargo->adquirientes->direccion,
+                'adquirienteDireccionDepartamento' => $encargo->adquirientes->departamento,
+                'adquirienteDireccionProvincia' => $encargo->adquirientes->provincia,
+                'adquirienteDireccionDistrito' => $encargo->adquirientes->distrito,
+                'adquirienteDireccion' => '',
+                'adquirienteDireccionPais' => 'PE',
+                
+                'emisorAgenciaDireccion' => mb_strtoupper($encargo->agencias->direccion),
+                'emisorAgenciaTelefono' => $encargo->agencias->telefono,
+                'emisorTipoDocumentoElectronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
+                'emisorNumeroDocumentoElectronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
+                'emisorFechaDocumentoElectronico' => $encargo->documento_fecha, // yyyy-mm-dd
+                'emisorHoraDocumentoElectronico' => $documento_fecha_hhiiss,
+
+                'consigna' => [
+                    'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
+                ],
+                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'encargoDetalle' => $encargo->encargo,
+
+                'importePagarConIGV' => $encargo->importe_pagar_con_igv,
+                'importePagarSinIGV' => $encargo->importe_pagar_sin_igv,
+                'importePagarIGV' => $encargo->importe_pagar_igv,
+                'subtotal' => $encargo->subtotal,
+            ]; 
+        } else {
+            $data = [];
+        }
+        return $data;
+    }
+    
+    static function buscarFactura($encargoId) {
+        $encargo = Encargo::find($encargoId);
+        if ($encargo->documentos->alias === 'F') {
+            $fecha = explode("-", $encargo->documento_fecha);
+            $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
+            $documento_fecha_hhiiss = "";
+            
+            $data = [
+                'tituloDocumento' => $encargo->documentos->nombre,
+                'emisorNombreComercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
+                'emisorRazonSocial' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
+                'emisorDireccionFiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                'emisorRUC' => env('EMPRESA_RUC','NO DEFINIDO'),
+                'emisorUbigeo' =>'150101',
+                'emisorDireccionPais' => 'PE',
+                'emisorDireccionDepartamento' => 'LIMA',
+                'emisorDireccionProvincia' => 'LIMA',
+                'emisorDireccionDistrito' => 'SAN BORJA',
+                'emisorDireccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
+
+                'adquirienteRUC' => $encargo->adquirientes->documento,
+                'adquirienteNombreComerial' => mb_strtoupper($encargo->adquirientes->nombre_comercial),
                 'adquirienteRazonSocial' => mb_strtoupper($encargo->adquirientes->razon_social),
                 'adquirienteDireccionFiscal' => $encargo->adquirientes->direccion,
                 'adquirienteDireccionDepartamento' => $encargo->adquirientes->departamento,
@@ -106,21 +162,13 @@ class Encargo extends Model
                 'importePagarIGV' => $encargo->importe_pagar_igv,
                 'subtotal' => $encargo->subtotal,
             ];
-            if($encargo->documentos->alias === 'F') {
-                $data['adquirienteRUC'] = $encargo->adquirientes->documento;
-                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->nombre_comercial);
-            }
-            if($encargo->documentos->alias === 'B') {
-                $data['adquirienteDNI'] = $encargo->adquirientes->documento;
-                $data['adquirienteNombreComerial'] = mb_strtoupper($encargo->adquirientes->razon_social);
-            }
         } else {
             $data = [];
         }
         return $data;
     }
-    
-    static function findRemition($encargoId) {
+
+    static function buscarGuiaRemision($encargoId) {
         $encargo = Encargo::find($encargoId);
         if ($encargo->documentos->alias === 'G') {
             $fecha = explode("-", $encargo->documento_fecha);
