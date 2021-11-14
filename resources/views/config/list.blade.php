@@ -180,17 +180,17 @@
                     var data = new FormData();
                     var placa = $(element).find("input[name='placa']").val();
                     var dia = $(element).data("dia");
-                    var agenciaId = $(element).data("agencia");
+                    var agencia_id = $(element).data("agencia");
                     var salidaId = $(element).data("salida");
                     var n = $(element).data("horario");
                     var horario = $("[name='"+salidaId+"_horario']").val();
                     console.log("'"+salidaId+"_horario'");
                     data.append("salidaId", salidaId);
-                    data.append("agenciaId", agenciaId);
+                    data.append("agencia_id", agencia_id);
                     data.append("placa", placa);
                     data.append("horario", horario);
                     data.append("dia", dia);
-                    console.log({"salidaId": salidaId, "agenciaId": agenciaId, "placa": placa, "dia": dia, "horario": horario});
+                    console.log({"salidaId": salidaId, "agencia_id": agencia_id, "placa": placa, "dia": dia, "horario": horario});
                     $.ajax({
                         url: "{{ url('/configuracion/salida') }}",
                         type: "POST",

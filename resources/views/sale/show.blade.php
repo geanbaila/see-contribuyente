@@ -6,12 +6,13 @@
         }
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargoId" value="" />
-        <input type="text" name="adquiriente" value="" />
-        <input type="text" name="nombreComercialEnvia" value="" />
-        <input type="text" name="nombreComercialRecibe" value="" />
-        <input type="text" name="direccionEnvia" value="" />
-        <input type="text" name="direccionRecibe" value="" />
+        <input type="hidden" name="encargo_id" value="" />
+        <input type="hidden" name="adquiriente" value="" />
+        <input type="hidden" name="nombre_comercial_envia" value="" />
+        <input type="hidden" name="nombre_comercial_recibe" value="" />
+        <input type="hidden" name="direccion_envia" value="" />
+        <input type="hidden" name="direccion_recibe" value="" />
+        <input type="hidden" name="url_documento" value="" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -20,11 +21,11 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
-                                    <input class="form-control" id="docEnvia" name="docEnvia" placeholder="">
+                                    <input class="form-control" id="doc_envia" name="doc_envia" placeholder="">
                                 </div>
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
-                                    <input class="form-control" id="nombreEnvia" name="nombreEnvia" placeholder="">
+                                    <input class="form-control" id="nombre_envia" name="nombre_envia" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -32,15 +33,15 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
-                                    <input class="form-control" id="celularEnvia" name="celularEnvia" placeholder="">
+                                    <input class="form-control" id="celular_envia" name="celular_envia" placeholder="">
                                 </div>
                                 <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
-                                    <input class="form-control" id="emailEnvia" name="emailEnvia" placeholder="">
+                                    <input class="form-control" id="email_envia" name="email_envia" placeholder="">
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
-                                    <input class="form-control" id="fechaEnvia" name="fechaEnvia" placeholder="" disabled>
+                                    <input class="form-control" id="fecha_envia" name="fecha_envia" placeholder="" disabled>
                                 </div>
                             </div>
                         </div>
@@ -58,11 +59,11 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
-                                    <input class="form-control" id="docRecibe" name="docRecibe" placeholder="">
+                                    <input class="form-control" id="doc_recibe" name="doc_recibe" placeholder="">
                                 </div>
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
-                                    <input class="form-control" id="nombreRecibe" name="nombreRecibe" placeholder="">
+                                    <input class="form-control" id="nombre_recibe" name="nombre_recibe" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -70,15 +71,15 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
-                                    <input class="form-control" id="celularRecibe" name="celularRecibe" placeholder="">
+                                    <input class="form-control" id="celular_recibe" name="celular_recibe" placeholder="">
                                 </div>
                                 <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
-                                    <input class="form-control" id="emailRecibe" name="emailRecibe" placeholder="">
+                                    <input class="form-control" id="email_recibe" name="email_recibe" placeholder="">
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
-                                    <input class="form-control" id="fechaRecibe" name="fechaRecibe" placeholder=""
+                                    <input class="form-control" id="fecha_recibe" name="fecha_recibe" placeholder=""
                                         disabled>
 
                                 </div>
@@ -89,7 +90,7 @@
                                 <div class="col-xxl-12">
                                     <label>&nbsp;</label>
                                     <a class="float-end" onclick="javascript:addReceivesRow()">
-                                        <img src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/plus-circle.svg" width="24" />
+                                        <img src="http://localhost/dev.enlaces.sis/public/assets/media/plus-circle.svg" width="24" />
                                     </a>
                                 </div>
                             </div>
@@ -101,11 +102,11 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
-                                    <select class="form-select" aria-label="--" name="agenciaOrigen"
+                                    <select class="form-select" aria-label="--" name="agencia_origen"
                                         onchange="javascript:getSerie()">
                                         <option selected> -- </option>
-                                        @if (count($agenciaOrigen))
-                                            @foreach ($agenciaOrigen as $item)
+                                        @if (count($agencia_origen))
+                                            @foreach ($agencia_origen as $item)
                                                 <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
@@ -125,7 +126,7 @@
                                 </div>
                                 <div class="col-xxl-6">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
-                                    <select class="form-select" aria-label="--" name="agenciaDestino"
+                                    <select class="form-select" aria-label="--" name="agencia_destino"
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected> -- </option>
                                     </select>
@@ -136,7 +137,7 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Medio de pago:</label>
-                                    <select class="form-select" aria-label="--" id="medioPago" name="medioPago">
+                                    <select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
                                         <option value="--" selected> -- </option>
                                         <option value="1">CRÉDITO</option>
                                         <option value="2">CONTADO</option>
@@ -156,12 +157,12 @@
                                 </div>
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
-                                    <input class="form-control" id="documentoSerie" name="documentoSerie" value=""
+                                    <input class="form-control" id="documento_serie" name="documento_serie" value=""
                                         disabled>
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Correlativo:</label>
-                                    <input class="form-control" id="documentoCorrelativo" name="documentoCorrelativo" value=""
+                                    <input class="form-control" id="documento_correlativo" name="documento_correlativo" value=""
                                         disabled>
                                 </div>
 
@@ -193,12 +194,13 @@
                                 <th scope="col">Descripción</th>
                                 <!-- <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
                                 <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                <th scope="col" width="150" style="text-align:right">Precio unitario&nbsp;&nbsp;&nbsp;&nbsp;
+                                <th scope="col" width="150" style="text-align:right">Precio&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                    
                                 </th>
                                 <th scope="col" width="150" style="text-align:right">Total&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
-                                            src="{{ asset('assets/media/icons/sis/plus-circle.svg') }}" width="24" /></a>
+                                            src="{{ asset('assets/media/plus-circle.svg') }}" width="24" /></a>
                                 </th>
                             </tr>
                         </thead>
@@ -210,7 +212,7 @@
                                         <option value="--" selected> -- </option>
                                         @if(isset($carga))
                                             @foreach ($carga as $item)
-                                                <option value="{{ $item->id }}" data-amount="{{ $item->importe }}" data-taxamount="{{ $item->importe_impuesto }}" data-priceamount="{{ $item->importe_precio }}">
+                                                <option value="{{ $item->id }}" data-amount="{{ $item->importe_precio }}" >
                                                     {{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
@@ -230,20 +232,20 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" align="right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="3" align="right">Subtotal + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
                             </tr>
                             <tr>
-                                <td colspan="3" align="right">Importe a pagar&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control fw8" name="importePagar" value="0.00"></td>
+                                <td colspan="3" align="right">Importe a pagar + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td><input type="number" class="form-control fw8" name="importe_pagar_con_descuento" value="0.00">
+                                    </td>
                             </tr>
                         </tfoot>
                     </table>
                     <br />
                     <div class="row">
                         <div class="col-2">
-                            <b>Conductor:</b> Gerson Sánchez Aguilar<br />
-                            <b>Partida:</b> 08:00 PM
+                            
                         </div>
                         <div class="col-3">
                             <b>Encomienda:</b> por despachar<br />
@@ -264,20 +266,20 @@
                         <div class="col-5 text-end align-top">
                             <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
-                                <img src="{{ asset('assets/media/icons/sis/search-white.svg') }}" width="24" />
+                                <img src="{{ asset('assets/media/search-white.svg') }}" width="24" />
                             </a>
                             <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
                             <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                <img src="{{ asset('assets/media/icons/sis/printer.svg') }}" width="24" />
+                                <img src="{{ asset('assets/media/printer.svg') }}" width="24" />
                             </a>
                             <a id="btnEmail" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalEnviarEmail">
-                                <img src="{{ asset('assets/media/icons/sis/email.svg') }}" width="24" />
+                                <img src="{{ asset('assets/media/email.svg') }}" width="24" />
                             </a>
                             <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalEliminarVenta">
-                                <img src="{{ asset('assets/media/icons/sis/trash-2.svg') }}" width="24" />
+                                <img src="{{ asset('assets/media/trash-2.svg') }}" width="24" />
                             </a>
                         </div>
                     </div>
@@ -299,18 +301,17 @@
         }
 
         function showSuccessToastr(message) {
-            console.log('mostrar success toastr')
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
+                "progressBar": false,
+                "positionClass": "toast-bottom-left",
                 "preventDuplicates": true,
                 "onclick": null,
-                "showDuration": "30000",
+                "showDuration": "10000",
                 "hideDuration": "1000",
-                "timeOut": "60000",
+                "timeOut": "10000",
                 "extendedTimeOut": "1000",
                 "showEasing": "swing",
                 "hideEasing": "linear",
@@ -325,13 +326,13 @@
                 "closeButton": true,
                 "debug": false,
                 "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
+                "progressBar": false,
+                "positionClass": "toast-bottom-left",
                 "preventDuplicates": true,
                 "onclick": null,
-                "showDuration": "30000",
+                "showDuration": "10000",
                 "hideDuration": "1000",
-                "timeOut": "60000",
+                "timeOut": "10000",
                 "extendedTimeOut": "1000",
                 "showEasing": "swing",
                 "hideEasing": "linear",
@@ -348,6 +349,7 @@
                 // ABRIR EL importe PARA *OTROS*
                 $(tr).find("td [name='importe']").removeAttr("disabled");
             } else {
+                // los importes NO incluyen IGV
                 importe = $("[name='descripcion'] option[value='" + element.value + "']").data("amount");
             }
             $(tr).find("td [name='importe']").val(importe);
@@ -372,9 +374,10 @@
         function reCalculatePayChargeDetail() {
             subtotal = 0.00;
             $("#chargeRow >tr>td:nth-child(4)").each(function(index, element) {
-                subtotal = subtotal + parseFloat($(element).find("[name='total']").val());
+                total = parseFloat($(element).find("[name='total']").val());
+                subtotal = subtotal + total + (total*parseFloat("{{ env('IGV') }}"));
                 $("[name='subtotal']").val(subtotal.toFixed(2));
-                $("[name='importePagar']").val(subtotal.toFixed(2));
+                $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
             });
         }
 
@@ -382,7 +385,7 @@
             var options = '<option value="--" selected> -- </option>';
             @if (isset($carga))
                 @foreach ($carga as $item)
-                    options +='<option value="{{ $item->id }}" data-amount="{{ $item->importe }}" data-taxamount="{{ $item->importe_impuesto }}"  data-priceamount="{{ $item->importe_precio }}">';
+                    options +='<option value="{{ $item->id }}" data-amount="{{ $item->importe_precio }}" >';
                         options +='{{ $item->nombre }}'
                         options +='</option>';
                 @endforeach
@@ -398,7 +401,7 @@
                 '<td><input type="number" class="form-control fw8" name="importe" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
-                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/icons/sis/x-circle.svg') }}" width="24" /></a>' +
+                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/minus-circle.svg') }}" width="24" /></a>' +
                 '</td>' +
                 '</tr>';
             $("#chargeRow").append(html);
@@ -420,31 +423,31 @@
         }
 
         function putChargeForm(data) {
-            $("[name='encargoId']").val(data._id);
+            $("[name='encargo_id']").val(data._id);
 
-            $("[name='docEnvia']").val(data.doc_envia);
-            $("[name='nombreEnvia']").val(data.nombre_envia);
-            $("[name='celularEnvia']").val(data.celular_envia);
-            $("[name='emailEnvia']").val(data.email_envia);
-            $("[name='fechaEnvia']").val(data.fecha_envia);
-            $("[name='fechaEnviaBlocked']").val(data.fecha_envia);
+            $("[name='doc_envia']").val(data.doc_envia);
+            $("[name='nombre_envia']").val(data.nombre_envia);
+            $("[name='celular_envia']").val(data.celular_envia);
+            $("[name='email_envia']").val(data.email_envia);
+            $("[name='fecha_envia']").val(data.fecha_envia);
+            $("[name='fecha_envia_blocked']").val(data.fecha_envia);
 
-            $("[name='docRecibe']").val(data.doc_recibe);
-            $("[name='nombreRecibe']").val(data.nombre_recibe);
-            $("[name='celularRecibe']").val(data.celular_recibe);
-            $("[name='emailRecibe']").val(data.email_recibe);
-            $("[name='fechaRecibe']").val(data.fecha_recibe);
-            $("[name='fechaRecibeBlocked']").val(data.fecha_recibe);
+            $("[name='doc_recibe']").val(data.doc_recibe);
+            $("[name='nombre_recibe']").val(data.nombre_recibe);
+            $("[name='celular_recibe']").val(data.celular_recibe);
+            $("[name='email_recibe']").val(data.email_recibe);
+            $("[name='fecha_recibe']").val(data.fecha_recibe);
+            $("[name='fecha_recibe_blocked']").val(data.fecha_recibe);
 
             // $("[name='origen']").val(data.origen).change(); // come from session
-            $("[name='agenciaOrigen']").val(data.agencia_origen); // come from session
+            $("[name='agencia_origen']").val(data.agencia_origen); // come from session
             $("[name='destino']").val(data.destino).change();
             getAgenciaDestino(data.destino, data.agencia_destino);
 
-            $("[name='medioPago']").val(data.medio_pago).change();
+            $("[name='medio_pago']").val(data.medio_pago).change();
             $("[name='documento']").val(data.documento).change();
-            $("[name='documentoSerie']").val(data.documento_serie);
-            $("[name='documentoCorrelativo']").val(data.documento_correlativo);
+            $("[name='documento_serie']").val(data.documento_serie);
+            $("[name='documento_correlativo']").val(data.documento_correlativo);
 
             $("[name='adquiriente']").val(data.adquiriente);
 
@@ -454,8 +457,6 @@
                     var j = index + 1;
                     $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='importe']").val(element.importe);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='importe_precio']").val(element.importe_precio);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='importe_impuesto']").val(element.importe_impuesto);
                     $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger(
                         "onkeyup");
                     // $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
@@ -467,35 +468,35 @@
         }
 
         function getChargeForm() {
-            var encargoId = $("[name='encargoId']").val().trim();
+            var encargo_id = $("[name='encargo_id']").val().trim();
 
-            var docEnvia = $("[name='docEnvia']").val().trim();
-            var nombreEnvia = $("[name='nombreEnvia']").val().trim();
-            var nombreComercialEnvia = $("[name='nombreComercialEnvia']").val().trim();
-            var direccionEnvia = $("[name='direccionEnvia']").val().trim();
-            var celularEnvia = $("[name='celularEnvia']").val().trim();
-            var emailEnvia = $("[name='emailEnvia']").val().trim();
-            var fechaEnvia = $("[name='fechaEnvia']").val().trim();
+            var doc_envia = $("[name='doc_envia']").val().trim();
+            var nombre_envia = $("[name='nombre_envia']").val().trim();
+            var nombre_comercial_envia = $("[name='nombre_comercial_envia']").val().trim();
+            var direccion_envia = $("[name='direccion_envia']").val().trim();
+            var celular_envia = $("[name='celular_envia']").val().trim();
+            var email_envia = $("[name='email_envia']").val().trim();
+            var fecha_envia = $("[name='fecha_envia']").val().trim();
 
-            var docRecibe = $("[name='docRecibe']").val().trim();
-            var nombreRecibe = $("[name='nombreRecibe']").val().trim();
-            var nombreComercialRecibe = $("[name='nombreComercialRecibe']").val().trim();
-            var direccionRecibe = $("[name='direccionRecibe']").val().trim();
-            var celularRecibe = $("[name='celularRecibe']").val().trim();
-            var emailRecibe = $("[name='emailRecibe']").val().trim();
-            var fechaRecibe = $("[name='fechaRecibe']").val().trim();
+            var doc_recibe = $("[name='doc_recibe']").val().trim();
+            var nombre_recibe = $("[name='nombre_recibe']").val().trim();
+            var nombre_comercial_recibe = $("[name='nombre_comercial_recibe']").val().trim();
+            var direccion_recibe = $("[name='direccion_recibe']").val().trim();
+            var celular_recibe = $("[name='celular_recibe']").val().trim();
+            var email_recibe = $("[name='email_recibe']").val().trim();
+            var fecha_recibe = $("[name='fecha_recibe']").val().trim();
 
             // var origen = $("[name='origen']").val().trim();
             var destino = $("[name='destino']").val().trim();
-            var agenciaOrigen = $("[name='agenciaOrigen']").val().trim();
-            var agenciaDestino = $("[name='agenciaDestino']").val().trim();
-            var medioPago = $("[name='medioPago']").val().trim();
+            var agencia_origen = $("[name='agencia_origen']").val().trim();
+            var agencia_destino = $("[name='agencia_destino']").val().trim();
+            var medio_pago = $("[name='medio_pago']").val().trim();
             var adquiriente = $("[name='adquiriente']").val().trim();
             var documento = $("[name='documento']").val().trim();
-            var documentoSerie = $("[name='documentoSerie']").val().trim();
-            var documentoCorrelativo = $("[name='documentoCorrelativo']").val().trim();
+            var documento_serie = $("[name='documento_serie']").val().trim();
+            var documento_correlativo = $("[name='documento_correlativo']").val().trim();
             var subtotal = $("[name='subtotal']").val().trim();
-            var importePagar = $("[name='importePagar']").val().trim();
+            var importe_pagar_con_descuento = $("[name='importe_pagar_con_descuento']").val().trim();
 
             var descripcion = document.getElementsByName("descripcion");
             var cantidad = document.getElementsByName("cantidad");
@@ -512,58 +513,58 @@
                     });
             }
             var data = {
-                encargoId: encargoId,
-                docEnvia: docEnvia,
-                nombreEnvia: nombreEnvia,
-                nombreComercialEnvia: nombreComercialEnvia,
-                direccionEnvia: direccionEnvia,
-                celularEnvia: celularEnvia,
-                emailEnvia: emailEnvia,
-                fechaEnvia: fechaEnvia,
+                encargo_id: encargo_id,
+                doc_envia: doc_envia,
+                nombre_envia: nombre_envia,
+                nombre_comercial_envia: nombre_comercial_envia,
+                direccion_envia: direccion_envia,
+                celular_envia: celular_envia,
+                email_envia: email_envia,
+                fecha_envia: fecha_envia,
 
-                docRecibe: docRecibe,
-                nombreRecibe: nombreRecibe,
-                nombreComercialRecibe: nombreComercialRecibe,
-                direccionRecibe: direccionRecibe,
-                celularRecibe: celularRecibe,
-                emailRecibe: emailRecibe,
-                fechaRecibe: fechaRecibe,
+                doc_recibe: doc_recibe,
+                nombre_recibe: nombre_recibe,
+                nombre_comercial_recibe: nombre_comercial_recibe,
+                direccion_recibe: direccion_recibe,
+                celular_recibe: celular_recibe,
+                email_recibe: email_recibe,
+                fecha_recibe: fecha_recibe,
 
                 // data.push("origen", origen);
                 destino: destino,
-                agenciaOrigen: agenciaOrigen,
-                agenciaDestino: agenciaDestino,
-                medioPago: medioPago,
+                agencia_origen: agencia_origen,
+                agencia_destino: agencia_destino,
+                medio_pago: medio_pago,
                 adquiriente: adquiriente,
                 documento: documento,
-                documentoSerie: documentoSerie,
-                documentoCorrelativo: documentoCorrelativo,
+                documento_serie: documento_serie,
+                documento_correlativo: documento_correlativo,
                 subtotal: subtotal,
-                importePagar: importePagar,
+                importe_pagar_con_descuento: importe_pagar_con_descuento,
                 encargo: encargo
             };
             return data;
         }
 
         function validate(data) {
-            if (data.docEnvia.length !== DNI && data.docEnvia.length !== RUC && data.docEnvia.length !== CE) {
-                showErrorToastr('Documento incorrecto, has ingresado '+data.docEnvia.length+' caracteres.');
+            if (data.doc_envia.length !== DNI && data.doc_envia.length !== RUC && data.doc_envia.length !== CE) {
+                showErrorToastr('Documento incorrecto,<br>has ingresado '+data.doc_envia.length+' caracteres.');
                 return false;
             }
-            if (data.nombreEnvia.length === 0) {
+            if (data.nombre_envia.length === 0) {
                 showErrorToastr('Completa los nombre de quien Envía.');
                 return false;
             }
-            if (data.docRecibe.length !== DNI && data.docRecibe.length !== RUC && data.docRecibe
+            if (data.doc_recibe.length !== DNI && data.doc_recibe.length !== RUC && data.doc_recibe
                 .length !== CE) {
-                showErrorToastr('Documento incorrecto, has ingresado '+data.docRecibe.length+' caracteres.');
+                showErrorToastr('Documento incorrecto,<br>has ingresado '+data.doc_recibe.length+' caracteres.');
                 return false;
             }
-            if (data.nombreRecibe.length === 0) {
+            if (data.nombre_recibe.length === 0) {
                 showErrorToastr('Completa los nombre de quien Recibe.');
                 return false;
             }
-            if (data.agenciaOrigen.length === 2 && data.agenciaOrigen === '--') {
+            if (data.agencia_origen.length === 2 && data.agencia_origen === '--') {
                 showErrorToastr('Especifica la agencia de origen.');
                 return false;
             }
@@ -571,7 +572,7 @@
                 showErrorToastr('Especifica la agencia de destino.');
                 return false;
             }
-            if (data.agenciaDestino.length === 2 && data.agenciaDestino === '--') {
+            if (data.agencia_destino.length === 2 && data.agencia_destino === '--') {
                 showErrorToastr('Especifica la agencia de destino.');
                 return false;
             }
@@ -579,16 +580,16 @@
                 showErrorToastr('Selecciona una opción: Boleta, Factura o Guía de Remisión.');
                 return false;
             }
-            if (data.documentoSerie.length === 0) {
-                showErrorToastr('No se dispone del serie');
+            if (data.documento_serie.length === 0) {
+                showErrorToastr('No se dispone del serie.');
                 return false;
             }
-            if (data.documento === factura && data.docEnvia.length !== RUC) {
-                showErrorToastr('No se puede emitir una factura para una persona natural');
+            if (data.documento === factura && data.doc_envia.length !== RUC) {
+                showErrorToastr('Al documento '+data.documento+' le faltan '+ (data.documento.length-RUC)+' caracters para ser un RUC.');
                 return false;
             }
-            if (parseFloat(data.importePagar) > parseFloat(data.subtotal)) {
-                showErrorToastr('El importe a pagar no puede ser mayor que total (suma de subtotales)');
+            if (parseFloat(data.importe_pagar_con_descuento) > parseFloat(data.subtotal)) {
+                showErrorToastr('El importe a pagar no puede ser mayor que total (suma de subtotales).');
                 return false;
             }
             return true;
@@ -599,7 +600,7 @@
          * @selected : id de la agencia de destino
          */
         function getAgenciaDestino(destinoId, selected) {
-            $("[name='agenciaDestino']").html("<option value='--'>--</option>");
+            $("[name='agencia_destino']").html("<option value='--'>--</option>");
             if (destinoId !== '--') {
                 $.ajax({
                     url: "{{ url('/api/v1/agencia') }}/" + destinoId,
@@ -613,28 +614,28 @@
                 }).done(function(result) {
                     if (result) {
                         _.forEach(result, function(element, index) {
-                            $("[name='agenciaDestino']").append("<option value='" + element._id + "'>" +
+                            $("[name='agencia_destino']").append("<option value='" + element._id + "'>" +
                                 element.direccion + "</option>");
                         });
                         if (selected) {
-                            $("[name='agenciaDestino']").val(selected).change();
+                            $("[name='agencia_destino']").val(selected).change();
                         }
                     }
                 });
             } else {
-                // no hay agenciaDestino, me quedo en vacío
+                // no hay agencia_destino, me quedo en vacío
 
             }
         }
 
         function getSerie() {
-            var agenciaOrigen = $("[name='agenciaOrigen']").val();
-            var agenciaDestino = $("[name='agenciaDestino']").val();
-            var documentoId = $("[name='documento']").val();
-            if (agenciaOrigen !== '--' && agenciaDestino !== '--' && documentoId !== '--') {
+            var agencia_origen = $("[name='agencia_origen']").val();
+            var agencia_destino = $("[name='agencia_destino']").val();
+            var documento_id = $("[name='documento']").val();
+            if (agencia_origen !== '--' && agencia_destino !== '--' && documento_id !== '--') {
                 $.ajax({
-                    url: "{{ url('/api/v1/serie') }}/" + agenciaOrigen + "/" + agenciaDestino + "/" +
-                        documentoId,
+                    url: "{{ url('/api/v1/serie') }}/" + agencia_origen + "/" + agencia_destino + "/" +
+                        documento_id,
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -644,22 +645,22 @@
                     dataType: "json"
                 }).done(function(result) {
                     if (result) {
-                        var documentoSerie = result[0].correlativo;
-                        $("[name='documentoSerie']").val(documentoSerie);
-                        // var documentoSerie = str_pad(result[0].correlativo, 3);
+                        var documento_serie = result[0].correlativo;
+                        $("[name='documento_serie']").val(documento_serie);
+                        // var documento_serie = str_pad(result[0].correlativo, 3);
                     }
                 });
             } else {
                 // no hay serie para iniciar
-                $("[name='documentoSerie']").val('');
+                $("[name='documento_serie']").val('');
             }
         }
 
         function askEncargo() {
-            var docRecibeOenvia = $("#buscaDocRecibeDocEnvia").val();
+            var doc_recibe_envia = $("#buscaDocRecibeDocEnvia").val();
             var documento = $("#buscaDocumento").val();
 
-            if (docRecibeOenvia.length === DNI || docRecibeOenvia.length === RUC || docRecibeOenvia.length === CE) {
+            if (doc_recibe_envia.length === DNI || doc_recibe_envia.length === RUC || doc_recibe_envia.length === CE) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",
@@ -668,7 +669,7 @@
                     },
                     dataType: "json",
                     data: {
-                        docRecibeOenvia: docRecibeOenvia,
+                        doc_recibe_envia: doc_recibe_envia,
                         documento: documento
                     }
                 }).done(function(result) {
@@ -706,135 +707,123 @@
             $("#btnEmail").addClass("btn-primary");
             $("#btnEliminar").removeClass("disabled btn-secondary");
             $("#btnEliminar").addClass("btn-primary");
-            $("#btnImprimir").children().attr("src", "{{ asset('assets/media/icons/sis/printer-white.svg') }}");
-            $("#btnEmail").children().attr("src", "{{ asset('assets/media/icons/sis/email-white.svg') }}");
-            $("#btnEliminar").children().attr("src", "{{ asset('assets/media/icons/sis/trash-2-white.svg') }}");
+            $("#btnImprimir").children().attr("src", "{{ asset('assets/media/printer-white.svg') }}");
+            $("#btnEmail").children().attr("src", "{{ asset('assets/media/email-white.svg') }}");
+            $("#btnEliminar").children().attr("src", "{{ asset('assets/media/trash-2-white.svg') }}");
 
         }
 
         function doit() {
             var data = getChargeForm();
             if (validate(data)) {
-                var importePagar = $("[name='importePagar']").val();
-                if (importePagar <= parseFloat("{{ env('DETRACCION') }}")) {
-                    $.ajax({
-                        url: "{{ url('/venta/registrar') }}",
-                        type: "POST",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: data,
-                        dataType: "json"
-                    }).done(function(result) {
-                        if (result.result.status === 'OK') {
-                            if (data.get('encargoId').length === 0) {
-                                $("[name='encargoId']").val(result.result.encargoId);
-                                $("[name='adquiriente']").val(result.result.adquiriente);
-                                $("[name='fechaEnvia']").val(result.result.fechaEnvia);
-                                $("[name='documentoCorrelativo']").val(str_pad(result.result.documentoCorrelativo,
-                                {{ env('ZEROFILL', 8) }}));
-                                enabledBtn();
-                                showSuccessToastr(result.result.message);
-                            }
-                        } else {
-                            showErrorToastr(result.result.message);
-                        }
-                    });
-                } else {
-                    // evitar la DETRACCIÓN 
-                    showErrorToastr('Usted debe emitir boletas/facturas/guías por montos menores a ' +
+                // evitar la DETRACCIÓN 
+                /*if (data.importe_pagar_con_descuento >= parseFloat("{{ env('DETRACCION') }}")) {
+                    showErrorToastr('Usted debe emitir boletas, facturas o guías por montos menores a ' +
                         '{{ env('DETRACCION') }}');
-                }
-            } else {
-                // no ha superado la validación
-                showErrorToastr('Complete los campos obligatorios');
-            }
-        }
-
-        function printElement() {
-            var encargoId = $("[name='encargoId']").val();
-            if (encargoId) {
+                    return false;
+                }*/
                 $.ajax({
-                    url: "{{ url('/api/v1/venta/comprobante') }}/" + encargoId,
+                    url: "{{ url('/venta/registrar') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
+                    data: data,
                     dataType: "json"
-                }).done(function(result) {
-                    $("#comprobantePago").attr("src", result.result.urlComprobantePago);
+                }).done(function(response) {
+                    if (response.result.status === 'OK') {
+                        if (data.encargo_id.length === 0) {
+                            $("[name='encargo_id']").val(response.result.encargo_id);
+                            $("[name='adquiriente']").val(response.result.adquiriente);
+                            $("[name='fecha_envia']").val(response.result.fecha_envia);
+                            $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
+                            $("[name='url_documento']").val(response.result.url_documento);
+                            enabledBtn();
+                            showSuccessToastr(response.result.message);
+                        }
+                    } else {
+                        showErrorToastr(response.result.message);
+                    }
                 });
+                
+            }
+        }
+
+        function printElement() {
+            var url_documento = $("[name='url_documento']").val();
+            if (url_documento) {
+                $("#comprobantePago").attr("src", url_documento);
                 return true;
             }
         }
 
-        $("[name='docEnvia']").on('keypress', function(e) {
+        $("[name='doc_envia']").on('keypress', function(e) {
             if (e.which == 13) {
-                var docEnvia = $("[name='docEnvia']").val().trim();
-                if (docEnvia.length === DNI || docEnvia.length === CE) {
+                var doc_envia = $("[name='doc_envia']").val().trim();
+                if (doc_envia.length === DNI || doc_envia.length === CE) {
                     // consultar a RENIEC
                     $.ajax({
-                        url: "{{ url('/api/v1/reniec') }}/" + docEnvia,
+                        url: "{{ url('/api/v1/reniec') }}/" + doc_envia,
                         type: "POST",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
                     }).done(function(result) {
-                        $("[name='nombreEnvia']").val(result.result.nombre);
+                        $("[name='nombre_envia']").val(result.result.nombre);
                     });
 
-                } else if (docEnvia.length === RUC) {
+                } else if (doc_envia.length === RUC) {
                     // consultar a SUNAT
                     $.ajax({
-                        url: "{{ url('/api/v1/sunat') }}/" + docEnvia,
+                        url: "{{ url('/api/v1/sunat') }}/" + doc_envia,
                         type: "POST",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
                     }).done(function(result) {
-                        $("[name='nombreEnvia']").val(result.result.nombre);
-                        $("[name='nombreComercialEnvia']").val(result.result.nombreComercial);
+                        $("[name='nombre_envia']").val(result.result.nombre);
+                        $("[name='nombre_comercial_envia']").val(result.result.nombre_comercial);
                         
                     });
                 } else {
-                    showErrorToastr("Ha ingresado " + docEnvia.length + " caracteres, complételo por favor.");
+                    showErrorToastr("Ha ingresado " + doc_envia.length + " caracteres, complételo por favor.");
                 }
             }
         });
 
-        $("[name='docRecibe']").on('keypress', function(e) {
+        $("[name='doc_recibe']").on('keypress', function(e) {
             if (e.which == 13) {
-                var docRecibe = $("[name='docRecibe']").val().trim();
-                if (docRecibe.length === DNI || docRecibe.length === CE) {
+                var doc_recibe = $("[name='doc_recibe']").val().trim();
+                if (doc_recibe.length === DNI || doc_recibe.length === CE) {
                     // consultar a RENIEC
                     $.ajax({
-                        url: "{{ url('/api/v1/reniec') }}/" + docRecibe,
+                        url: "{{ url('/api/v1/reniec') }}/" + doc_recibe,
                         type: "POST",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
                     }).done(function(result) {
-                        $("[name='nombreRecibe']").val(result.result.nombre);
+                        $("[name='nombre_recibe']").val(result.result.nombre);
                     });
 
-                } else if (docRecibe.length === RUC) {
+                } else if (doc_recibe.length === RUC) {
                     // consultar a SUNAT
                     $.ajax({
-                        url: "{{ url('/api/v1/sunat') }}/" + docRecibe,
+                        url: "{{ url('/api/v1/sunat') }}/" + doc_recibe,
                         type: "POST",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
                     }).done(function(result) {
-                        $("[name='nombreRecibe']").val(result.result.nombre);
-                        $("[name='nombreComercialRecibe']").val(result.result.nombreComercial);
+                        $("[name='nombre_recibe']").val(result.result.nombre);
+                        $("[name='nombre_comercial_recibe']").val(result.result.nombre_comercial);
                     });
                 } else {
-                    showErrorToastr("Ha ingresado " + docRecibe.length + " caracteres, complételo por favor.");
+                    showErrorToastr("Ha ingresado " + doc_recibe.length + " caracteres, complételo por favor.");
                 }
             }
         });

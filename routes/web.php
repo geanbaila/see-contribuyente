@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Route::get('/venta', 'SaleController@list');
 Route::get('/venta/nuevo', 'SaleController@show');
-Route::get('/venta/editar/{encargoId}', 'SaleController@edit');
+Route::get('/venta/editar/{encargo_id}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 
 Route::get('/manifiesto', 'ManifestController@list');
@@ -26,9 +26,8 @@ Route::get('/manifiesto', 'ManifestController@list');
 Route::get('/configuracion', 'ConfigurationController@list');
 Route::post('/configuracion/salida', 'ConfigurationController@update');
 
-Route::post('/api/v1/serie/{agenciaOrigenId}/{agenciaDestinoId}/{documentoId}', 'ApiController@getSerie');
+Route::post('/api/v1/serie/{agencia_origen_id}/{agencia_destino_id}/{documento_id}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
 Route::post('/api/v1/encargo', 'ApiController@getEncargo');
-Route::post('/api/v1/venta/comprobante/{encargoId}', 'ApiController@getComprobantePago');
 Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
 Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');

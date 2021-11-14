@@ -1,4 +1,3 @@
-carga.json
 database.sql
 /storage/*.key
 /vendor
@@ -13,3 +12,5 @@ yarn-error.log
 /.idea
 /.vscode
 /public/pruebas
+/public/comprobantes
+carga.json

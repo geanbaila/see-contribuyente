@@ -27,18 +27,18 @@ class ConfigurationController extends Controller
         }
 
         $salidaId = $request->input("salidaId");
-        $agenciaId = $request->input("agenciaId");
+        $agencia_id = $request->input("agencia_id");
         $placa =  $request->input("placa");
         $horario = $request->input("horario");
         $w = date("w");
-        $updateSalida = [
-            "agencia" => $agenciaId,
+        $update_salida = [
+            "agencia" => $agencia_id,
             "horario" => $horario,
             $column => $placa,
             $this->getBeforeDay($w, 0) => "",
         ];
         
-        $status = Salida::find($salidaId)->update($updateSalida, ['upsert' => true]);
+        $status = Salida::find($salidaId)->update($update_salida, ['upsert' => true]);
         if ($status) {
             // autocompletar los demás días
             $salida = Salida::find($salidaId);
@@ -49,13 +49,13 @@ class ConfigurationController extends Controller
             $dia3 = $this->getDay($w, 3);
             $dia4 = $this->getDay($w, 4);
             $dia5 = $this->getDay($w, 5);
-            $updateSalida = [
+            $update_salida = [
                 $dia2 => $salida[$dia0],
                 $dia3 => $salida[$dia1],
                 $dia4 => $salida[$dia0],
                 $dia5 => $salida[$dia1],
             ];
-            $status = Salida::find($salidaId)->update($updateSalida, ['upsert' => true]);
+            $status = Salida::find($salidaId)->update($update_salida, ['upsert' => true]);
         }
         
         $response = [
