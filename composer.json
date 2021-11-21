@@ -13,10 +13,6 @@
         "elibyy/tcpdf-laravel": "^8.1",
         "fideloper/proxy": "^4.4",
         "greenter/xmldsig": "^5.0",
-        "greenter/lite": "^4.3",
-        "greenter/report": "^4.3",
-        "greenter/htmltopdf": "^4.3",
-        "greenter/data": "^4.3",
         "jenssegers/mongodb": "3.6",
         "laravel/framework": "^6.20.26",
         "laravel/tinker": "^2.5"

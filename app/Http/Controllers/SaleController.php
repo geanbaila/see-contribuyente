@@ -174,35 +174,39 @@ class SaleController extends Controller
             $documento_correlativo = sprintf("%0".env('ZEROFILL', 8)."d", Encargo::getNextSequence($encargo_id, $data['documento_serie']));
             $encargo = Encargo::where('_id', $object_id)->update(['fecha_envia' => $fecha_envia, 'documento_correlativo' => $documento_correlativo]);
         }
-
         // registrar o actualizar el PDF
         if($documento->alias === 'B') {
-            $url_documento = $this->escribirBoleta($encargo_id);
-            $this->escribirXMLBoleta($encargo_id);
+            $url_documento_pdf = $this->escribirBoleta($encargo_id);
+            $url_documento = $this->escribirXMLBoleta($encargo_id);
         } else if($documento->alias === 'F') {
-            $url_documento = $this->escribirFactura($encargo_id);
-            $this->escribirXMLFactura($encargo_id);
+            $url_documento_pdf = $this->escribirFactura($encargo_id);
+            $url_documento = $this->escribirXMLFactura($encargo_id);
+            
         } else if ($documento->alias === 'G') {
-            $url_documento = $this->escribirGuiaRemision($encargo_id);
-            $this->escribirXMLGuiaRemision($encargo_id);
+            $url_documento_pdf = $this->escribirGuiaRemision($encargo_id);
+            $url_documento = $this->escribirXMLGuiaRemision($encargo_id);
         } else {
             // no escribir PDF
             return \response()->json(['result' => ['status' => 'fails', 'message' => 'Ha ocurrido un error(200) en el sistema, contacta con el proveedor.']]);
         }
 
         // vincular PDF
-        Encargo::where('_id', $object_id)->update(['url_documento' => $url_documento]);
+        Encargo::where('_id', $object_id)->update([
+            'url_documento_pdf' => $url_documento_pdf,
+            'url_documento_xml' => $url_documento['xml'],
+            'url_documento_cdr' => $url_documento['cdr'],
+        ]);
 
         $fecha_envia_dd_mm_yyyy = explode('-',$fecha_envia);
         return \response()->json([
             'result' => [
                 'status' => 'OK', 
-                'message' => 'Registro correctamente', 
+                'message' => 'Registrado correctamente', 
                 'encargo_id' => $encargo_id, 
                 'adquiriente' => $adquiriente, 
                 'documento_correlativo' => $documento_correlativo,
                 'fecha_envia' => $fecha_envia_dd_mm_yyyy[2].'-'.$fecha_envia_dd_mm_yyyy[1].'-'.$fecha_envia_dd_mm_yyyy[0],
-                'url_documento' => url($url_documento.'?v='.uniqid()),
+                'url_documento' => url($url_documento_pdf.'?v='.uniqid()),
             ]
         ]);
     }
@@ -225,7 +229,7 @@ class SaleController extends Controller
     }
 
     public function list() {
-        $encargo = Encargo::all();
+        $encargo = Encargo::all()->sortBy('oferta');
         return view('sale.list')->with([ 'encargo' => $encargo ]);
     }
 
@@ -1672,42 +1676,38 @@ class SaleController extends Controller
 
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
             $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
-            $path = base_path('public/comprobantes/' . $year . '/' . $month . '/' . $encargo_id);
+            $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
+            $path = base_path('public/' . $folder);
             $documento_sin_firmar = 'documento_sin_firmar.xml';
             
             @mkdir($path, 0777, true);
             @unlink($path . '/' . $documento_sin_firmar);
             $dom->save($path . '/' . $documento_sin_firmar);
+            $documento_xml = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
+            $documento_zip = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
+            $documento_cdr = 'R-' . $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
 
             $certificado = env('PEM');
             $firmante = new SignedXml();
             $firmante->setCertificateFromFile($certificado);
             $factura_xml_firmada = $firmante->signFromFile($path . '/' . $documento_sin_firmar);
-            $filename = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
-            $output = $path . '/' . $filename;
-            file_put_contents($output, $factura_xml_firmada);
+            file_put_contents($path . '/' . $documento_xml, $factura_xml_firmada);
             
-            $compress = str_ireplace('xml', 'zip', $output);
+            
             $zip = new \ZipArchive();
-            $zip->open($compress, \ZipArchive::CREATE);
-            $zip->addFile($output, $filename);
+            $zip->open($path . '/' .$documento_zip , \ZipArchive::CREATE);
+            $zip->addFile($path . '/' . $documento_xml, $documento_xml);
             $zip->close();
-            file_get_contents($compress);
+            // file_get_contents($compress);
             
             if (extension_loaded('soap')){ 
-                $Username = "20100066603MODDATOS";
-                $Password = "moddatos";
-
-                $opts = array(
-                    'http' => array(
+                $context = stream_context_create([
+                    'http' => [
                         'user_agent' => 'PHPSoapClient'
-                    )
-                );
-                $context = stream_context_create($opts);
+                    ]
+                ]);
             
-                // $wsdlUrl = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?WSDL';
                 $wsdlUrl = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.wsdl';
-                // $wsdlUrl = base_path('public/comprobantes/sunat.wsdl');
                 $soapClientOptions = array(
                     'encoding' => 'UTF-8',
                     'soap_version' => SOAP_1_1,
@@ -1715,13 +1715,12 @@ class SaleController extends Controller
                     'verifyhost' => false,
                     'connection_timeout' => 180,
                     /*
-
                     'stream_context' => $context,
                     'cache_wsdl' => WSDL_CACHE_NONE,*/
 
                     'authentication' => SOAP_AUTHENTICATION_BASIC,
-                    'login' => $Username,
-                    'password' => $Password,
+                    'login' => "20100066603MODDATOS",
+                    'password' => "moddatos",
                     'trace' => true,
                     'exception' => true,
 
@@ -1730,19 +1729,22 @@ class SaleController extends Controller
                 );
                 $client = new \SoapClient($wsdlUrl, $soapClientOptions);
                 if($client){
-                    $fileName = str_ireplace('xml', 'zip', $filename);
-                    $contentFile = base64_encode(file_get_contents($compress));
+                    $contentFile = base64_encode(file_get_contents($path . '/' .$documento_zip));
                     try {
-                        $client->sendBill($fileName, $contentFile);
+                        $client->sendBill($documento_zip, $contentFile);
                         $response = $client->__getLastResponse();
+
                         $dom_cdr = new \DOMDocument();
                         $dom_cdr->loadXML($response);
-                        $CDR = $dom_cdr->getElementsByTagName('param1')->item(0)->nodeValue;
-                        file_put_contents(str_ireplace('xml', 'zip2', $output), base64_decode($CDR));
+                        $nodeValue = $dom_cdr->getElementsByTagName('param1')->item(0)->nodeValue;
+                        file_put_contents($path . '/' . $documento_cdr, base64_decode($nodeValue));
                     } catch(SoapFault $x){
-                        dd($x);
+                        
                     }
                 }
+                $result = ['xml'=> $folder . '/' . $documento_xml, 'cdr' => $folder . '/' .$documento_cdr];
+                
+                return $result;
                 
             }
 

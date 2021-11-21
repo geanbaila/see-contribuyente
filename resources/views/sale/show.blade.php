@@ -21,11 +21,20 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
-                                    <input class="form-control" id="doc_envia" name="doc_envia" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="doc_envia" name="doc_envia" value="{{$encargo->doc_envia}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="doc_envia" name="doc_envia" value="" placeholder="" />
+                                    @endif
+
                                 </div>
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
-                                    <input class="form-control" id="nombre_envia" name="nombre_envia" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="nombre_envia" name="nombre_envia" value="{{$encargo->nombre_envia}}" placeholder="">
+                                    @else
+                                        <input class="form-control" id="nombre_envia" name="nombre_envia" value="" placeholder="">
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -33,15 +42,27 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
-                                    <input class="form-control" id="celular_envia" name="celular_envia" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="celular_envia" name="celular_envia" value="{{$encargo->celular_envia}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="celular_envia" name="celular_envia" value="" placeholder="" />   
+                                    @endif
                                 </div>
                                 <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
-                                    <input class="form-control" id="email_envia" name="email_envia" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="email_envia" name="email_envia" value="{{$encargo->email_envia}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="email_envia" name="email_envia" value="" placeholder="" />
+                                    @endif
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
-                                    <input class="form-control" id="fecha_envia" name="fecha_envia" placeholder="" disabled>
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="fecha_envia" name="fecha_envia" value="{{$encargo->fecha_envia}}" placeholder="" disabled />
+                                    @else
+                                        <input class="form-control" id="fecha_envia" name="fecha_envia" value="" placeholder="" disabled />    
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -59,11 +80,19 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
-                                    <input class="form-control" id="doc_recibe" name="doc_recibe" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="doc_recibe" name="doc_recibe"  value="{{$encargo->doc_recibe}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="doc_recibe" name="doc_recibe"  value="" placeholder="" />
+                                    @endif
                                 </div>
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
-                                    <input class="form-control" id="nombre_recibe" name="nombre_recibe" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="nombre_recibe" name="nombre_recibe" value="{{$encargo->nombre_recibe}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="nombre_recibe" name="nombre_recibe" value="" placeholder="" />
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -71,17 +100,27 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
-                                    <input class="form-control" id="celular_recibe" name="celular_recibe" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="celular_recibe" name="celular_recibe" value="{{$encargo->celular_recibe}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="celular_recibe" name="celular_recibe" value="" placeholder="" />
+                                    @endif
                                 </div>
                                 <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">E-mail:</label>
-                                    <input class="form-control" id="email_recibe" name="email_recibe" placeholder="">
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="email_recibe" name="email_recibe" value="{{$encargo->email_recibe}}" placeholder="" />
+                                    @else
+                                        <input class="form-control" id="email_recibe" name="email_recibe" value="" placeholder="" />
+                                    @endif
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
-                                    <input class="form-control" id="fecha_recibe" name="fecha_recibe" placeholder=""
-                                        disabled>
-
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="fecha_recibe" name="fecha_recibe" value="{{$encargo->fecha_recibe}}" placeholder="" disabled>
+                                    @else
+                                        <input class="form-control" id="fecha_recibe" name="fecha_recibe" value="" placeholder="" disabled>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -96,7 +135,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row gy-5 g-xl-12">
                         <div class="col-xxl-5">
                             <div class="row gy-5">
@@ -105,9 +143,18 @@
                                     <select class="form-select" aria-label="--" name="agencia_origen"
                                         onchange="javascript:getSerie()">
                                         <option selected> -- </option>
+                                        @isset($encargo)
+                                            @foreach ($encargo->agencia_origen as $item)
+                                                <?php $agencia_origen_selected = $item ?>
+                                            @endforeach
+                                        @endisset
                                         @if (count($agencia_origen))
                                             @foreach ($agencia_origen as $item)
-                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
+                                                @if(isset($agencia_origen_selected))
+                                                    <option value="{{ $item->_id }}" {{($agencia_origen_selected == $item->_id)?"selected":""}}>{{ $item->nombre }}</option>
+                                                @else
+                                                    <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
+                                                @endif
                                             @endforeach
                                         @endif
                                     </select>
@@ -117,9 +164,18 @@
                                     <select class="form-select" aria-label="--" name="destino"
                                         onchange="javascript:getAgenciaDestino(this.value, false)">
                                         <option selected> -- </option>
+                                        @isset($encargo)
+                                            @foreach ($encargo->destino as $item)
+                                                <?php $destino_selected = $item ?>
+                                            @endforeach
+                                        @endisset
                                         @if (count($sede))
                                             @foreach ($sede as $item)
-                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
+                                                @if(isset($destino_selected))
+                                                    <option value="{{ $item->_id }}" {{($destino_selected == $item->_id)?"selected":""}}>{{ $item->nombre }}</option>
+                                                @else
+                                                    <option value="{{ $item->_id }}">{{ $item->nombre }}</option>    
+                                                @endif
                                             @endforeach
                                         @endif
                                     </select>
@@ -138,32 +194,44 @@
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Medio de pago:</label>
                                     <select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
-                                        <option value="--" selected> -- </option>
-                                        <option value="1">CRÉDITO</option>
-                                        <option value="2">CONTADO</option>
+                                        <option value="--"> -- </option>
+                                        <option value="1" {{(isset($encargo) && $encargo->medio_pago == "1")?"selected":""}}>CRÉDITO</option>
+                                        <option value="2" {{(isset($encargo) && $encargo->medio_pago == "2")?"selected":""}}>CONTADO</option>
                                     </select>
                                 </div>
+                                
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Documento:</label>
                                     <select class="form-select" aria-label="--" id="documento" name="documento"
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected>--</option>
+                                        @isset($encargo)
+                                            @foreach($encargo->documento as $d)
+                                                <?php $documento_selected = $d; ?>
+                                            @endforeach
+                                        @endisset
                                         @if (count($documento))
                                             @foreach ($documento as $item)
-                                                <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
+                                                <option value="{{ $item->_id }}" {{(isset($documento_selected) && $documento_selected == $item->_id)?"selected":""}}>{{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
                                     </select>
                                 </div>
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
-                                    <input class="form-control" id="documento_serie" name="documento_serie" value=""
-                                        disabled>
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="documento_serie" name="documento_serie" value="{{$encargo->documento_serie}}" disabled />
+                                    @else
+                                        <input class="form-control" id="documento_serie" name="documento_serie" value="" disabled />
+                                    @endif
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Correlativo:</label>
-                                    <input class="form-control" id="documento_correlativo" name="documento_correlativo" value=""
-                                        disabled>
+                                    @if(isset($encargo))
+                                        <input class="form-control" id="documento_correlativo" name="documento_correlativo" value="{{$encargo->documento_correlativo}}" disabled />
+                                    @else
+                                        <input class="form-control" id="documento_correlativo" name="documento_correlativo" value="" disabled />
+                                    @endif
                                 </div>
 
                             </div>
@@ -205,40 +273,84 @@
                             </tr>
                         </thead>
                         <tbody id="chargeRow">
-                            <tr>
-                                <td>
-                                    <select class="form-select" aria-label="--" name="descripcion"
+                            @if(isset($encargo))
+                                @foreach($encargo->encargo as $encargo_detalle)
+                                <tr>
+                                    <td>
+                                        <select class="form-select" aria-label="--" name="descripcion"
                                         onchange="javascript:updateChargeDetail(this)">
                                         <option value="--" selected> -- </option>
                                         @if(isset($carga))
-                                            @foreach ($carga as $item)
-                                                <option value="{{ $item->id }}" data-amount="{{ $item->importe_precio }}" >
-                                                    {{ $item->nombre }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </td>
-                                <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
-                                <td><input type="hidden" class="form-control fw8" name="peso"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
-                                    <input type="number" class="form-control fw8" name="cantidad"
-                                        onkeyup="javascript:calculatePayChargeDetail(this);">
-                                </td>
-                                <td><input type="number" class="form-control fw8" name="importe"
-                                        onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                <td><input type="number" class="form-control fw8" name="total" disabled></td>
-                            </tr>
+                                        @foreach ($carga as $item)
+                                                    <option value="{{ $item->id }}" {{($encargo_detalle['descripcion'] == $item->nombre)?"selected":""}} data-amount="{{ $item->importe_precio }}" >
+                                                        {{ $item->nombre }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </td>
+                                    <!-- <td><input type="number" class="form-control fw8" name="peso"
+                                                onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                    <td><input type="hidden" class="form-control fw8" name="peso"
+                                        value="{{$encargo_detalle['peso']}}" 
+                                        onkeyup="javascript:calculatePayChargeDetail(this);" />
+                                        <input type="number" class="form-control fw8" name="cantidad"
+                                        value="{{$encargo_detalle['cantidad']}}"
+                                        onkeyup="javascript:calculatePayChargeDetail(this);" />
+                                    </td>
+                                    <td><input type="number" class="form-control fw8" name="importe"
+                                        value="{{$encargo_detalle['precio_unitario_con_igv']}}"
+                                        onkeyup="javascript:calculatePayChargeDetail(this)"
+                                        disabled></td>
+                                    <td><input type="number" class="form-control fw8" name="total"
+                                        value="{{$encargo_detalle['precio_sin_igv']}}"
+                                        disabled></td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td>
+                                        <select class="form-select" aria-label="--" name="descripcion"
+                                            onchange="javascript:updateChargeDetail(this)">
+                                            <option value="--" selected> -- </option>
+                                            @if(isset($carga))
+                                                @foreach ($carga as $item)
+                                                    <option value="{{ $item->id }}" data-amount="{{ $item->importe_precio }}" >
+                                                        {{ $item->nombre }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </td>
+                                    <!-- <td><input type="number" class="form-control fw8" name="peso"
+                                                onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                    <td><input type="hidden" class="form-control fw8" name="peso"
+                                            onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
+                                        <input type="number" class="form-control fw8" name="cantidad"
+                                            onkeyup="javascript:calculatePayChargeDetail(this);">
+                                    </td>
+                                    <td><input type="number" class="form-control fw8" name="importe"
+                                            onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
+                                    <td><input type="number" class="form-control fw8" name="total" disabled></td>
+                                </tr>
+                            @endif
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="3" align="right">Subtotal + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
+                                @if(isset($encargo))
+                                    <td><input type="number" class="form-control fw8" name="subtotal" value="{{$encargo->subtotal}}" disabled></td>
+                                @else
+                                    <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
+                                @endif
                             </tr>
                             <tr>
                                 <td colspan="3" align="right">Importe a pagar + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td><input type="number" class="form-control fw8" name="importe_pagar_con_descuento" value="0.00">
-                                    </td>
+                                <td>
+                                @if(isset($encargo))
+                                    <input type="number" class="form-control fw8" name="importe_pagar_con_descuento" value="{{$encargo->oferta}}">
+                                @else
+                                    <input type="number" class="form-control fw8" name="importe_pagar_con_descuento" value="0.00">
+                                @endif
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -827,5 +939,8 @@
                 }
             }
         });
+        @if(isset($encargo))
+            $("[name='cantidad']").trigger('onkeyup');
+        @endif
     </script>
 @endsection

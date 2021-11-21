@@ -10,6 +10,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Documento</th>
+                                <th scope="col">Fecha</th>
                                 <th scope="col">Importe total</th>
                                 <th scope="col">Envía</th>
                                 <th scope="col">Recibe</th>
@@ -24,22 +25,23 @@
                                 <tr>
                                     <th scope="row">
                                         <a href="{{ url('/venta/editar/' . $item->_id) }}"><img
-                                                src="{{ asset('/assets/media/icons/sis/edit.svg') }}" width="24" /></a>
+                                                src="{{ asset('/assets/media/edit.svg') }}" width="24" /></a>
                                     </th>
                                     <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
+                                    <td>{{ $item->fecha_envia }}</td>
                                     <td>{{ $item->subtotal }}</td>
-                                    <td>{{ $item->nombre_envia }}</td>
-                                    <td>{{ $item->nombre_recibe }}</td>
-                                    <td><a target="_blank"><img
-                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                    <td>{{ $item->doc_envia}}<br>{{ $item->nombre_envia }}</td>
+                                    <td>{{$item->doc_recibe}}<br>{{ $item->nombre_recibe }}</td>
+                                    <td><a target="_blank" href="{{url('/'.$item->url_documento_pdf)}}"><img
+                                            src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
                                             width="24"></a>
                                     </td>
-                                    <td><a target="_blank"><img
-                                            src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                    <td><a target="_blank" href="{{url('/'.$item->url_documento_xml)}}"><img
+                                            src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
                                             width="24"></a>
                                     </td>
-                                    <td><a target="_blank"><img
-                                        src="http://localhost/dev.enlaces.sis/public/assets/media/icons/sis/file-text.svg"
+                                    <td><a target="_blank" href="{{url('/'.$item->url_documento_cdr)}}"><img
+                                        src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
                                         width="24"></a></td>
                                 </tr>
                             @endforeach
