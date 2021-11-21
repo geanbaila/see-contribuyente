@@ -12,6 +12,9 @@ use App\Business\Encargo;
 use App\Business\Adquiriente;
 use MongoDB\BSON\ObjectId;
 use \Greenter\XMLSecLibs\Sunat\SignedXml;
+use \Greenter\Ws\Services\SunatEndpoints;
+use \Greenter\See;
+
 use \PHPQRCode\QRcode;
 use PDF;
 
@@ -1683,12 +1686,84 @@ class SaleController extends Controller
             $filename = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
             $output = $path . '/' . $filename;
             file_put_contents($output, $factura_xml_firmada);
-
+            
+            $compress = str_ireplace('xml', 'zip', $output);
             $zip = new \ZipArchive();
-            $zip->open(str_ireplace('xml', 'zip', $output), \ZipArchive::CREATE);
+            $zip->open($compress, \ZipArchive::CREATE);
             $zip->addFile($output, $filename);
             $zip->close();
-            file_get_contents($output);
+            file_get_contents($compress);
+            
+            if (extension_loaded('soap')){ 
+                $Username = "20100066603MODDATOS";
+                $Password = "moddatos";
+
+                $opts = array(
+                    'http' => array(
+                        'user_agent' => 'PHPSoapClient'
+                    )
+                );
+                $context = stream_context_create($opts);
+            
+                // $wsdlUrl = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?WSDL';
+                $wsdlUrl = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.wsdl';
+                // $wsdlUrl = base_path('public/comprobantes/sunat.wsdl');
+                $soapClientOptions = array(
+                    'encoding' => 'UTF-8',
+                    'soap_version' => SOAP_1_1,
+                    'verifypeer' => false,
+                    'verifyhost' => false,
+                    'connection_timeout' => 180,
+                    /*
+
+                    'stream_context' => $context,
+                    'cache_wsdl' => WSDL_CACHE_NONE,*/
+
+                    'authentication' => SOAP_AUTHENTICATION_BASIC,
+                    'login' => $Username,
+                    'password' => $Password,
+                    'trace' => true,
+                    'exception' => true,
+
+                    'style'    => SOAP_DOCUMENT,
+                    'use'      => SOAP_LITERAL,
+                );
+                $client = new \SoapClient($wsdlUrl, $soapClientOptions);
+                if($client){
+                    $fileName = str_ireplace('xml', 'zip', $filename);
+                    $contentFile = base64_encode(file_get_contents($compress));
+                    try {
+                        $client->sendBill($fileName, $contentFile);
+                        $response = $client->__getLastResponse();
+                        $dom_cdr = new \DOMDocument();
+                        $dom_cdr->loadXML($response);
+                        $CDR = $dom_cdr->getElementsByTagName('param1')->item(0)->nodeValue;
+                        file_put_contents(str_ireplace('xml', 'zip2', $output), base64_decode($CDR));
+                    } catch(SoapFault $x){
+                        dd($x);
+                    }
+                }
+                
+            }
+
+            /*
+            $see = new See();
+            $see->setService($endpoint);
+            
+            $certificate = file_get_contents($certificado);
+            if ($certificate === false) {
+                throw new Exception('No se pudo cargar el certificado');
+            }
+            $see->setCertificate($certificate);
+            $see->setClaveSOL(env('SOL_RUC'), env('SOL_USUARIO'), env('SOL_CLAVE'));
+            // $see->setCachePath(__DIR__ . '/../cache');
+            
+            $content = base64_encode(file_get_contents($output));
+
+            $res = $see->send($output, $content);
+            dd($res);
+            
+            return $see;*/
         }
     }
 
