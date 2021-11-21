@@ -11,6 +11,7 @@ use App\Business\Documento;
 use App\Business\Encargo;
 use App\Business\Adquiriente;
 use MongoDB\BSON\ObjectId;
+use \Greenter\XMLSecLibs\Sunat\SignedXml;
 use \PHPQRCode\QRcode;
 use PDF;
 
@@ -374,8 +375,9 @@ class SaleController extends Controller
             // PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
 
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
-            $tree = "comprobantes/" . $year . "/" . $encargo_id;
-            $filename = $data['emisor_ruc'].'_03_'.$data['emisor_numero_documento_electronico'] . ".pdf";
+            $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
+            $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
+            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = base_path('public/'.$tree);
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
@@ -547,8 +549,9 @@ class SaleController extends Controller
             // PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
 
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
-            $tree = "comprobantes/" . $year . "/" . $encargo_id;
-            $filename = $data['emisor_ruc'].'_01_'.$data['emisor_numero_documento_electronico'] . ".pdf";
+            $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
+            $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
+            $filename = $data['emisor_ruc'].'-01-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = base_path('public/'.$tree);
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
@@ -733,10 +736,9 @@ class SaleController extends Controller
         if ($data) {
             // IMPORTANTE: La factura electrónica deberá tener información de los por lo menos uno de siguientes campos definidos como opcionales: 18. Total valor de venta – operaciones gravadas, 19. Total valor de venta – operaciones inafectas o 20. Total valor de vento - operaciones exoneradas
             // variables
-            $X509Certificate = 'MIIF9TCCBN2gAwIBAgIGAK0oRTg/MA0GCSqGSIb3DQEBCwUAMFkxCzAJBgNVBAYTAlRSMUowSAYDVQQDDEFNYWxpIE3DvGjDvHIgRWxla3Ryb25payBTZXJ0aWZpa2EgSGl6bWV0IFNhxJ9sYXnEsWPEsXPEsSAtIFRlc3QgMTAeFw0wOTEwMjAxMTM3MTJaFw0xNDEwMTkxMTM3MTJaMIGgMRowGAYDVQQLDBFHZW5lbCBNw7xkw7xybMO8azEUMBIGA1UEBRMLMTAwMDAwMDAwMDIxbDBqBgNVBAMMY0F5ZMSxbiBHcm91cCAtIFR1cml6bSDEsHRoYWxhdCDEsGhyYWNhdCBUZWtzdGlsIMSwbsWfYWF0IFBhemFyiMwtPnC2DRjdsyGv3bxwRZr9wXMRrMNwRjyFe9JPA7bSscEgaXwzDUG5FCvfS/PNT+XCce+VECAx6Q3R1ZRSA49fYz6tDB4Ia5HVBXZODmrCs26XisHF6kuS5N/yGg8E7VC1BRr/SmxXeLTdjQYAfo7lxCz4dT6wP5TOiBvF+lyWW1bi9nbliXyb/e5HjCp4k/ra9LTskjbY/Ukl5O8G9JEAViZkjvxDX7T0yVRHgMGiioIKVMwU6Lrtln607BNurLwED0OeoZ4wBgkBiB5vXofreXrfN2pHZ2=';
             $tipoMoneda = 'PEN';
             $n = 3;
-            $firma = 'SB209-128311'; // Identificador de la firma
+            $firma = 'GreenterSign'; // Identificador de la firma
             $adquirienteCatalogo6 = '6'; // ruc
             $factura = '01';
             
@@ -766,6 +768,7 @@ class SaleController extends Controller
                         $nodeExtensionContent = $dom->createElement('ext:ExtensionContent');
                         $nodeUBLExtensions1->appendChild($nodeExtensionContent);
 
+                            /*
                             $nodeSignature = $dom->createElement('ds:Signature');
                             $nodeSignature->setAttributeNode(new \DOMAttr('Id','SignatureSP'));
                             $nodeExtensionContent->appendChild($nodeSignature);
@@ -810,6 +813,7 @@ class SaleController extends Controller
 
                                         $nodeX509Certificate = $dom->createElement('ds:X509Certificate', $X509Certificate);
                                         $nodeX509Data->appendChild($nodeX509Certificate);
+                            */
             // end 1
 
             // begin 2 - Versión del UB
@@ -980,8 +984,8 @@ class SaleController extends Controller
                     $nodeExternalReference = $dom->createElement('cac:ExternalReference');
                     $nodeDigitalSignatureAttachment->appendChild($nodeExternalReference);
                     
-                    $nodeURI = $dom->createElement('cbc:URI','#SignatureSP');
-                    $nodeDigitalSignatureAttachment->appendChild($nodeURI);
+                        $nodeURI = $dom->createElement('cbc:URI','#SignatureSP');
+                        $nodeExternalReference->appendChild($nodeURI);
             // end Signature
             
             // begin 12 y 13 omitidos
@@ -1030,6 +1034,7 @@ class SaleController extends Controller
                         $nodePartyName->appendChild($nodeName);
                 endif;
 
+                    /* SUNAT NO LO CONSIDERA VÁLIDO
                     // Apellidos y nombres, denominación o razón social del emisor
                     $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme'); // OK
                     $nodeParty->appendChild($nodePartyTaxScheme);
@@ -1054,6 +1059,7 @@ class SaleController extends Controller
                             $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
                             $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
                             $nodeTaxScheme->appendChild($nodeID);
+                    */
 
                     $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
                     $nodeParty->appendChild($nodePartyLegalEntity);
@@ -1111,7 +1117,7 @@ class SaleController extends Controller
                         $nodePartyIdentification = $dom->createElement('cac:PartyIdentification');
                         $nodeParty->appendChild($nodePartyIdentification);
 
-                            $nodeID = $dom->createElement('cbc:ID');
+                            $nodeID = $dom->createElement('cbc:ID', $data['adquiriente_ruc']);
                             $nodeID->setAttributeNode(new \DOMAttr('schemeID', $adquirienteCatalogo6));
                             $nodeID->setAttributeNode(new \DOMAttr('schemeName', 'Documento de Identidad'));
                             $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
@@ -1157,6 +1163,7 @@ class SaleController extends Controller
                                     $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listName', 'Country'));
                                     $nodeCountry->appendChild($nodeIdentificationCode);
 
+                        /* SUNAT NO LO CONSIDERA VÁLIDO
                         $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
                         $nodeParty->appendChild($nodePartyTaxScheme);
                 
@@ -1181,6 +1188,7 @@ class SaleController extends Controller
                                 $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
                                 $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
                                 $nodeTaxScheme->appendChild($nodeID);
+                        */
             // end 18-19
 
             // begin 21 - Información de descuentos Globales **opcional ++ OK ++
@@ -1213,7 +1221,7 @@ class SaleController extends Controller
             // begin 22-29 ++ OK ++
                 $nodeTaxTotal = $dom->CreateElement('cac:TaxTotal');
                 $root->appendChild($nodeTaxTotal);
- 
+
                 // Monto total de impuestos **opcional
                 $gravada_descontada = number_format($total_operacion_gravada-$descontado_operacion_gravada, 2, '.', '');
                 $igv_descuentado = number_format($data['importe_pagar_igv']*(1-$porcentaje_descontado_operacion_gravada) , 2, '.', '');
@@ -1303,14 +1311,14 @@ class SaleController extends Controller
                 $root->appendChild($nodeLegalMonetaryTotal);
 
                 // Total valor de venta **opcional -- OK
-                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', $data['importe_pagar_sin_igv']); 
+                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', number_format($data['importe_pagar_sin_igv'], 2, '.', '')); 
                 $nodeLineExtensionAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodeLineExtensionAmount);
 
                 // Total precio de venta (impuestos solamente) **opcional -- OK
-                // $nodeTaxExclusiveAmount = $dom->CreateElement('cbc:TaxExclusiveAmount', $data['importe_pagar_igv']); 
-                // $nodeTaxExclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                // $nodeLegalMonetaryTotal->appendChild($nodeTaxExclusiveAmount);
+                $nodeTaxExclusiveAmount = $dom->CreateElement('cbc:TaxExclusiveAmount', number_format($data['importe_pagar_igv'], 2, '.', '')); 
+                $nodeTaxExclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                $nodeLegalMonetaryTotal->appendChild($nodeTaxExclusiveAmount);
                 
                 // Total precio de venta (incluye impuestos) **opcional -- OK
                 $nodeTaxInclusiveAmount = $dom->CreateElement('cbc:TaxInclusiveAmount', $payable); 
@@ -1318,7 +1326,7 @@ class SaleController extends Controller
                 $nodeLegalMonetaryTotal->appendChild($nodeTaxInclusiveAmount);
 
                 // // Monto total de descuentos del comprobante **opcional ++ OK ++
-                $nodeAllowanceTotalAmount = $dom->CreateElement('cbc:AllowanceTotalAmount', $gravada_descontada); 
+                $nodeAllowanceTotalAmount = $dom->CreateElement('cbc:AllowanceTotalAmount', $descontado_operacion_gravada);
                 $nodeAllowanceTotalAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodeAllowanceTotalAmount);
 
@@ -1494,7 +1502,7 @@ class SaleController extends Controller
                     $nodeTaxTotal = $dom->CreateElement('cac:TaxTotal');
                     $nodeInvoiceLine->appendChild($nodeTaxTotal);
                     
-                        $nodeTaxAmount = $dom->CreateElement('cac:TaxAmount', $item['precio_igv']);
+                        $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $item['precio_igv']);
                         $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                         $nodeTaxTotal->appendChild($nodeTaxAmount);
                         
@@ -1509,7 +1517,7 @@ class SaleController extends Controller
                             $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                             $nodeTaxSubtotal->appendChild($nodeTaxAmount);
                             
-                            $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
+                            $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
                             $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
                                 $nodeID = $dom->CreateElement('cbc:ID', 'S'); // catálogo 5
@@ -1567,7 +1575,7 @@ class SaleController extends Controller
                     $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                     $nodeTaxSubtotal->appendChild($nodeTaxAmount);
 
-                    $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
+                    $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
                     $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
                     $nodeID = $dom->CreateElement('cbc:ID', 'S');
@@ -1618,8 +1626,8 @@ class SaleController extends Controller
                     $nodeInvoiceLine->appendChild($nodePrice);
 
                         $precioUnitario = $item['precio_unitario_con_igv']/1.18; // no debe incluir el igv
-                        $nodePriceAmount = $dom->CreateElement('cac:PriceAmount', $precioUnitario); 
-                        $nodePriceAmount->setAttributeNode(new \DOMAttr('CurrencyID', $tipoMoneda));
+                        $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', $precioUnitario); 
+                        $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                         $nodePrice->appendChild($nodePriceAmount);
                 endforeach;
             // end 42-48
@@ -1660,14 +1668,27 @@ class SaleController extends Controller
             $dom->appendChild($root);
 
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
-            $tree = "comprobantes/" . $year . "/" . $encargo_id;
-            $filename = $data['emisor_ruc'].'_01_'.$data['emisor_numero_documento_electronico'].'.xml';
-            $estructura = base_path('public/'.$tree);
-            if(!@mkdir($estructura, 0777, true)) {
-                if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
-            }
-            $xml_file_name = $estructura.'/'.$filename;
-            $dom->save($xml_file_name);
+            $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
+            $path = base_path('public/comprobantes/' . $year . '/' . $month . '/' . $encargo_id);
+            $documento_sin_firmar = 'documento_sin_firmar.xml';
+            
+            @mkdir($path, 0777, true);
+            @unlink($path . '/' . $documento_sin_firmar);
+            $dom->save($path . '/' . $documento_sin_firmar);
+
+            $certificado = env('PEM');
+            $firmante = new SignedXml();
+            $firmante->setCertificateFromFile($certificado);
+            $factura_xml_firmada = $firmante->signFromFile($path . '/' . $documento_sin_firmar);
+            $filename = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
+            $output = $path . '/' . $filename;
+            file_put_contents($output, $factura_xml_firmada);
+
+            $zip = new \ZipArchive();
+            $zip->open(str_ireplace('xml', 'zip', $output), \ZipArchive::CREATE);
+            $zip->addFile($output, $filename);
+            $zip->close();
+            file_get_contents($output);
         }
     }
 
@@ -1679,7 +1700,7 @@ class SaleController extends Controller
             $X509Certificate = 'MIIF9TCCBN2gAwIBAgIGAK0oRTg/MA0GCSqGSIb3DQEBCwUAMFkxCzAJBgNVBAYTAlRSMUowSAYDVQQDDEFNYWxpIE3DvGjDvHIgRWxla3Ryb25payBTZXJ0aWZpa2EgSGl6bWV0IFNhxJ9sYXnEsWPEsXPEsSAtIFRlc3QgMTAeFw0wOTEwMjAxMTM3MTJaFw0xNDEwMTkxMTM3MTJaMIGgMRowGAYDVQQLDBFHZW5lbCBNw7xkw7xybMO8azEUMBIGA1UEBRMLMTAwMDAwMDAwMDIxbDBqBgNVBAMMY0F5ZMSxbiBHcm91cCAtIFR1cml6bSDEsHRoYWxhdCDEsGhyYWNhdCBUZWtzdGlsIMSwbsWfYWF0IFBhemFyiMwtPnC2DRjdsyGv3bxwRZr9wXMRrMNwRjyFe9JPA7bSscEgaXwzDUG5FCvfS/PNT+XCce+VECAx6Q3R1ZRSA49fYz6tDB4Ia5HVBXZODmrCs26XisHF6kuS5N/yGg8E7VC1BRr/SmxXeLTdjQYAfo7lxCz4dT6wP5TOiBvF+lyWW1bi9nbliXyb/e5HjCp4k/ra9LTskjbY/Ukl5O8G9JEAViZkjvxDX7T0yVRHgMGiioIKVMwU6Lrtln607BNurLwED0OeoZ4wBgkBiB5vXofreXrfN2pHZ2=';
             $tipoMoneda = 'PEN';
             $n = 3;
-            $firma = 'SB209-128311'; // Identificador de la firma
+            $firma = 'GreenterSign'; // Identificador de la firma
             if (strlen($data['adquiriente_ruc_dni_ce']) === 11) {
                 $adquirienteCatalogo6 = '6'; // 6:RUC, 1:DNI, 4:Carnet de extranjería, 0:NN
             } else if (strlen($data['adquiriente_ruc_dni_ce']) === 8) {
@@ -1979,6 +2000,7 @@ class SaleController extends Controller
                         $nodePartyName->appendChild($nodeName);
                 endif;
 
+                /* SUNAT NO LO CONSIDERA VÁLIDO
                     // Apellidos y nombres, denominación o razón social del emisor
                     $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme'); // OK
                     $nodeParty->appendChild($nodePartyTaxScheme);
@@ -2003,7 +2025,7 @@ class SaleController extends Controller
                             $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
                             $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
                             $nodeTaxScheme->appendChild($nodeID);
-
+                */
                     $nodePartyLegalEntity = $dom->createElement('cac:PartyLegalEntity');
                     $nodeParty->appendChild($nodePartyLegalEntity);
 
@@ -2106,6 +2128,7 @@ class SaleController extends Controller
                                     $nodeIdentificationCode->setAttributeNode(new \DOMAttr('listName', 'Country'));
                                     $nodeCountry->appendChild($nodeIdentificationCode);
 
+                        /* SUNAT NO LO CONSIDERA VÁLIDO
                         $nodePartyTaxScheme = $dom->createElement('cac:PartyTaxScheme');
                         $nodeParty->appendChild($nodePartyTaxScheme);
                 
@@ -2130,6 +2153,7 @@ class SaleController extends Controller
                                 $nodeID->setAttributeNode(new \DOMAttr('schemeAgencyName', 'PE:SUNAT'));
                                 $nodeID->setAttributeNode(new \DOMAttr('schemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06'));
                                 $nodeTaxScheme->appendChild($nodeID);
+                        */
             // end 18-19
 
             // begin 21 - Información de descuentos Globales **opcional ++ OK ++
@@ -2252,14 +2276,14 @@ class SaleController extends Controller
                 $root->appendChild($nodeLegalMonetaryTotal);
 
                 // Total valor de venta **opcional -- OK
-                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', $data['importe_pagar_sin_igv']); 
+                $nodeLineExtensionAmount = $dom->CreateElement('cbc:LineExtensionAmount', number_format($data['importe_pagar_sin_igv'], 2, '.', '')); 
                 $nodeLineExtensionAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                 $nodeLegalMonetaryTotal->appendChild($nodeLineExtensionAmount);
 
                 // Total precio de venta (impuestos solamente) **opcional -- OK
-                // $nodeTaxExclusiveAmount = $dom->CreateElement('cbc:TaxExclusiveAmount', $data['importe_pagar_igv']); 
-                // $nodeTaxExclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
-                // $nodeLegalMonetaryTotal->appendChild($nodeTaxExclusiveAmount);
+                $nodeTaxExclusiveAmount = $dom->CreateElement('cbc:TaxExclusiveAmount', number_format($data['importe_pagar_igv'], 2, '.', '')); 
+                $nodeTaxExclusiveAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
+                $nodeLegalMonetaryTotal->appendChild($nodeTaxExclusiveAmount);
                 
                 // Total precio de venta (incluye impuestos) **opcional -- OK
                 $nodeTaxInclusiveAmount = $dom->CreateElement('cbc:TaxInclusiveAmount', $payable); 
@@ -2443,7 +2467,7 @@ class SaleController extends Controller
                     $nodeTaxTotal = $dom->CreateElement('cac:TaxTotal');
                     $nodeInvoiceLine->appendChild($nodeTaxTotal);
                     
-                        $nodeTaxAmount = $dom->CreateElement('cac:TaxAmount', $item['precio_igv']);
+                        $nodeTaxAmount = $dom->CreateElement('cbc:TaxAmount', $item['precio_igv']);
                         $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                         $nodeTaxTotal->appendChild($nodeTaxAmount);
                         
@@ -2458,7 +2482,7 @@ class SaleController extends Controller
                             $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                             $nodeTaxSubtotal->appendChild($nodeTaxAmount);
                             
-                            $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
+                            $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
                             $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
                                 $nodeID = $dom->CreateElement('cbc:ID', 'S'); // catálogo 5
@@ -2516,7 +2540,7 @@ class SaleController extends Controller
                     $nodeTaxAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                     $nodeTaxSubtotal->appendChild($nodeTaxAmount);
 
-                    $nodeTaxCategory = $dom->CreateElement('cbc:TaxCategory');
+                    $nodeTaxCategory = $dom->CreateElement('cac:TaxCategory');
                     $nodeTaxSubtotal->appendChild($nodeTaxCategory);
 
                     $nodeID = $dom->CreateElement('cbc:ID', 'S');
@@ -2567,8 +2591,8 @@ class SaleController extends Controller
                     $nodeInvoiceLine->appendChild($nodePrice);
 
                         $precioUnitario = $item['precio_unitario_con_igv']/1.18; // no debe incluir el igv
-                        $nodePriceAmount = $dom->CreateElement('cac:PriceAmount', $precioUnitario); 
-                        $nodePriceAmount->setAttributeNode(new \DOMAttr('CurrencyID', $tipoMoneda));
+                        $nodePriceAmount = $dom->CreateElement('cbc:PriceAmount', $precioUnitario); 
+                        $nodePriceAmount->setAttributeNode(new \DOMAttr('currencyID', $tipoMoneda));
                         $nodePrice->appendChild($nodePriceAmount);
                 endforeach;
             // end 42-48
@@ -2610,13 +2634,18 @@ class SaleController extends Controller
 
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
             $tree = "comprobantes/" . $year . "/" . $encargo_id;
-            $filename = $data['emisor_ruc'].'_03_'.$data['emisor_numero_documento_electronico'].'.xml';
+            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'].'.xml';
             $estructura = base_path('public/'.$tree);
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
             }
             $xml_file_name = $estructura.'/'.$filename;
             $dom->save($xml_file_name);
+            $zip = new \ZipArchive();
+            $zip->open(str_ireplace('xml','zip',$xml_file_name), \ZipArchive::CREATE);
+            $zip->addFile($xml_file_name, $filename);
+            $zip->close();
+            file_get_contents($xml_file_name);
         }
     }
 

@@ -547,8 +547,12 @@
         }
 
         function validate(data) {
+            if (data.documento === factura && data.doc_envia.length !== RUC) {
+                showErrorToastr('Al documento <b>' + data.doc_envia + '</b> le faltan ' + (data.documento.length-RUC) + ' caracters para ser un RUC.');
+                return false;
+            }
             if (data.doc_envia.length !== DNI && data.doc_envia.length !== RUC && data.doc_envia.length !== CE) {
-                showErrorToastr('Documento incorrecto,<br>has ingresado '+data.doc_envia.length+' caracteres.');
+                showErrorToastr('Documento incorrecto,<br>has ingresado ' + data.doc_envia.length + ' caracteres.');
                 return false;
             }
             if (data.nombre_envia.length === 0) {
@@ -557,7 +561,7 @@
             }
             if (data.doc_recibe.length !== DNI && data.doc_recibe.length !== RUC && data.doc_recibe
                 .length !== CE) {
-                showErrorToastr('Documento incorrecto,<br>has ingresado '+data.doc_recibe.length+' caracteres.');
+                showErrorToastr('Documento incorrecto,<br>has ingresado ' + data.doc_recibe.length + ' caracteres.');
                 return false;
             }
             if (data.nombre_recibe.length === 0) {
@@ -582,10 +586,6 @@
             }
             if (data.documento_serie.length === 0) {
                 showErrorToastr('No se dispone del serie.');
-                return false;
-            }
-            if (data.documento === factura && data.doc_envia.length !== RUC) {
-                showErrorToastr('Al documento '+data.documento+' le faltan '+ (data.documento.length-RUC)+' caracters para ser un RUC.');
                 return false;
             }
             if (parseFloat(data.importe_pagar_con_descuento) > parseFloat(data.subtotal)) {
