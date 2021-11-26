@@ -13,11 +13,17 @@ class Carga extends Model
 
     protected $fillable = [
         'nombre',
-        'precio',
+        'valor_unitario',
+        'tipo_afectacion',
     ];
 
     public function encargo()
     {
         return $this->hasMany('App\Business\Encargo');
     }
+
+    public function tipo_afectaciones() {
+        return $this->belongsTo('App\Business\TipoAfectacion', 'tipo_afectacion');
+    }
+
 }

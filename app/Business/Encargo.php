@@ -37,7 +37,18 @@ class Encargo extends Model
         'documento_correlativo',
         'documento_fecha',
         'documento_hora',
-        'encargo',
+
+        'detalle_gravado',
+        'detalle_exonerado',
+        'detalle_inafecto',
+        'detalle_gravado_gratuito',
+        'detalle_inafecto_gratuito',
+
+        'monto_gravado',
+        'monto_exonerado',
+        'monto_inafecto',
+        'monto_gravado_gratuito',
+        'monto_inafecto_gratuito',
 
         'subtotal',
         'oferta',
@@ -106,7 +117,18 @@ class Encargo extends Model
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
-                'encargo_detalle' => $encargo->encargo,
+                
+                'detalle_gravado' =>$encargo->detalle_gravado,
+                'detalle_exonerado' =>$encargo->detalle_exonerado,
+                'detalle_inafecto' =>$encargo->detalle_inafecto,
+                'detalle_gravado_gratuito' =>$encargo->detalle_gravado_gratuito,
+                'detalle_inafecto_gratuito' =>$encargo->detalle_inafecto_gratuito,
+
+                'monto_gravado' => $encargo->monto_gravado,
+                'monto_exonerado' => $encargo->monto_exonerado,
+                'monto_inafecto' => $encargo->monto_inafecto,
+                'monto_gravado_gratuito' => $encargo->monto_gravado_gratuito,
+                'monto_inafecto_gratuito' => $encargo->monto_inafecto_gratuito,
 
                 'subtotal' => $encargo->subtotal,
                 'oferta' => $encargo->oferta,
@@ -153,6 +175,8 @@ class Encargo extends Model
                 'emisor_agencia_telefono' => $encargo->agencias->telefono,
                 'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
                 'emisor_numero_documento_electronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
+                'emisor_serie_documento_electronico' => $encargo->documento_serie,
+                'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
                 'emisor_fecha_documento_electronico' => $encargo->documento_fecha, // yyyy-mm-dd
                 'emisor_fecha_documento_electronico_pe' => $documento_fecha_ddmmyyyy,
                 'emisor_hora_documento_electronico' => $encargo->documento_hora,
@@ -161,10 +185,22 @@ class Encargo extends Model
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
-                'encargo_detalle' => $encargo->encargo,
+
+                'detalle_gravado' => $encargo->detalle_gravado,
+                'detalle_exonerado' => $encargo->detalle_exonerado,
+                'detalle_inafecto' => $encargo->detalle_inafecto,
+                'detalle_gravado_gratuito' => $encargo->detalle_gravado_gratuito,
+                'detalle_inafecto_gratuito' => $encargo->detalle_inafecto_gratuito,
+
+                'monto_gravado' => $encargo->monto_gravado,
+                'monto_exonerado' => $encargo->monto_exonerado,
+                'monto_inafecto' => $encargo->monto_inafecto,
+                'monto_gravado_gratuito' => $encargo->monto_gravado_gratuito,
+                'monto_inafecto_gratuito' => $encargo->monto_inafecto_gratuito,
                 
                 'subtotal' => $encargo->subtotal,
                 'oferta' => $encargo->oferta,
+
                 'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
                 'importe_pagar_igv' => $encargo->importe_pagar_igv,
@@ -208,7 +244,19 @@ class Encargo extends Model
                     'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
                 'destino' => mb_strtoupper($encargo->sedes->nombre),
-                'encargo_detalle' => $encargo->encargo,
+
+                'detalle_gravado' =>$encargo->detalle_gravado,
+                'detalle_exonerado' =>$encargo->detalle_exonerado,
+                'detalle_inafecto' =>$encargo->detalle_inafecto,
+                'detalle_gravado_gratuito' =>$encargo->detalle_gravado_gratuito,
+                'detalle_inafecto_gratuito' =>$encargo->detalle_inafecto_gratuito,
+
+                'monto_gravado' => $encargo->monto_gravado,
+                'monto_exonerado' => $encargo->monto_exonerado,
+                'monto_inafecto' => $encargo->monto_inafecto,
+                'monto_gravado_gratuito' => $encargo->monto_gravado_gratuito,
+                'monto_inafecto_gratuito' => $encargo->monto_inafecto_gratuito,
+
                 'subtotal' => $encargo->subtotal,
                 'importe_pagar' => $encargo->importe_pagar,
             ];

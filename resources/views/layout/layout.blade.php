@@ -589,7 +589,7 @@
 														<!--end::Input group-->
 														<!--begin::Input group-->
 														<div class="mb-5">
-															<select name="timezone" aria-label="Select a Timezone" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm form-select-solid">
+															<select name="timezone" aria-label="Select a Timezone" data-control="select" data-placeholder="date_period" class="form-select form-select-sm form-select-solid">
 																<option value="next">Within the next</option>
 																<option value="last">Within the last</option>
 																<option value="between">Between</option>
@@ -606,7 +606,7 @@
 															<!--end::Col-->
 															<!--begin::Col-->
 															<div class="col-6">
-																<select name="date_typer" aria-label="Select a Timezone" data-control="select2" data-placeholder="Period" class="form-select form-select-sm form-select-solid">
+																<select name="date_typer" aria-label="Select a Timezone" data-control="select" data-placeholder="Period" class="form-select form-select-sm form-select-solid">
 																	<option value="days">Days</option>
 																	<option value="weeks">Weeks</option>
 																	<option value="months">Months</option>
@@ -2219,7 +2219,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2247,7 +2247,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1" selected="selected">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2275,7 +2275,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2303,7 +2303,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2331,7 +2331,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2359,7 +2359,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2387,7 +2387,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2415,7 +2415,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2443,7 +2443,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1" selected="selected">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2471,7 +2471,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2499,7 +2499,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2527,7 +2527,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1" selected="selected">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2555,7 +2555,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2583,7 +2583,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
@@ -2611,7 +2611,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2" selected="selected">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2639,7 +2639,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1" selected="selected">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3">Can Edit</option>
@@ -2667,7 +2667,7 @@
 									<!--end::Details-->
 									<!--begin::Access menu-->
 									<div class="ms-2 w-100px">
-										<select class="form-select form-select-solid form-select-sm" data-control="select2" data-hide-search="true">
+										<select class="form-select form-select-solid form-select-sm" data-control="select" data-hide-search="true">
 											<option value="1">Guest</option>
 											<option value="2">Owner</option>
 											<option value="3" selected="selected">Can Edit</option>
