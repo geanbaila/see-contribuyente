@@ -46,12 +46,12 @@
                         <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
-                                    <label for="exampleDataList" class="form-label">Celular:</label>
+                                    <!-- <label for="exampleDataList" class="form-label">Celular:</label>-->
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="celular_envia" name="celular_envia"
+                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia"
                                             value="{{ $encargo->celular_envia }}" placeholder="" />
                                     @else
-                                        <input type="text" class="form-control" id="celular_envia" name="celular_envia" value=""
+                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
@@ -114,12 +114,12 @@
                         <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
-                                    <label for="exampleDataList" class="form-label">Celular:</label>
+                                    <!-- <label for="exampleDataList" class="form-label">Celular:</label> -->
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="celular_recibe" name="celular_recibe"
+                                        <input type="hidden" class="form-control" id="celular_recibe" name="celular_recibe"
                                             value="{{ $encargo->celular_recibe }}" placeholder="" />
                                     @else
-                                        <input type="text" class="form-control" id="celular_recibe" name="celular_recibe" value=""
+                                        <input type="hidden" class="form-control" id="celular_recibe" name="celular_recibe" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
@@ -525,7 +525,7 @@
 
                         </div>
                         <div class="col-3">
-                            <b>Encomienda:</b> por despachar<br />
+                            <b>Encomienda:</b> -<br />
                             <b>SUNAT:</b>
                             @if (isset($encargo))
                                 <span name="cdr_descripcion">{{ $encargo->cdr_descripcion }}
@@ -536,7 +536,7 @@
                                 @endif
                                 </span>
                             @else
-                                <span name="cdr_descripcion">sin enviar aún</span>
+                                <span name="cdr_descripcion">-</span>
                             @endif
                             <br />
                         </div>
@@ -557,7 +557,9 @@
                                 data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
                                 <img src="{{ asset('assets/media/search-white.svg') }}" width="24" />
                             </a>
-                            <a class="btn btn-primary" onclick="javascript:doit();">Confirmar</a>
+                            
+                            <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">
+                            Confirmar</a>
                             <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                 <img src="{{ asset('assets/media/printer.svg') }}" width="24" />
@@ -1015,6 +1017,7 @@
             $("#btnImprimir").children().attr("src", "{{ asset('assets/media/printer-white.svg') }}");
             $("#btnEmail").children().attr("src", "{{ asset('assets/media/email-white.svg') }}");
             $("#btnEliminar").children().attr("src", "{{ asset('assets/media/trash-2-white.svg') }}");
+            $("#btnConfirmar").html("Confirmar");
         }
 
         function alertarDetraccion() {
@@ -1037,7 +1040,10 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: data,
-                dataType: "json"
+                dataType: "json",
+                beforeSend: function() {
+                    $("#btnConfirmar").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando');
+                }
             }).done(function(response) {
                 if (response.result.status === 'OK') {
                     if (data.encargo_id.length === 0) {
