@@ -1,6 +1,48 @@
 @extends('layout.layout')
 @section('content')
-    <!--begin::Container-->    
+    <!--begin::Container-->
+    <div class="card">
+        <div class="card mb-5 mb-xxl-8">
+            <div class="card-body pt-9 pb-0">
+
+
+                <div class="row gy-5 g-xl-12">
+                    <div class="col-xxl-6">
+                        <div class="row gy-5">
+                            <div class="col-xxl-3">
+                                <label for="exampleDataList" class="form-label">Recibe:</label>
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                            </div>
+                            <div class="col-xxl-9">
+                                <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6">
+                        <div class="row gy-5">
+                            <div class="col-xxl-3">
+                                <label for="exampleDataList" class="form-label">Celular:</label>
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                            </div>
+                            <div class="col-xxl-6">
+                                <label for="exampleDataList" class="form-label">E-mail:</label>
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                            </div>
+                            <div class="col-xxl-3">
+                                <label for="exampleDataList" class="form-label">Fecha:</label>
+                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="separator border-gray-200 mb-6"></div>
+    
     <div class="card">
         <div class="card mb-5 mb-xxl-8">
             <div class="card-body pt-9 pb-0">

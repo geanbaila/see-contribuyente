@@ -10,7 +10,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Documento</th>
-                            <th scope="col">Fecha recepción</th>
+                            <th scope="col">F. recepción</th>
                             <th scope="col" width="150">Importe total (S/.)</th>
                             <th scope="col">Envía</th>
                             <th scope="col">Recibe</th>

@@ -66,7 +66,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
-                                    <label for="exampleDataList" class="form-label">Fecha recepción:</label>
+                                    <label for="exampleDataList" class="form-label">F. recepción:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_hora_envia"
                                             name="fecha_hora_envia" value="{{ $encargo->fecha_hora_envia }}"
@@ -136,7 +136,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
-                                    <label for="exampleDataList" class="form-label">Fecha entrega:</label>
+                                    <label for="exampleDataList" class="form-label">F. entrega:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
                                             value="{{ $encargo->fecha_recibe }}" placeholder="" disabled>
