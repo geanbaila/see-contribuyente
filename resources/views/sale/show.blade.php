@@ -7,13 +7,13 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargo_id" value="" />
-        <input type="hidden" name="adquiriente" value="" />
-        <input type="hidden" name="nombre_comercial_envia" value="" />
-        <input type="hidden" name="nombre_comercial_recibe" value="" />
-        <input type="hidden" name="direccion_envia" value="" />
-        <input type="hidden" name="direccion_recibe" value="" />
-        <input type="hidden" name="url_documento" value="" />
+        <input type="text" name="encargo_id" value="{{(isset($encargo)?$encargo->id:'')}}" />
+        <input type="text" name="adquiriente" value="{{(isset($encargo)?$encargo->adquiriente:'')}}" />
+        <input type="text" name="nombre_comercial_envia" value="{{(isset($encargo)?$encargo->nombre_envia:'')}}" />
+        <input type="text" name="nombre_comercial_recibe" value="{{(isset($encargo)?$encargo->nombre_recibe:'')}}" />
+        <input type="text" name="direccion_envia" value="{{(isset($encargo)?$encargo->id:'')}}" />
+        <input type="text" name="direccion_recibe" value="{{(isset($encargo)?$encargo->id:'')}}" />
+        <input type="text" name="url_documento_pdf" value="{{(isset($encargo)?$encargo->url_documento_pdf:'')}}" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -996,11 +996,10 @@
                                 '</tr>';
                             $("#responseChargeRow").html(html);
                             putChargeForm(element);
-                            enabledBtn();
                         });
+                        enabledBtn();
                     } else {
                         $("#responseChargeRow").html(html);
-                        $("#btnConfirmar").html("Confirmar");
                     }
                 });
             } else {
@@ -1053,16 +1052,14 @@
                         $("[name='fecha_envia']").val(response.result.fecha_envia);
                         $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
                             {{ env('ZEROFILL', 8) }}));
-                        $("[name='url_documento']").val(response.result.url_documento);
                         $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
                         enabledBtn();
                         showSuccessToastr(response.result.message);
                     }
                 } else {
                     showErrorToastr(response.result.message);
-                    $("#btnConfirmar").html("Confirmar");
-                    
                 }
+                $("#btnConfirmar").html("Confirmar");
             }).fail(function(){
                 showErrorToastr('No se ha podido procesar la venta');
                 $("#btnConfirmar").html("Confirmar");
@@ -1082,9 +1079,9 @@
         }
 
         function printElement() {
-            var url_documento = $("[name='url_documento']").val();
-            if (url_documento) {
-                $("#comprobantePago").attr("src", url_documento);
+            var url_documento_pdf = $("[name='url_documento_pdf']").val();
+            if (url_documento_pdf) {
+                $("#comprobantePago").attr("src", url_documento_pdf);
                 return true;
             }
         }

@@ -305,6 +305,4 @@ class Encargo extends Model
         return $sequence;
     }
 
-
-    
 }
