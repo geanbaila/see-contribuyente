@@ -1000,6 +1000,7 @@
                         });
                     } else {
                         $("#responseChargeRow").html(html);
+                        $("#btnConfirmar").html("Confirmar");
                     }
                 });
             } else {
@@ -1059,9 +1060,12 @@
                     }
                 } else {
                     showErrorToastr(response.result.message);
+                    $("#btnConfirmar").html("Confirmar");
+                    
                 }
             }).fail(function(){
                 showErrorToastr('No se ha podido procesar la venta');
+                $("#btnConfirmar").html("Confirmar");
             });
         }
 
