@@ -66,6 +66,8 @@ class Encargo extends Model
         'cdr_codigo',
         'cdr_descripcion',
         'cdr_notas',
+
+        'estado',
     ];
     
     public function agenciasOrigen() {

@@ -3,8 +3,6 @@
     <div class="card">
         <div class="card mb-5 mb-xxl-8">
             <div class="card-body pt-9 pb-0">
-
-
                 <div class="row gy-5 g-xl-12">
                     <div class="col-xxl-6">
                         <div class="row gy-5">

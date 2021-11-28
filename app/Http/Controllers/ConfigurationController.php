@@ -16,7 +16,7 @@ class ConfigurationController extends Controller
         $agencia = Agencia::all();
         $salida = Salida::all()->sortBy("agencia");
         $vehiculo = Vehiculo::all();
-        return view('config.list')->with(['agencia' => $agencia, 'salida' => $salida, 'vehiculo' => $vehiculo]);
+        return view('config.list')->with(['agencia' => $agencia, 'salida' => $salida, 'vehiculo' => $vehiculo, 'menu_configuracion_active' => 'active']);
     }
 
     public function update(Request $request) {

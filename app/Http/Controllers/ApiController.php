@@ -100,7 +100,48 @@ class ApiController extends Controller
                     'fecha_hora_recibe' => $fecha_hora_recibe,
                 ],
             ];
-            
+        }
+        return response()->json($response);
+    }
+
+    public function transportar(Request $request) {
+        $prg_encargo_id = $request->input('encargos');
+        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => 'Transportado']);
+        if($bool) {
+            $response = [
+                'result' =>[
+                    'status' => 'OK',
+                    'message' => 'Paquetes transportados.',
+                ],
+            ];
+        } else {
+            $response = [
+                'result' =>[
+                    'status' => 'fails',
+                    'message' => 'No se ha podido registrar el estado del paquete.',
+                ],
+            ];   
+        }
+        return response()->json($response);
+    }
+
+    public function noTransportar(Request $request) {
+        $prg_encargo_id = $request->input('encargos');
+        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => 'No transpotado']);
+        if($bool) {
+            $response = [
+                'result' =>[
+                    'status' => 'OK',
+                    'message' => 'Paquetes transportados.',
+                ],
+            ];
+        } else {
+            $response = [
+                'result' =>[
+                    'status' => 'fails',
+                    'message' => 'No se ha podido registrar el estado del paquete.',
+                ],
+            ];   
         }
         return response()->json($response);
     }

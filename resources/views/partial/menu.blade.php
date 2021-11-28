@@ -5,22 +5,22 @@
 </div>
 
 <div class="menu-item me-lg-1">
-    <a class="menu-link py-3 active" href="{{ url('/venta') }}">
+    <a class="menu-link py-3 {{(isset($menu_venta_active))?"active":""}}" href="{{ url('/venta') }}">
         <span class="menu-title">ENCARGOS</span>
     </a>
 </div>
 <div class="menu-item me-lg-1">
-    <a class="menu-link py-3 active" href="{{ url('/despacho') }}">
+    <a class="menu-link py-3 {{(isset($menu_despacho_active))?"active":""}}" href="{{ url('/despacho') }}">
         <span class="menu-title">DESPACHO</span>
     </a>
 </div>
 <div class="menu-item me-lg-1">
-    <a class="menu-link py-3 active" href="{{ url('/manifiesto') }}">
+    <a class="menu-link py-3 {{(isset($menu_manifiesto_active))?"active":""}}" href="{{ url('/manifiesto') }}">
         <span class="menu-title">MANIFIESTO</span>
     </a>
 </div>
 <div class="menu-item me-lg-1">
-    <a class="menu-link py-3 active" href="{{ url('/configuracion') }}">
+    <a class="menu-link py-3 {{(isset($menu_configuracion_active))?"active":""}}" href="{{ url('/configuracion') }}">
         <span class="menu-title">CONFIGURACIÓN</span>
     </a>
 </div>

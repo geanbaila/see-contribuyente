@@ -306,7 +306,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                  <p>Está operación está sujeta a una detracción por superar los <b>S/.
+                  <p>Esta operación está sujeta a una detracción por superar los <b>S/.
                           {{ env('DETRACCION') }}</b><br>¿Está seguro que desea continuar?</p>
               </div>
               <div class="modal-footer">

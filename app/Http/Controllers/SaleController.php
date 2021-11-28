@@ -351,7 +351,8 @@ class SaleController extends Controller
             'agencia_origen' => $agencia_origen,
             'sede' => $sede,
             'documento' => $documento,
-            'carga' => $carga
+            'carga' => $carga,
+            'menu_venta_active' => 'active',
         ]);
     }
 
@@ -361,12 +362,12 @@ class SaleController extends Controller
         $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
         $documento = Documento::all();
         $encargo = Encargo::find($encargo_id);
-        return view('sale.edit')->with([ 'agencia_origen' => $agencia_origen, 'sede' => $sede, 'documento' => $documento, 'carga' => $carga, 'encargo' => $encargo ]);
+        return view('sale.edit')->with([ 'agencia_origen' => $agencia_origen, 'sede' => $sede, 'documento' => $documento, 'carga' => $carga, 'encargo' => $encargo, 'menu_venta_active' => 'active', ]);
     }
 
     public function list() {
         $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
-        return view('sale.list')->with([ 'encargo' => $encargo ]);
+        return view('sale.list')->with([ 'encargo' => $encargo, 'menu_venta_active' => 'active', ]);
     }
 
     public function escribirBoleta($encargo_id) {
