@@ -44,6 +44,7 @@ class Encargo extends Model
         'detalle_inafecto',
         'detalle_gravado_gratuito',
         'detalle_inafecto_gratuito',
+        'cantidad_item',
 
         'monto_gravado',
         'monto_exonerado',

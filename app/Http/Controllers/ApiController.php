@@ -81,4 +81,28 @@ class ApiController extends Controller
              ->download($file, $prg_encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
+    public function despacho($encargo_id) {
+        $fecha_hora_recibe = date('d-m-Y H:i:s');
+        $bool = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
+        if($bool) {
+            $response = [
+                'result' =>[
+                    'status' => 'OK',
+                    'message' => 'Paquete entregado.',
+                    'fecha_hora_recibe' => $fecha_hora_recibe,
+                ],
+            ];
+        } else {
+            $response = [
+                'result' =>[
+                    'status' => 'fails',
+                    'message' => 'No se ha podido registrar la entrega del paquete.',
+                    'fecha_hora_recibe' => $fecha_hora_recibe,
+                ],
+            ];
+            
+        }
+        return response()->json($response);
+    }
+
 }

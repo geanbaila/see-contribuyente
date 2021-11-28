@@ -44,6 +44,7 @@ class SaleController extends Controller
                 $monto_gravado = 0;
                 $monto_exonerado = 0;
                 $monto_inafecto = 0;
+                $cantidad_item = 0;
 
                 foreach($prg as $item) {
                     if ($item['descripcion'] !== "--") {
@@ -67,6 +68,7 @@ class SaleController extends Controller
                                 ]);
                                 $monto_gravado += $item['cantidad'] * $item['valor_unitario'];
                                 $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $cantidad_item += $item['cantidad'];
                             }
                             
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_EXONERADO')) {
@@ -87,6 +89,7 @@ class SaleController extends Controller
                                 ]);
                                 $monto_exonerado += $item['cantidad'] * $item['valor_unitario'];
                                 $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $cantidad_item += $item['cantidad'];
                             }
                             
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO')) {
@@ -107,6 +110,7 @@ class SaleController extends Controller
                                 ]);
                                 $monto_inafecto += $item['cantidad'] * $item['valor_unitario'];
                                 $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $cantidad_item += $item['cantidad'];
                             }
 
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO_GRATUITO')) {
@@ -127,6 +131,7 @@ class SaleController extends Controller
                                     'precio_unitario' => 0,
                                 ]);
                                 $total += $item['cantidad'] * 0;
+                                $cantidad_item += $item['cantidad'];
                             }
 
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO_GRATUITO')) {
@@ -147,6 +152,7 @@ class SaleController extends Controller
                                     'precio_unitario' => 0,
                                 ]);
                                 $total += $item['cantidad'] * 0;
+                                $cantidad_item += $item['cantidad'];
                             }
                         }
                     }
@@ -158,6 +164,7 @@ class SaleController extends Controller
                     'detalle_inafecto' => $inafecto,
                     'detalle_gravado_gratuito' => $gravado_gratuito,
                     'detalle_inafecto_gratuito' => $inafecto_gratuito,
+                    'cantidad_item' => $cantidad_item,
                     
                     'monto_gravado' => number_format($monto_gravado, 2, '.', ''),
                     'monto_exonerado' => number_format($monto_exonerado, 2, '.', ''),
@@ -166,7 +173,7 @@ class SaleController extends Controller
 
                     'importe_pagar_con_igv' => number_format($total, 2, '.', ''),
                     'importe_pagar_sin_igv' => number_format($total / (1 + env('IGV')) , 2, '.', ''),
-                    'importe_pagar_igv' => number_format($total - ($total / (1 + env('IGV'))), 2, '.', '')
+                    'importe_pagar_igv' => number_format($total - ($total / (1 + env('IGV'))), 2, '.', ''),
                 ];
             };
 
