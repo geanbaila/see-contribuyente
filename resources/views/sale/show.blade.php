@@ -1017,7 +1017,6 @@
             $("#btnImprimir").children().attr("src", "{{ asset('assets/media/printer-white.svg') }}");
             $("#btnEmail").children().attr("src", "{{ asset('assets/media/email-white.svg') }}");
             $("#btnEliminar").children().attr("src", "{{ asset('assets/media/trash-2-white.svg') }}");
-            $("#btnConfirmar").html("Confirmar");
         }
 
         function alertarDetraccion() {
