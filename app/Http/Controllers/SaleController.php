@@ -31,7 +31,7 @@ use App\Http\Controllers\Util;
 class SaleController extends Controller
 {
     public function register(Request $request) {
-        try {
+        // try {
             $data = $request->all();
             $var = function() {     
                 $prg = func_get_arg(0);
@@ -238,7 +238,7 @@ class SaleController extends Controller
                 'fecha_recibe' => $data['fecha_recibe'],
 
                 // 'origen' => $data['origen'],
-                'destino' => new ObjectId($data['destino']),
+                // 'destino' => new ObjectId($data['destino']),
                 'agencia_origen' => new ObjectId($data['agencia_origen']),
                 'agencia_destino' => new ObjectId($data['agencia_destino']),
                 
@@ -255,7 +255,6 @@ class SaleController extends Controller
                 'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
             ], $encargo);
 
-            
             $encargo = null;
             if (strlen($data['encargo_id']) > 0) {
                 //controlar duplicidad de registros
@@ -283,7 +282,7 @@ class SaleController extends Controller
                 $url_documento_pdf = $this->escribirBoleta($encargo_id);
                 $url_documento = $this->escribirXMLBoleta($encargo_id);
             } else if($documento->alias === 'F') {
-                // $url_documento_pdf = $this->escribirFactura($encargo_id);
+                $url_documento_pdf = ''; // = $this->escribirFactura($encargo_id);
                 $url_documento = $this->escribirXMLFactura($encargo_id);
                 
             } else if ($documento->alias === 'G') {
@@ -293,13 +292,25 @@ class SaleController extends Controller
                 // no escribir PDF
                 return \response()->json(['result' => ['status' => 'fails', 'message' => 'Ha ocurrido un error(200) en el sistema, contacta con el proveedor.']]);
             }
-
-            // vincular PDF
-            // Encargo::where('_id', $object_id)->update([
-            //     'url_documento_pdf' => $url_documento_pdf,
-            //     'url_documento_xml' => $url_documento['xml'],
-            //     'url_documento_cdr' => $url_documento['cdr'],
-            // ]);
+            
+            if ($url_documento['error']) {
+                return \response()->json([
+                    'result' => [
+                        'status' => 'fails', 
+                        'message' => 'Ha ocurrido un error interno.<br>' . $url_documento['error']
+                        ]
+                    ]);
+            }
+            list($cdr_id, $cdr_codigo, $cdr_descripcion, $cdr_notas) = explode('|', $url_documento['cdr_descripcion']);
+            Encargo::where('_id', $object_id)->update([
+                'url_documento_pdf' => $url_documento_pdf,
+                'url_documento_xml' => $url_documento['xml'],
+                'url_documento_cdr' => $url_documento['cdr'],
+                'cdr_id' => $cdr_id,
+                'cdr_codigo' => $cdr_codigo,
+                'cdr_descripcion' => $cdr_descripcion,
+                'cdr_notas' => $cdr_notas,
+            ]);
 
             $fecha_envia_dd_mm_yyyy = explode('-', $fecha_envia);
             return \response()->json([
@@ -310,18 +321,17 @@ class SaleController extends Controller
                     'adquiriente' => $adquiriente, 
                     'documento_correlativo' => $documento_correlativo,
                     'fecha_envia' => $fecha_envia_dd_mm_yyyy[2].'-'.$fecha_envia_dd_mm_yyyy[1].'-'.$fecha_envia_dd_mm_yyyy[0],
-                    // 'url_documento' => url($url_documento_pdf.'?v='.uniqid()),
+                    'cdr_descripcion' => $cdr_descripcion .' <img src="'. asset('assets/media/check-circle.svg'). '" width="24" />',
                 ]
             ]);
         // } catch(\Throwable $e) {
-        } catch(\Exception $e) {
-            return \response()->json([
-                'result' => [
-                    'status' => 'fails', 
-                    'message' => 'Ha ocurrido un error interno.<br>'.$e->getMessage()
-                    ]
-                ]);
-        }
+        //     return \response()->json([
+        //         'result' => [
+        //             'status' => 'fails', 
+        //             'message' => 'Ha ocurrido un error interno.<br>'.$e->getMessage()
+        //             ]
+        //         ]);
+        // }
     }
 
     public function show() {
@@ -858,7 +868,7 @@ class SaleController extends Controller
 
     public function escribirXMLFactura($encargo_id) {
         $data = Encargo::buscarFactura($encargo_id);
-        
+        $document = ['xml'=> '', 'cdr'=> '', 'cdr_descripcion'=> '', 'error'=> ''];
         if ($data) {
             // IMPORTANTE: La factura electrónica deberá tener información de los por lo menos uno de siguientes 
             // campos definidos como opcionales: 18. Total valor de venta – operaciones gravadas, 
@@ -1012,34 +1022,47 @@ class SaleController extends Controller
             $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
             $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-            $path = base_path('public/' . $folder);
-            $documento_sin_firmar = 'documento_sin_firmar.xml';
+            // $path = base_path('public/' . $folder);
+            // $documento_sin_firmar = 'documento_sin_firmar.xml';
             
-            @mkdir($path, 0777, true);
-            @unlink($path . '/' . $documento_sin_firmar);
-            $documento_xml = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
-            $documento_zip = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
-            $documento_cdr = 'R-' . $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
+            // @mkdir($path, 0777, true);
+            // @unlink($path . '/' . $documento_sin_firmar);
+            // $documento_xml = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
+            // $documento_zip = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
+            // $documento_cdr = 'R-' . $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
             
             $util = Util::getInstance();
             $see = $util->getSee(SunatEndpoints::FE_BETA);
+            // $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
+            
             
             // Si solo desea enviar un XML ya generado utilice esta función
             // $res = $see->sendXml(get_class($invoice), $invoice->getName(), file_get_contents($ruta_XML));
             // $res = $see->sendXmlFile(file_get_contents($path . '/' . $documento_xml));
-            
             $res = $see->send($invoice);
-            $util->writeXml($folder, $invoice, $see->getFactory()->getLastXml());
-            
+            $document['xml'] = $util->writeXml($folder, $invoice, $see->getFactory()->getLastXml());            
             // $res = $see->sendXmlFile($contents);
             if (!$res->isSuccess()) {
-                echo $util->getErrorResponse($res->getError());
-                exit('HA OCURRIDO UN ERROR INTERNO');
+                $document['error'] = 'SUNAT no ha podido recibir facura en XML<br>'. $util->getErrorResponse($res->getError());
+            } else {
+                $cdr = (array) $res->getCdrResponse();
+                $cdr_descripcion = "";
+                foreach($cdr as  $value) {
+                    if (gettype($value) == 'string') {
+                        $cdr_descripcion .= $value . '|';
+                    }
+                    if (gettype($value) == 'array') {
+                        $notes = implode(',', $value);
+                        $cdr_descripcion .= $notes . '|';
+                    }
+                }
+                $document['cdr_descripcion'] = $cdr_descripcion;
+                $document['cdr'] = $util->writeCdr($folder, $invoice, $res->getCdrZip());
             }
-            
-            $cdr = $res->getCdrResponse();
-            $util->writeCdr($folder, $invoice, $res->getCdrZip());
+        } else {
+            $document['error'] = 'No se ha encontrado en la base de datos.';
         }
+        return $document;
     }
 
     public function escribirXMLBoleta($encargo_id) {

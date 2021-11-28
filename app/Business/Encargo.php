@@ -25,7 +25,7 @@ class Encargo extends Model
         'fecha_recibe',
 
         // 'origen',
-        'destino',
+        // 'destino',
         'agencia_origen',
         'agencia_destino',
 
@@ -57,11 +57,17 @@ class Encargo extends Model
         'importe_pagar_sin_igv',
         'importe_pagar_igv',
 
-        'url_documento',
+        'url_documento_pdf',
+        'url_documento_xml',
+        'url_documento_cdr',
+        'cdr_id',
+        'cdr_codigo',
+        'cdr_descripcion',
+        'cdr_notas',
     ];
-
-    public function sedes() {
-        return $this->belongsTo('App\Business\Sede', 'destino');
+    
+    public function agenciasDestino() {
+        return $this->belongsTo('App\Business\Agencia', 'agencia_destino');
     }
 
     public function documentos() {
@@ -116,7 +122,8 @@ class Encargo extends Model
                 'consigna' => [
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
-                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                // 'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
                 
                 'detalle_gravado' =>$encargo->detalle_gravado,
                 'detalle_exonerado' =>$encargo->detalle_exonerado,
@@ -144,6 +151,7 @@ class Encargo extends Model
     
     static function buscarFactura($encargo_id) {
         $encargo = Encargo::find($encargo_id);
+
         if ($encargo->documentos->alias === 'F') {
             $fecha = explode("-", $encargo->documento_fecha);
             $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
@@ -184,7 +192,7 @@ class Encargo extends Model
                 'consigna' => [
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
-                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
 
                 'detalle_gravado' => $encargo->detalle_gravado,
                 'detalle_exonerado' => $encargo->detalle_exonerado,
@@ -243,7 +251,8 @@ class Encargo extends Model
                 'consigna' => [
                     'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
-                'destino' => mb_strtoupper($encargo->sedes->nombre),
+                // 'destino' => mb_strtoupper($encargo->sedes->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
 
                 'detalle_gravado' =>$encargo->detalle_gravado,
                 'detalle_exonerado' =>$encargo->detalle_exonerado,

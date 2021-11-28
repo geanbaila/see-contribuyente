@@ -78,19 +78,21 @@ HTML;
         return $result;
     }
 
-    public function writeXml(?string $folder, DocumentInterface $document, ?string $xml): void
+    public function writeXml(?string $folder, DocumentInterface $document, ?string $xml): ?string
     {
-        $this->writeFile($folder, $document->getName().'.xml', $xml);
+        return $this->writeFile($folder, $document->getName().'.xml', $xml);
     }
 
-    public function writeCdr(?string $folder, DocumentInterface $document, ?string $zip): void
+    public function writeCdr(?string $folder, DocumentInterface $document, ?string $zip): ?string
     {
-        $this->writeFile($folder, 'R-'.$document->getName().'.zip', $zip);
+        return $this->writeFile($folder, 'R-'.$document->getName().'.zip', $zip);
     }
 
-    public function writeFile(?string $folder, ?string $filename, ?string $fileContents): void
+    public function writeFile(?string $folder, ?string $filename, ?string $fileContents): ?string
     {
-        Storage::disk('local')->put($folder .'/'. $filename, $fileContents);
+        if(Storage::disk('local')->put($folder .'/'. $filename, $fileContents)) {
+            return $folder .'/'. $filename;
+        }
     }
 
     public function getPdf(DocumentInterface $document): ?string

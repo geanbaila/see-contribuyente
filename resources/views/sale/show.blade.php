@@ -23,10 +23,10 @@
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="doc_envia" name="doc_envia"
+                                        <input type="text" class="form-control" id="doc_envia" name="doc_envia"
                                             value="{{ $encargo->doc_envia }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="doc_envia" name="doc_envia" value=""
+                                        <input type="text" class="form-control" id="doc_envia" name="doc_envia" value=""
                                             placeholder="" />
                                     @endif
 
@@ -34,10 +34,10 @@
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="nombre_envia" name="nombre_envia"
+                                        <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
                                             value="{{ $encargo->nombre_envia }}" placeholder="">
                                     @else
-                                        <input class="form-control" id="nombre_envia" name="nombre_envia" value=""
+                                        <input type="text" class="form-control" id="nombre_envia" name="nombre_envia" value=""
                                             placeholder="">
                                     @endif
                                 </div>
@@ -48,30 +48,30 @@
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="celular_envia" name="celular_envia"
+                                        <input type="text" class="form-control" id="celular_envia" name="celular_envia"
                                             value="{{ $encargo->celular_envia }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="celular_envia" name="celular_envia" value=""
+                                        <input type="text" class="form-control" id="celular_envia" name="celular_envia" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">E-mail:</label>
+                                    <!-- <label for="exampleDataList" class="form-label">E-mail:</label> -->
                                     @if (isset($encargo))
-                                        <input class="form-control" id="email_envia" name="email_envia"
+                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia"
                                             value="{{ $encargo->email_envia }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="email_envia" name="email_envia" value=""
+                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="fecha_envia" name="fecha_envia"
+                                        <input type="text" class="form-control" id="fecha_envia" name="fecha_envia"
                                             value="{{ $encargo->fecha_envia }}" placeholder="" disabled />
                                     @else
-                                        <input class="form-control" id="fecha_envia" name="fecha_envia" value=""
+                                        <input type="text" class="form-control" id="fecha_envia" name="fecha_envia" value=""
                                             placeholder="" disabled />
                                     @endif
                                 </div>
@@ -92,20 +92,20 @@
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="doc_recibe" name="doc_recibe"
+                                        <input type="text" class="form-control" id="doc_recibe" name="doc_recibe"
                                             value="{{ $encargo->doc_recibe }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="doc_recibe" name="doc_recibe" value=""
+                                        <input type="text" class="form-control" id="doc_recibe" name="doc_recibe" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-8">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="nombre_recibe" name="nombre_recibe"
+                                        <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
                                             value="{{ $encargo->nombre_recibe }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="nombre_recibe" name="nombre_recibe" value=""
+                                        <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
@@ -116,30 +116,30 @@
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Celular:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="celular_recibe" name="celular_recibe"
+                                        <input type="text" class="form-control" id="celular_recibe" name="celular_recibe"
                                             value="{{ $encargo->celular_recibe }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="celular_recibe" name="celular_recibe" value=""
+                                        <input type="text" class="form-control" id="celular_recibe" name="celular_recibe" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">E-mail:</label>
+                                    <!-- <label for="exampleDataList" class="form-label">E-mail:</label> -->
                                     @if (isset($encargo))
-                                        <input class="form-control" id="email_recibe" name="email_recibe"
+                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe"
                                             value="{{ $encargo->email_recibe }}" placeholder="" />
                                     @else
-                                        <input class="form-control" id="email_recibe" name="email_recibe" value=""
+                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe" value=""
                                             placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="fecha_recibe" name="fecha_recibe"
+                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
                                             value="{{ $encargo->fecha_recibe }}" placeholder="" disabled>
                                     @else
-                                        <input class="form-control" id="fecha_recibe" name="fecha_recibe" value=""
+                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe" value=""
                                             placeholder="" disabled>
                                     @endif
                                 </div>
@@ -164,7 +164,8 @@
                                     <label for="exampleDataList" class="form-label">Origen:</label>
                                     <select class="form-select" aria-label="--" name="agencia_origen"
                                         onchange="javascript:getSerie();getAgenciaDestino(this.value, false);">
-                                        <option selected> -- </option>
+                                        <!-- getSerie();-->
+                                        <option> -- </option>
                                         @isset($encargo)
                                             @foreach ($encargo->agencia_origen as $item)
                                                 <?php $agencia_origen_selected = $item; ?>
@@ -174,10 +175,11 @@
                                             @foreach ($agencia_origen as $item)
                                                 @if (isset($agencia_origen_selected))
                                                     <option value="{{ $item->_id }}"
+                                                        data-sede="{{ $item->sede }}"
                                                         {{ $agencia_origen_selected == $item->_id ? 'selected' : '' }}>
                                                         {{ $item->nombre }}</option>
                                                 @else
-                                                    <option value="{{ $item->_id }}">{{ $item->nombre }}</option>
+                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}">{{ $item->nombre }}</option>
                                                 @endif
                                             @endforeach
                                         @endif
@@ -229,21 +231,21 @@
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="documento_serie" name="documento_serie"
+                                        <input type="text" class="form-control" id="documento_serie" name="documento_serie"
                                             value="{{ $encargo->documento_serie }}" disabled />
                                     @else
-                                        <input class="form-control" id="documento_serie" name="documento_serie" value=""
+                                        <input type="text" class="form-control" id="documento_serie" name="documento_serie" value=""
                                             disabled />
                                     @endif
                                 </div>
                                 <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Correlativo:</label>
                                     @if (isset($encargo))
-                                        <input class="form-control" id="documento_correlativo"
+                                        <input type="text" class="form-control" id="documento_correlativo"
                                             name="documento_correlativo" value="{{ $encargo->documento_correlativo }}"
                                             disabled />
                                     @else
-                                        <input class="form-control" id="documento_correlativo"
+                                        <input type="text" class="form-control" id="documento_correlativo"
                                             name="documento_correlativo" value="" disabled />
                                     @endif
                                 </div>
@@ -380,7 +382,19 @@
                         </div>
                         <div class="col-3">
                             <b>Encomienda:</b> por despachar<br />
-                            <b>SUNAT:</b> pendiente<br />
+                            <b>SUNAT:</b>
+                            @if (isset($encargo))
+                                <span name="cdr_descripcion">{{ $encargo->cdr_descripcion }}
+                                @if($encargo->cdr_codigo ==='0')
+                                    <img src="{{asset('assets/media/check-circle.svg')}}" width="24" />
+                                @else
+                                    <img src="{{asset('assets/media/alert-circle.svg')}}" width="24" />
+                                @endif
+                                </span>
+                            @else
+                                <span name="cdr_descripcion">sin enviar aún</span>
+                            @endif
+                            <br />
                         </div>
                         <div class="col-2">
                             <div class="d-flex align-items-center w-100px w-sm-200px flex-column mt-2">
@@ -594,7 +608,7 @@
 
             // $("[name='origen']").val(data.origen).change(); // come from session
             $("[name='agencia_origen']").val(data.agencia_origen); // come from session
-            $("[name='destino']").val(data.destino).change();
+            // $("[name='destino']").val(data.destino).change();
             getAgenciaDestino(data.destino, data.agencia_destino);
 
             $("[name='medio_pago']").val(data.medio_pago).change();
@@ -640,7 +654,7 @@
             var fecha_recibe = $("[name='fecha_recibe']").val().trim();
 
             // var origen = $("[name='origen']").val().trim();
-            var destino = $("[name='destino']").val().trim();
+            // var destino = $("[name='destino']").val().trim();
             var agencia_origen = $("[name='agencia_origen']").val().trim();
             var agencia_destino = $("[name='agencia_destino']").val().trim();
             var medio_pago = $("[name='medio_pago']").val().trim();
@@ -684,7 +698,7 @@
                 fecha_recibe: fecha_recibe,
 
                 // data.push("origen", origen);
-                destino: destino,
+                // destino: destino,
                 agencia_origen: agencia_origen,
                 agencia_destino: agencia_destino,
                 medio_pago: medio_pago,
@@ -726,10 +740,10 @@
                 showErrorToastr('Especifica la agencia de origen.');
                 return false;
             }
-            if (data.destino.length === 2 && data.destino === '--') {
-                showErrorToastr('Especifica la agencia de destino.');
-                return false;
-            }
+            // if (data.destino.length === 2 && data.destino === '--') {
+            //     showErrorToastr('Especifica la agencia de destino.');
+            //     return false;
+            // }
             if (data.agencia_destino.length === 2 && data.agencia_destino === '--') {
                 showErrorToastr('Especifica la agencia de destino.');
                 return false;
@@ -754,10 +768,11 @@
          * @selected : id de la agencia de destino
          */
         function getAgenciaDestino(destinoId, selected) {
+            var sedeId = $("[name='agencia_origen'] option[value='"+destinoId+"']").data('sede');
             $("[name='agencia_destino']").html("<option value='--'>--</option>");
             if (destinoId !== '--') {
                 $.ajax({
-                    url: "{{ url('/api/v1/agencia') }}/" + destinoId,
+                    url: "{{ url('/api/v1/agencia') }}/" + sedeId,
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -768,17 +783,15 @@
                 }).done(function(result) {
                     if (result) {
                         _.forEach(result, function(element, index) {
-                            $("[name='agencia_destino']").append("<option value='" + element._id + "'>" +
+                            agencia_destino_selected = (selected == element._id)?"selected":"";
+                            $("[name='agencia_destino']").append("<option value='" + element._id + "' "+agencia_destino_selected+">" +
                                 element.direccion + "</option>");
+                            
                         });
-                        if (selected) {
-                            $("[name='agencia_destino']").val(selected).change();
-                        }
                     }
                 });
             } else {
                 // no hay agencia_destino, me quedo en vacío
-
             }
         }
 
@@ -786,6 +799,7 @@
             var agencia_origen = $("[name='agencia_origen']").val();
             var agencia_destino = $("[name='agencia_destino']").val();
             var documento_id = $("[name='documento']").val();
+            
             if (agencia_origen !== '--' && agencia_destino !== '--' && documento_id !== '--') {
                 $.ajax({
                     url: "{{ url('/api/v1/serie') }}/" + agencia_origen + "/" + agencia_destino + "/" +
@@ -881,7 +895,6 @@
             if (data == null) {
                 data = getChargeForm();
             }
-
             $.ajax({
                 url: "{{ url('/venta/registrar') }}",
                 type: "POST",
@@ -899,6 +912,7 @@
                         $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
                             {{ env('ZEROFILL', 8) }}));
                         $("[name='url_documento']").val(response.result.url_documento);
+                        $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
                         enabledBtn();
                         showSuccessToastr(response.result.message);
                     }

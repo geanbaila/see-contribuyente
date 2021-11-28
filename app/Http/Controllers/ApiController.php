@@ -18,7 +18,7 @@ class ApiController extends Controller
     }
 
     public function getAgencia(String $sede_id) {
-        $agencia = \App\Business\Agencia::where('sede', new ObjectId("$sede_id"))->get();
+        $agencia = \App\Business\Agencia::where('sede', '!=', new ObjectId("$sede_id"))->get();
         return response()->json($agencia);
     }
 
