@@ -16,9 +16,8 @@ class Encargo extends Model
         'nombre_envia',
         'celular_envia',
         'email_envia',
-        'fecha_envia',
-        'hora_envia',
-
+        'fecha_hora_envia',
+        
         'doc_recibe',
         'nombre_recibe',
         'celular_recibe',

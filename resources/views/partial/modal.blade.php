@@ -185,7 +185,7 @@
               <!--begin::Modal header-->
               <div class="modal-header">
                   <!--begin::Modal title-->
-                  <h2>Enviar e-mail</h2>
+                  <h2>Enviar documento electrónico</h2>
                   <!--end::Modal title-->
                   <!--begin::Close-->
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -212,7 +212,14 @@
                       <!--begin::Content-->
                       <div class="flex-row-fluid">
                           <!--begin::Form-->
-
+                            <form>
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">E-mail:</label>
+                                    <input type="email" class="form-control" name="email_adquiriente" value="" placeholder="" />
+                                    <div id="emailHelp" class="form-text">Se le enviará la documento electrónico.</div>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="javascript:enviarEmail()">Confirmar</button>
+                            </form>
                           <!--end::Form-->
                       </div>
                       <!--end::Content-->

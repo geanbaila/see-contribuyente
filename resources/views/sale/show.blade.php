@@ -35,10 +35,10 @@
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
-                                            value="{{ $encargo->nombre_envia }}" placeholder="">
+                                            value="{{ $encargo->nombre_envia }}" placeholder="" disabled>
                                     @else
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia" value=""
-                                            placeholder="">
+                                            placeholder="" disabled>
                                     @endif
                                 </div>
                             </div>
@@ -68,10 +68,10 @@
                                 <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Fecha:</label>
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="fecha_envia" name="fecha_envia"
-                                            value="{{ $encargo->fecha_envia }}" placeholder="" disabled />
+                                        <input type="text" class="form-control" id="fecha_hora_envia" name="fecha_hora_envia"
+                                            value="{{ $encargo->fecha_hora_envia }}" placeholder="" disabled />
                                     @else
-                                        <input type="text" class="form-control" id="fecha_envia" name="fecha_envia" value=""
+                                        <input type="text" class="form-control" id="fecha_hora_envia" name="fecha_hora_envia" value=""
                                             placeholder="" disabled />
                                     @endif
                                 </div>
@@ -103,10 +103,10 @@
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
-                                            value="{{ $encargo->nombre_recibe }}" placeholder="" />
+                                            value="{{ $encargo->nombre_recibe }}" placeholder="" disabled />
                                     @else
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe" value=""
-                                            placeholder="" />
+                                            placeholder="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -197,8 +197,9 @@
                         <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
-                                    <label for="exampleDataList" class="form-label">Medio de pago:</label>
-                                    <select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
+                                <input type="hidden" name="medio_pago" value="2"/>
+                                    <!--<label for="exampleDataList" class="form-label">Medio de pago:</label>-->
+                                    <!--<select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
                                         <option value="--"> -- </option>
                                         <option value="1"
                                             {{ isset($encargo) && $encargo->medio_pago == '1' ? 'selected' : '' }}>CRÉDITO
@@ -206,7 +207,7 @@
                                         <option value="2"
                                             {{ isset($encargo) && $encargo->medio_pago == '2' ? 'selected' : '' }}>CONTADO
                                         </option>
-                                    </select>
+                                    </select>-->
                                 </div>
 
                                 <div class="col-xxl-4">
@@ -741,8 +742,8 @@
             $("[name='nombre_envia']").val(data.nombre_envia);
             $("[name='celular_envia']").val(data.celular_envia);
             $("[name='email_envia']").val(data.email_envia);
-            $("[name='fecha_envia']").val(data.fecha_envia);
-            $("[name='fecha_envia_blocked']").val(data.fecha_envia);
+            $("[name='fecha_hora_envia']").val(data.fecha_hora_envia);
+            
 
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
@@ -788,7 +789,7 @@
             var direccion_envia = $("[name='direccion_envia']").val().trim();
             var celular_envia = $("[name='celular_envia']").val().trim();
             var email_envia = $("[name='email_envia']").val().trim();
-            var fecha_envia = $("[name='fecha_envia']").val().trim();
+            var fecha_hora_envia = $("[name='fecha_hora_envia']").val().trim();
 
             var doc_recibe = $("[name='doc_recibe']").val().trim();
             var nombre_recibe = $("[name='nombre_recibe']").val().trim();
@@ -831,7 +832,7 @@
                 direccion_envia: direccion_envia,
                 celular_envia: celular_envia,
                 email_envia: email_envia,
-                fecha_envia: fecha_envia,
+                fecha_hora_envia: fecha_hora_envia,
 
                 doc_recibe: doc_recibe,
                 nombre_recibe: nombre_recibe,
@@ -1048,9 +1049,10 @@
                     if (data.encargo_id.length === 0) {
                         $("[name='encargo_id']").val(response.result.encargo_id);
                         $("[name='adquiriente']").val(response.result.adquiriente);
-                        $("[name='fecha_envia']").val(response.result.fecha_envia);
+                        $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
                         $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
                             {{ env('ZEROFILL', 8) }}));
+                        $("[name='url_documento_pdf']").html(response.result.url_documento_pdf);
                         $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
                         enabledBtn();
                         showSuccessToastr(response.result.message);
@@ -1083,6 +1085,11 @@
                 $("#comprobantePago").attr("src", url_documento_pdf);
                 return true;
             }
+        }
+
+        function enviarEmail() {
+            var email = $("name['email_adquiriente']").val();
+            // enviar correo
         }
 
         $("[name='doc_envia']").on('keypress', function(e) {
@@ -1125,6 +1132,7 @@
         $("[name='doc_recibe']").on('keypress', function(e) {
             if (e.which == 13) {
                 var doc_recibe = $("[name='doc_recibe']").val().trim();
+                $("[name='nombre_comercial_recibe']").val('');
                 if (doc_recibe.length === DNI || doc_recibe.length === CE) {
                     // consultar a RENIEC
                     $.ajax({
@@ -1136,6 +1144,7 @@
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombre_recibe']").val(result.result.nombre);
+                        $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                     });
 
                 } else if (doc_recibe.length === RUC) {
@@ -1149,7 +1158,7 @@
                         dataType: "json"
                     }).done(function(result) {
                         $("[name='nombre_recibe']").val(result.result.nombre);
-                        $("[name='nombre_comercial_recibe']").val(result.result.nombre_comercial);
+                        $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                     });
                 } else {
                     showErrorToastr("Ha ingresado " + doc_recibe.length + " caracteres, complételo por favor.");

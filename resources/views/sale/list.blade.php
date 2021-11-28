@@ -11,7 +11,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Documento</th>
                                 <th scope="col">Fecha</th>
-                                <th scope="col">Importe total</th>
+                                <th scope="col" width="150">Importe total (S/.)</th>
                                 <th scope="col">Envía</th>
                                 <th scope="col">Recibe</th>
                                 <th scope="col">PDF</th>
@@ -27,8 +27,8 @@
                                                 src="{{ asset('/assets/media/edit.svg') }}" width="24" /></a>
                                     </th>
                                     <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
-                                    <td>{{ $item->fecha_envia }}</td>
-                                    <td>{{ $item->subtotal }}</td>
+                                    <td>{!! str_replace(' ', '<br>', $item->fecha_hora_envia) !!}</td>
+                                    <td align="left">{{ $item->subtotal }}</td>
                                     <td>{{ $item->doc_envia}}<br>{{ $item->nombre_envia }}</td>
                                     <td>{{$item->doc_recibe}}<br>{{ $item->nombre_recibe }}</td>
                                     <td>

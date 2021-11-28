@@ -229,7 +229,7 @@ class SaleController extends Controller
                 'nombre_envia' => $data['nombre_envia'],
                 'celular_envia' => $data['celular_envia'],
                 'email_envia' => $data['email_envia'],
-                'fecha_envia' => $data['fecha_envia'],
+                'fecha_hora_envia' => $data['fecha_hora_envia'],
 
                 'doc_recibe' => $data['doc_recibe'],
                 'nombre_recibe' => $data['nombre_recibe'],
@@ -259,7 +259,7 @@ class SaleController extends Controller
             if (strlen($data['encargo_id']) > 0) {
                 //controlar duplicidad de registros
                 $encargo_id = $data['encargo_id']; 
-                $fecha_envia = $data['fecha_envia'];
+                $fecha_hora_envia = $data['fecha_hora_envia'];
                 $documento_correlativo = $data['documento_correlativo'];
                 
                 // bloquear actualizar los registros
@@ -272,9 +272,9 @@ class SaleController extends Controller
                 $encargo = Encargo::create($insert_encargo);
                 $encargo_id = $encargo['id'];
                 $object_id = new ObjectId($encargo_id);
-                $fecha_envia = date('d-m-Y');
+                $fecha_hora_envia = date('d-m-Y H:i:s');
                 $documento_correlativo = sprintf("%0".env('ZEROFILL', 8)."d", Encargo::getNextSequence($encargo_id, $data['documento_serie']));
-                $encargo = Encargo::where('_id', $object_id)->update(['fecha_envia' => $fecha_envia, 'documento_correlativo' => $documento_correlativo]);
+                $encargo = Encargo::where('_id', $object_id)->update(['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo]);
             }
 
             // registrar o actualizar el PDF
@@ -320,7 +320,8 @@ class SaleController extends Controller
                     'encargo_id' => $encargo_id, 
                     'adquiriente' => $adquiriente, 
                     'documento_correlativo' => $documento_correlativo,
-                    'fecha_envia' => $fecha_envia,
+                    'fecha_hora_envia' => $fecha_hora_envia,
+                    'url_documento_pdf' => $url_documento_pdf,
                     'cdr_descripcion' => $cdr_descripcion .' <img src="'. asset('assets/media/check-circle.svg'). '" width="24" />',
                 ]
             ]);
@@ -357,7 +358,7 @@ class SaleController extends Controller
     }
 
     public function list() {
-        $encargo = Encargo::all()->sortBy('oferta');
+        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
         return view('sale.list')->with([ 'encargo' => $encargo ]);
     }
 
