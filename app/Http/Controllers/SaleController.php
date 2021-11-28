@@ -306,6 +306,7 @@ class SaleController extends Controller
                 'url_documento_pdf' => $url_documento_pdf,
                 'url_documento_xml' => $url_documento['xml'],
                 'url_documento_cdr' => $url_documento['cdr'],
+                'nombre_archivo' => $url_documento['nombre_archivo'],
                 'cdr_id' => $cdr_id,
                 'cdr_codigo' => $cdr_codigo,
                 'cdr_descripcion' => $cdr_descripcion,
@@ -867,7 +868,7 @@ class SaleController extends Controller
 
     public function escribirXMLFactura($encargo_id) {
         $data = Encargo::buscarFactura($encargo_id);
-        $document = ['xml'=> '', 'cdr'=> '', 'cdr_descripcion'=> '', 'error'=> ''];
+        $document = ['xml'=> '', 'cdr'=> '', 'cdr_descripcion'=> '', 'nombre_archivo'=> '','error'=> ''];
         if ($data) {
             // IMPORTANTE: La factura electrónica deberá tener información de los por lo menos uno de siguientes 
             // campos definidos como opcionales: 18. Total valor de venta – operaciones gravadas, 
@@ -1039,6 +1040,7 @@ class SaleController extends Controller
             // $res = $see->sendXml(get_class($invoice), $invoice->getName(), file_get_contents($ruta_XML));
             // $res = $see->sendXmlFile(file_get_contents($path . '/' . $documento_xml));
             $res = $see->send($invoice);
+            $document['nombre_archivo'] = $invoice->getName();
             $document['xml'] = $util->writeXml($folder, $invoice, $see->getFactory()->getLastXml());            
             // $res = $see->sendXmlFile($contents);
             if (!$res->isSuccess()) {
@@ -1055,8 +1057,8 @@ class SaleController extends Controller
                         $cdr_descripcion .= $notes . '|';
                     }
                 }
-                $document['cdr_descripcion'] = $cdr_descripcion;
                 $document['cdr'] = $util->writeCdr($folder, $invoice, $res->getCdrZip());
+                $document['cdr_descripcion'] = $cdr_descripcion;
             }
         } else {
             $document['error'] = 'No se ha encontrado en la base de datos.';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use MongoDB\BSON\ObjectId;
 
 class ApiController extends Controller
@@ -57,6 +58,27 @@ class ApiController extends Controller
             ],
         ];
         return response()->json($response);
+    }
+
+    public function downloadPdf($encargo_id) {
+        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_pdf', 'nombre_archivo']);
+        $file = storage_path('app/' . $prg_encargo[0]->url_documento_pdf);
+        return \response()
+             ->download($file, $prg_encargo[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
+    }
+
+    public function downloadXml($encargo_id) {
+        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_xml', 'nombre_archivo']);
+        $file = storage_path('app/' . $prg_encargo[0]->url_documento_xml);
+        return \response()
+             ->download($file, $prg_encargo[0]->nombre_archivo . '.xml', ['Content-Type'=> 'application/xml']);
+    }
+
+    public function downloadCdr($encargo_id) {
+        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_cdr', 'nombre_archivo']);
+        $file = storage_path('app/' . $prg_encargo[0]->url_documento_cdr);
+        return \response()
+             ->download($file, $prg_encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
 }
