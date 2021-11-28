@@ -1,26 +1,31 @@
 <div class="menu-item me-lg-1">
-	<a class="menu-link py-3" href="{{url('/')}}">
-		<span class="menu-title">DASHBOARD</span>
-	</a>
+    <a class="menu-link py-3" href="{{ url('/') }}">
+        <span class="menu-title">DASHBOARD</span>
+    </a>
 </div>
 
 <div class="menu-item me-lg-1">
-	<a class="menu-link py-3 active" href="{{url('/venta')}}" >
-		<span class="menu-title">ENCARGOS</span>
-	</a>
+    <a class="menu-link py-3 active" href="{{ url('/venta') }}">
+        <span class="menu-title">ENCARGOS</span>
+    </a>
 </div>
 <div class="menu-item me-lg-1">
-	<a class="menu-link py-3 active" href="{{url('/manifiesto')}}">
-		<span class="menu-title">MANIFIESTO</span>
-	</a>
+    <a class="menu-link py-3 active" href="{{ url('/despacho') }}">
+        <span class="menu-title">DESPACHO</span>
+    </a>
 </div>
 <div class="menu-item me-lg-1">
-	<a class="menu-link py-3 active" href="{{url('/configuracion')}}">
-		<span class="menu-title">CONFIGURACIÓN</span>
-	</a>
+    <a class="menu-link py-3 active" href="{{ url('/manifiesto') }}">
+        <span class="menu-title">MANIFIESTO</span>
+    </a>
+</div>
+<div class="menu-item me-lg-1">
+    <a class="menu-link py-3 active" href="{{ url('/configuracion') }}">
+        <span class="menu-title">CONFIGURACIÓN</span>
+    </a>
 </div>
 <!--begin::Breadcrumb-->
-{{--<ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+{{-- <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
 	<li class="breadcrumb-item text-dark">
 		<a href="{{url('/venta')}}" class="btn btn-sm btn-secondary">Cargas y encomiendas</a>
 	</li>
@@ -42,6 +47,5 @@
 			Facturación electrónica
 		</a>
 	</li>
-</ul>
---}}
+</ul> --}}
 <!--end::Breadcrumb-->

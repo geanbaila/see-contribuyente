@@ -212,14 +212,17 @@
                       <!--begin::Content-->
                       <div class="flex-row-fluid">
                           <!--begin::Form-->
-                            <form>
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">E-mail:</label>
-                                    <input type="email" class="form-control" name="email_adquiriente" value="" placeholder="" />
-                                    <div id="emailHelp" class="form-text">Se le enviará la documento electrónico.</div>
-                                </div>
-                                <button type="button" class="btn btn-primary" onclick="javascript:enviarEmail()">Confirmar</button>
-                            </form>
+                          <form>
+                              <div class="mb-3">
+                                  <label for="exampleInputEmail1" class="form-label">E-mail:</label>
+                                  <input type="email" class="form-control" name="email_adquiriente" value=""
+                                      placeholder="" />
+                                  <div id="emailHelp" class="form-text">Se le enviará la documento electrónico.
+                                  </div>
+                              </div>
+                              <button type="button" class="btn btn-primary"
+                                  onclick="javascript:enviarEmail()">Confirmar</button>
+                          </form>
                           <!--end::Form-->
                       </div>
                       <!--end::Content-->
@@ -308,7 +311,8 @@
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="javascript:enviarDatos(null);">Sí, continuar</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                      onclick="javascript:enviarDatos(null);">Sí, continuar</button>
               </div>
           </div>
       </div>

@@ -67,6 +67,10 @@ class Encargo extends Model
         'cdr_notas',
     ];
     
+    public function agenciasOrigen() {
+        return $this->belongsTo('App\Business\Agencia', 'agencia_origen');
+    }
+    
     public function agenciasDestino() {
         return $this->belongsTo('App\Business\Agencia', 'agencia_destino');
     }

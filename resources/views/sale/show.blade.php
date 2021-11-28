@@ -7,13 +7,13 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargo_id" value="{{(isset($encargo)?$encargo->id:'')}}" />
-        <input type="text" name="adquiriente" value="{{(isset($encargo)?$encargo->adquiriente:'')}}" />
-        <input type="text" name="nombre_comercial_envia" value="{{(isset($encargo)?$encargo->nombre_envia:'')}}" />
-        <input type="text" name="nombre_comercial_recibe" value="{{(isset($encargo)?$encargo->nombre_recibe:'')}}" />
-        <input type="text" name="direccion_envia" value="{{(isset($encargo)?$encargo->id:'')}}" />
-        <input type="text" name="direccion_recibe" value="{{(isset($encargo)?$encargo->id:'')}}" />
-        <input type="text" name="url_documento_pdf" value="{{(isset($encargo)?$encargo->url_documento_pdf:'')}}" />
+        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
+        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -37,8 +37,8 @@
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
                                             value="{{ $encargo->nombre_envia }}" placeholder="" disabled>
                                     @else
-                                        <input type="text" class="form-control" id="nombre_envia" name="nombre_envia" value=""
-                                            placeholder="" disabled>
+                                        <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
+                                            value="" placeholder="" disabled>
                                     @endif
                                 </div>
                             </div>
@@ -51,8 +51,8 @@
                                         <input type="hidden" class="form-control" id="celular_envia" name="celular_envia"
                                             value="{{ $encargo->celular_envia }}" placeholder="" />
                                     @else
-                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia" value=""
-                                            placeholder="" />
+                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia"
+                                            value="" placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-5">
@@ -61,18 +61,19 @@
                                         <input type="hidden" class="form-control" id="email_envia" name="email_envia"
                                             value="{{ $encargo->email_envia }}" placeholder="" />
                                     @else
-                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia" value=""
-                                            placeholder="" />
+                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia"
+                                            value="" placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
-                                    <label for="exampleDataList" class="form-label">Fecha:</label>
+                                    <label for="exampleDataList" class="form-label">Fecha recepción:</label>
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="fecha_hora_envia" name="fecha_hora_envia"
-                                            value="{{ $encargo->fecha_hora_envia }}" placeholder="" disabled />
-                                    @else
-                                        <input type="text" class="form-control" id="fecha_hora_envia" name="fecha_hora_envia" value=""
+                                        <input type="text" class="form-control" id="fecha_hora_envia"
+                                            name="fecha_hora_envia" value="{{ $encargo->fecha_hora_envia }}"
                                             placeholder="" disabled />
+                                    @else
+                                        <input type="text" class="form-control" id="fecha_hora_envia"
+                                            name="fecha_hora_envia" value="" placeholder="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -105,8 +106,8 @@
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
                                             value="{{ $encargo->nombre_recibe }}" placeholder="" disabled />
                                     @else
-                                        <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe" value=""
-                                            placeholder="" disabled />
+                                        <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
+                                            value="" placeholder="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -116,11 +117,12 @@
                                 <div class="col-xxl-3">
                                     <!-- <label for="exampleDataList" class="form-label">Celular:</label> -->
                                     @if (isset($encargo))
-                                        <input type="hidden" class="form-control" id="celular_recibe" name="celular_recibe"
-                                            value="{{ $encargo->celular_recibe }}" placeholder="" />
-                                    @else
-                                        <input type="hidden" class="form-control" id="celular_recibe" name="celular_recibe" value=""
+                                        <input type="hidden" class="form-control" id="celular_recibe"
+                                            name="celular_recibe" value="{{ $encargo->celular_recibe }}"
                                             placeholder="" />
+                                    @else
+                                        <input type="hidden" class="form-control" id="celular_recibe"
+                                            name="celular_recibe" value="" placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-5">
@@ -129,18 +131,18 @@
                                         <input type="hidden" class="form-control" id="email_recibe" name="email_recibe"
                                             value="{{ $encargo->email_recibe }}" placeholder="" />
                                     @else
-                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe" value=""
-                                            placeholder="" />
+                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe"
+                                            value="" placeholder="" />
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
-                                    <label for="exampleDataList" class="form-label">Fecha:</label>
+                                    <label for="exampleDataList" class="form-label">Fecha entrega:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
                                             value="{{ $encargo->fecha_recibe }}" placeholder="" disabled>
                                     @else
-                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe" value=""
-                                            placeholder="" disabled>
+                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
+                                            value="" placeholder="" disabled>
                                     @endif
                                 </div>
                             </div>
@@ -174,12 +176,12 @@
                                         @if (count($agencia_origen))
                                             @foreach ($agencia_origen as $item)
                                                 @if (isset($agencia_origen_selected))
-                                                    <option value="{{ $item->_id }}"
-                                                        data-sede="{{ $item->sede }}"
+                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}"
                                                         {{ $agencia_origen_selected == $item->_id ? 'selected' : '' }}>
                                                         {{ $item->nombre }}</option>
                                                 @else
-                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}">{{ $item->nombre }}</option>
+                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}">
+                                                        {{ $item->nombre }}</option>
                                                 @endif
                                             @endforeach
                                         @endif
@@ -197,17 +199,17 @@
                         <div class="col-xxl-6">
                             <div class="row gy-5">
                                 <div class="col-xxl-3">
-                                <input type="hidden" name="medio_pago" value="2"/>
+                                    <input type="hidden" name="medio_pago" value="2" />
                                     <!--<label for="exampleDataList" class="form-label">Medio de pago:</label>-->
                                     <!--<select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
-                                        <option value="--"> -- </option>
-                                        <option value="1"
-                                            {{ isset($encargo) && $encargo->medio_pago == '1' ? 'selected' : '' }}>CRÉDITO
-                                        </option>
-                                        <option value="2"
-                                            {{ isset($encargo) && $encargo->medio_pago == '2' ? 'selected' : '' }}>CONTADO
-                                        </option>
-                                    </select>-->
+                                            <option value="--"> -- </option>
+                                            <option value="1"
+                                                {{ isset($encargo) && $encargo->medio_pago == '1' ? 'selected' : '' }}>CRÉDITO
+                                            </option>
+                                            <option value="2"
+                                                {{ isset($encargo) && $encargo->medio_pago == '2' ? 'selected' : '' }}>CONTADO
+                                            </option>
+                                        </select>-->
                                 </div>
 
                                 <div class="col-xxl-4">
@@ -232,11 +234,11 @@
                                 <div class="col-xxl-2">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="documento_serie" name="documento_serie"
-                                            value="{{ $encargo->documento_serie }}" disabled />
+                                        <input type="text" class="form-control" id="documento_serie"
+                                            name="documento_serie" value="{{ $encargo->documento_serie }}" disabled />
                                     @else
-                                        <input type="text" class="form-control" id="documento_serie" name="documento_serie" value=""
-                                            disabled />
+                                        <input type="text" class="form-control" id="documento_serie"
+                                            name="documento_serie" value="" disabled />
                                     @endif
                                 </div>
                                 <div class="col-xxl-3">
@@ -289,7 +291,7 @@
                         </thead>
                         <tbody id="chargeRow">
                             @if (isset($encargo))
-                                @if(!empty($encargo->detalle_gravado))
+                                @if (!empty($encargo->detalle_gravado))
                                     @foreach ($encargo->detalle_gravado as $detalle_gravado)
                                         <tr>
                                             <td>
@@ -308,7 +310,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_gravado['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -325,7 +327,7 @@
                                     @endforeach
                                 @endif
 
-                                @if(!empty($encargo->detalle_exonerado))
+                                @if (!empty($encargo->detalle_exonerado))
                                     @foreach ($encargo->detalle_exonerado as $detalle_exonerado)
                                         <tr>
                                             <td>
@@ -344,7 +346,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_exonerado['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -361,7 +363,7 @@
                                     @endforeach
                                 @endif
 
-                                @if(!empty($encargo->detalle_inafecto))
+                                @if (!empty($encargo->detalle_inafecto))
                                     @foreach ($encargo->detalle_inafecto as $detalle_inafecto)
                                         <tr>
                                             <td>
@@ -380,7 +382,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_inafecto['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -397,7 +399,7 @@
                                     @endforeach
                                 @endif
 
-                                @if(!empty($encargo->detalle_gravado_gratuito))
+                                @if (!empty($encargo->detalle_gravado_gratuito))
                                     @foreach ($encargo->detalle_gravado_gratuito as $detalle_gravado_gratuito)
                                         <tr>
                                             <td>
@@ -416,7 +418,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_gravado_gratuito['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -433,7 +435,7 @@
                                     @endforeach
                                 @endif
 
-                                @if(!empty($encargo->detalle_inafecto_gratuito))
+                                @if (!empty($encargo->detalle_inafecto_gratuito))
                                     @foreach ($encargo->detalle_inafecto_gratuito as $detalle_inafecto_gratuito)
                                         <tr>
                                             <td>
@@ -452,7 +454,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_inafecto_gratuito['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -464,7 +466,8 @@
                                                     value="{{ $detalle_inafecto_gratuito['valor_unitario'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                             <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_inafecto_gratuito['valor_venta'] }}" disabled></td>
+                                                    value="{{ $detalle_inafecto_gratuito['valor_venta'] }}" disabled>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -484,7 +487,7 @@
                                         </select>
                                     </td>
                                     <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                     <td><input type="hidden" class="form-control fw8" name="peso"
                                             onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
                                         <input type="number" class="form-control fw8" name="cantidad"
@@ -530,11 +533,11 @@
                             <b>SUNAT:</b>
                             @if (isset($encargo))
                                 <span name="cdr_descripcion">{{ $encargo->cdr_descripcion }}
-                                @if($encargo->cdr_codigo ==='0')
-                                    <img src="{{asset('assets/media/check-circle.svg')}}" width="24" />
-                                @else
-                                    <img src="{{asset('assets/media/alert-circle.svg')}}" width="24" />
-                                @endif
+                                    @if ($encargo->cdr_codigo === '0')
+                                        <img src="{{ asset('assets/media/check-circle.svg') }}" width="24" />
+                                    @else
+                                        <img src="{{ asset('assets/media/alert-circle.svg') }}" width="24" />
+                                    @endif
                                 </span>
                             @else
                                 <span name="cdr_descripcion">-</span>
@@ -558,9 +561,9 @@
                                 data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
                                 <img src="{{ asset('assets/media/search-white.svg') }}" width="24" />
                             </a>
-                            
+
                             <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">
-                            Confirmar</a>
+                                Confirmar</a>
                             <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                 <img src="{{ asset('assets/media/printer.svg') }}" width="24" />
@@ -743,7 +746,7 @@
             $("[name='celular_envia']").val(data.celular_envia);
             $("[name='email_envia']").val(data.email_envia);
             $("[name='fecha_hora_envia']").val(data.fecha_hora_envia);
-            
+
 
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
@@ -909,7 +912,7 @@
         }
 
         function getAgenciaDestino(destinoId, selected) {
-            var sedeId = $("[name='agencia_origen'] option[value='"+destinoId+"']").data('sede');
+            var sedeId = $("[name='agencia_origen'] option[value='" + destinoId + "']").data('sede');
             $("[name='agencia_destino']").html("<option value='--'>--</option>");
             if (destinoId !== '--') {
                 $.ajax({
@@ -924,10 +927,11 @@
                 }).done(function(result) {
                     if (result) {
                         _.forEach(result, function(element, index) {
-                            agencia_destino_selected = (selected == element._id)?"selected":"";
-                            $("[name='agencia_destino']").append("<option value='" + element._id + "' "+agencia_destino_selected+">" +
+                            agencia_destino_selected = (selected == element._id) ? "selected" : "";
+                            $("[name='agencia_destino']").append("<option value='" + element._id + "' " +
+                                agencia_destino_selected + ">" +
                                 element.direccion + "</option>");
-                            
+
                         });
                     }
                 });
@@ -940,7 +944,7 @@
             var agencia_origen = $("[name='agencia_origen']").val();
             var agencia_destino = $("[name='agencia_destino']").val();
             var documento_id = $("[name='documento']").val();
-            
+
             if (agencia_origen !== '--' && agencia_destino !== '--' && documento_id !== '--') {
                 $.ajax({
                     url: "{{ url('/api/v1/serie') }}/" + agencia_origen + "/" + agencia_destino + "/" +
@@ -1042,7 +1046,9 @@
                 data: data,
                 dataType: "json",
                 beforeSend: function() {
-                    $("#btnConfirmar").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando');
+                    $("#btnConfirmar").html(
+                        '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando'
+                        );
                 }
             }).done(function(response) {
                 if (response.result.status === 'OK') {
@@ -1061,7 +1067,7 @@
                     showErrorToastr(response.result.message);
                 }
                 $("#btnConfirmar").html("Confirmar");
-            }).fail(function(){
+            }).fail(function() {
                 showErrorToastr('No se ha podido procesar la venta');
                 $("#btnConfirmar").html("Confirmar");
             });
@@ -1167,7 +1173,7 @@
             }
         });
         @if (isset($encargo))
-            getAgenciaDestino("{{$encargo->agencia_origen}}","{{$encargo->agencia_destino}}");
+            getAgenciaDestino("{{ $encargo->agencia_origen }}","{{ $encargo->agencia_destino }}");
             $("[name='cantidad']").trigger('onkeyup');
         @endif
     </script>

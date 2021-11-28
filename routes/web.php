@@ -23,6 +23,8 @@ Route::post('/venta/registrar', 'SaleController@register');
 
 Route::get('/manifiesto', 'ManifestController@list');
 
+Route::get('/despacho', 'DispatchController@list');
+
 Route::get('/configuracion', 'ConfigurationController@list');
 Route::post('/configuracion/salida', 'ConfigurationController@update');
 
