@@ -17,12 +17,14 @@ class Encargo extends Model
         'celular_envia',
         'email_envia',
         'fecha_envia',
+        'hora_envia',
 
         'doc_recibe',
         'nombre_recibe',
         'celular_recibe',
         'email_recibe',
         'fecha_recibe',
+        'hora_recibe',
 
         // 'origen',
         // 'destino',
@@ -193,6 +195,8 @@ class Encargo extends Model
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
                 'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
+                'documento_fecha' => $encargo->documento_fecha,
+                'documento_hora' => $encargo->documento_hora,
 
                 'detalle_gravado' => $encargo->detalle_gravado,
                 'detalle_exonerado' => $encargo->detalle_exonerado,

@@ -249,12 +249,12 @@ class SaleController extends Controller
                 'documento_serie' => $data['documento_serie'],
                 'documento_correlativo' => $data['documento_correlativo'],
                 'documento_fecha' => date('Y-m-d'),
-                'documento_hora' => date('h:i:s'),
+                'documento_hora' => date('H:i:s'),
 
                 'subtotal' => number_format($data['subtotal'], 2, '.', ''),
                 'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
             ], $encargo);
-
+            
             $encargo = null;
             if (strlen($data['encargo_id']) > 0) {
                 //controlar duplicidad de registros
@@ -272,7 +272,7 @@ class SaleController extends Controller
                 $encargo = Encargo::create($insert_encargo);
                 $encargo_id = $encargo['id'];
                 $object_id = new ObjectId($encargo_id);
-                $fecha_envia = date('Y-m-d');
+                $fecha_envia = date('d-m-Y');
                 $documento_correlativo = sprintf("%0".env('ZEROFILL', 8)."d", Encargo::getNextSequence($encargo_id, $data['documento_serie']));
                 $encargo = Encargo::where('_id', $object_id)->update(['fecha_envia' => $fecha_envia, 'documento_correlativo' => $documento_correlativo]);
             }
@@ -312,7 +312,6 @@ class SaleController extends Controller
                 'cdr_notas' => $cdr_notas,
             ]);
 
-            $fecha_envia_dd_mm_yyyy = explode('-', $fecha_envia);
             return \response()->json([
                 'result' => [
                     'status' => 'OK', 
@@ -320,7 +319,7 @@ class SaleController extends Controller
                     'encargo_id' => $encargo_id, 
                     'adquiriente' => $adquiriente, 
                     'documento_correlativo' => $documento_correlativo,
-                    'fecha_envia' => $fecha_envia_dd_mm_yyyy[2].'-'.$fecha_envia_dd_mm_yyyy[1].'-'.$fecha_envia_dd_mm_yyyy[0],
+                    'fecha_envia' => $fecha_envia,
                     'cdr_descripcion' => $cdr_descripcion .' <img src="'. asset('assets/media/check-circle.svg'). '" width="24" />',
                 ]
             ]);
@@ -880,16 +879,16 @@ class SaleController extends Controller
                 ->setRznSocial($data['adquiriente_razon_social'])
                 ->setAddress((new Address())
                     ->setDireccion($data['adquiriente_direccion']));
-            
+
             $invoice = new Invoice();
             $invoice
                 ->setUblVersion('2.1')
-                ->setFecVencimiento(new \DateTime())
+                // ->setFecVencimiento(new \DateTime())
                 ->setTipoOperacion('0101')
                 ->setTipoDoc('01')
                 ->setSerie($data['emisor_serie_documento_electronico']) // F001
                 ->setCorrelativo($data['emisor_correlativo_documento_electronico']) // 123
-                ->setFechaEmision(new \DateTime())
+                ->setFechaEmision(new \DateTime($data['documento_fecha'].' '.$data['documento_hora']))
                 ->setFormaPago(new FormaPagoContado())
                 ->setTipoMoneda('PEN')
                 ->setCompany(Util::getCompany())
