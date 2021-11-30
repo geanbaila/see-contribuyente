@@ -8,7 +8,7 @@
                     class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                     <thead class="border-gray-200 fw-bold bg-lighten">
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col"></th>
                             <th scope="col">Documento</th>
                             <th scope="col">F. recepción</th>
                             <th scope="col" width="150">Importe total (S/.)</th>

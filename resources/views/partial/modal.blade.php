@@ -220,7 +220,7 @@
                                   <div id="emailHelp" class="form-text">Se le enviará la documento electrónico.
                                   </div>
                               </div>
-                              <button type="button" class="btn btn-primary"
+                              <button id="btnEnviarEmail" type="button" class="btn btn-primary" data-bs-dismiss="modal"
                                   onclick="javascript:enviarEmail()">Confirmar</button>
                           </form>
                           <!--end::Form-->

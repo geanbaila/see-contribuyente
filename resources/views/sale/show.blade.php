@@ -7,13 +7,13 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
-        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
+        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -1094,8 +1094,33 @@
         }
 
         function enviarEmail() {
-            var email = $("name['email_adquiriente']").val();
-            // enviar correo
+            var email_adquiriente = $("[name='email_adquiriente']").val();
+            var encargo_id = $("[name='encargo_id']").val();
+            $.ajax({
+                url: "{{ url('/enviar-comprobante') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: "json",
+                data: {
+                    email_adquiriente : email_adquiriente,
+                    encargo_id : encargo_id
+                },
+                beforeSend: function() {
+                    $("#btnEnviarEmail").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
+                }
+            }).done(function(response) {
+                if(response.result.status === 'OK') {
+                    showSuccessToastr(response.result.message);
+                } else {
+                    showErrorToastr(response.result.message);
+                }
+                $("#btnEnviarEmail").html('Continuar');
+            }).fail(function() {
+                $("#btnEnviarEmail").html('Continuar');
+                showErrorToastr('No se pudo enviar el e-mail.');
+            });
         }
 
         $("[name='doc_envia']").on('keypress', function(e) {
@@ -1110,8 +1135,8 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
-                    }).done(function(result) {
-                        $("[name='nombre_envia']").val(result.result.nombre);
+                    }).done(function(response) {
+                        $("[name='nombre_envia']").val(response.result.nombre);
                     });
 
                 } else if (doc_envia.length === RUC) {
@@ -1123,9 +1148,9 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         dataType: "json"
-                    }).done(function(result) {
-                        $("[name='nombre_envia']").val(result.result.nombre);
-                        $("[name='nombre_comercial_envia']").val(result.result.nombre_comercial);
+                    }).done(function(response) {
+                        $("[name='nombre_envia']").val(response.result.nombre);
+                        $("[name='nombre_comercial_envia']").val(response.result.nombre_comercial);
 
                     });
                 } else {

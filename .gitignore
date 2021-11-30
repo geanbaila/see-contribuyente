@@ -1,5 +1,6 @@
 database.sql
 /storage/*.key
+/storage/cache/*
 /vendor
 .env
 .env.backup

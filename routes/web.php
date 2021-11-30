@@ -28,6 +28,9 @@ Route::get('/despacho', 'DispatchController@list');
 Route::get('/configuracion', 'ConfigurationController@list');
 Route::post('/configuracion/salida', 'ConfigurationController@update');
 
+Route::post('/enviar-comprobante', 'MailerController@enviarComprobante');
+
+
 Route::post('/api/v1/serie/{agencia_origen_id}/{agencia_destino_id}/{documento_id}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
 Route::post('/api/v1/encargo', 'ApiController@getEncargo');
