@@ -1123,6 +1123,34 @@
             });
         }
 
+        function eliminarCPE() {
+            var encargo_id = $("[name='encargo_id']").val();
+            $.ajax({
+                url: "{{ url('/venta/comunicar-baja') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: "json",
+                data: {
+                    encargo_id : encargo_id
+                },
+                beforeSend: function() {
+                    // $("#btnEnviarEmail").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
+                }
+            }).done(function(response) {
+                if(response.result.status === 'OK') {
+                    showSuccessToastr(response.result.message);
+                } else {
+                    showErrorToastr(response.result.message);
+                }
+                // $("#btnEnviarEmail").html('Continuar');
+            }).fail(function() {
+                // $("#btnEnviarEmail").html('Continuar');
+                showErrorToastr('No se pudo comunicar la baja del comprobante de pago electrónico.');
+            });
+        }
+
         $("[name='doc_envia']").on('keypress', function(e) {
             if (e.which == 13) {
                 var doc_envia = $("[name='doc_envia']").val().trim();

@@ -20,6 +20,7 @@ Route::get('/venta', 'SaleController@list');
 Route::get('/venta/nuevo', 'SaleController@show');
 Route::get('/venta/editar/{encargo_id}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
+Route::post('/venta/comunicar-baja', 'SaleController@baja');
 
 Route::get('/manifiesto', 'ManifestController@list');
 

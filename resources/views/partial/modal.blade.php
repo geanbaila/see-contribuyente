@@ -134,7 +134,7 @@
               <!--begin::Modal header-->
               <div class="modal-header">
                   <!--begin::Modal title-->
-                  <h2>Elimina Guía de Remisión</h2>
+                  <h2>Elimina Comprobante de Pago electrónico</h2>
                   <!--end::Modal title-->
                   <!--begin::Close-->
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -161,7 +161,8 @@
                       <!--begin::Content-->
                       <div class="flex-row-fluid">
                           <!--begin::Form-->
-
+                            Está a punto de comunicar a SUNAT la baja del comprobante de pago.
+                            ¿Está seguro que desea continuar?
                           <!--end::Form-->
                       </div>
                       <!--end::Content-->
@@ -169,6 +170,11 @@
                   <!--end::Stepper-->
               </div>
               <!--end::Modal body-->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    onclick="javascript:eliminarCPE();">Sí, continuar</button>
+              </div>
           </div>
           <!--end::Modal content-->
       </div>

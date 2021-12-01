@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use MongoDB\BSON\ObjectId;
@@ -25,7 +26,7 @@ class MailerController extends Controller
         $body = str_replace('_HASH_SUNAT_', $encargo->hash_sunat, $body);
         
         try {
-            $mail->charSet = 'UTF-8';
+            $mail->CharSet = 'UTF-8';
             $mail->SMTPDebug = 0;
             $mail->isSMTP();
             $mail->Host = env('MAIL_HOST');
@@ -42,10 +43,12 @@ class MailerController extends Controller
 
             $mail->addReplyTo(env('MAIL_REPLY_ADDRESS'), env('MAIL_REPLY_NAME'));
 
-            if(isset($_FILES['emailAttachments'])) {
-                for ($i=0; $i < count($_FILES['emailAttachments']['tmp_name']); $i++) {
-                    $mail->addAttachment($_FILES['emailAttachments']['tmp_name'][$i], $_FILES['emailAttachments']['name'][$i]);
-                }
+            if (isset($encargo['url_documento_xml'])) {
+                $mail->addAttachment(storage_path('app/' . $encargo['url_documento_xml']), $encargo['nombre_archivo'].'.xml');
+            }
+
+            if (isset($encargo['url_documento_pdf'])) {
+                $mail->addAttachment(storage_path('app/' . $encargo['url_documento_pdf']), $encargo['nombre_archivo'].'.pdf');
             }
 
             $mail->Body    = $body;

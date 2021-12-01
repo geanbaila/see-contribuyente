@@ -27,6 +27,8 @@ use \PHPQRCode\QRcode;
 use PDF;
 use App\Http\Controllers\Util;
 
+use \Greenter\Model\Voided\Reversion;
+use \Greenter\Model\Voided\VoidedDetail;
 
 class SaleController extends Controller
 {
@@ -368,6 +370,88 @@ class SaleController extends Controller
     public function list() {
         $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
         return view('sale.list')->with([ 'encargo' => $encargo, 'menu_venta_active' => 'active', ]);
+    }
+
+    public function baja(Request $request) {
+        $encargo = Encargo::find($request->encargo_id);
+        if ($encargo->documentos->alias === 'F') {
+            $tipo_documento = '01';
+        } else if ($encargo->documentos->alias === 'B') { 
+            $tipo_documento = '03';
+        } else {
+            $response = [
+            'result' => [
+                'status' => 'fails',
+                'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.',
+                ]
+            ];
+            return \response()->json($response);
+        }
+        $folder = 'comprobantes/2022/01/';
+        
+        $util = Util::getInstance();
+        
+        $item = new VoidedDetail();
+        $item->setTipoDoc('40')
+            ->setSerie('P001') // $encargo->documento_serie)
+            ->setCorrelativo('999') // $encargo->documento_correlativo)
+            ->setDesMotivoBaja('ERROR DE SISTEMA');
+
+        $reversion = new Reversion();
+        $reversion->setCorrelativo(1)
+            ->setFecGeneracion(new \DateTime('-3days')) // 72 hr
+            ->setFecComunicacion(new \DateTime('-1days')) // 24 hr
+            // ->setFecGeneracion(new \DateTime($encargo->documento_fecha)) // 72 hr
+            // ->setFecComunicacion(new \DateTime()) // 24 hr
+            ->setCompany(Util::getCompany())
+            ->setDetails([$item]);
+
+        // Envio a SUNAT.
+        $see = $util->getSee(SunatEndpoints::RETENCION_BETA);
+        
+        $res = $see->send($reversion);
+        $util->writeXml($folder, $reversion, $see->getFactory()->getLastXml());
+        
+        if (!$res->isSuccess()) {
+            dd($res->getError());
+            $response = [
+                'result' => [
+                    'status' => 'fails',
+                    'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $res->getError(),
+                    ]
+                ];
+            return \response()->json($response);
+        }
+
+
+        /**@var $res SummaryResult*/
+        $ticket = $res->getTicket();
+        echo 'Ticket :<strong>' . $ticket .'</strong>';
+
+        $res = $see->getStatus($ticket);
+        if (!$res->isSuccess()) {
+            $response = [
+                'result' => [
+                    'status' => 'fails',
+                    'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $res->getError(),
+                    ]
+                ];
+            return \response()->json($response);
+        }
+
+        $cdr = $res->getCdrResponse();
+        $util->writeCdr($folder, $reversion, $res->getCdrZip());
+
+        // $util->showResponse($reversion, $cdr);
+
+        $documento = $encargo->documento_serie . '-' .$encargo->documento_correlativo;
+        $response = [
+            'result' => [
+                'status' => 'OK',
+                'message' => 'Se comunicó a SUNAT la baja del Comprobante de Pago Electrónico <b>'.$documento .'</b>.',
+            ]
+        ];
+        return response()->json($response);
     }
 
     public function escribirBoleta($encargo_id) {
