@@ -18,6 +18,7 @@ use \Greenter\Model\Sale\Invoice;
 use \Greenter\Model\Sale\SaleDetail;
 use \Greenter\Model\Sale\Legend;
 use \Greenter\Model\Sale\Charge;
+use \Greenter\Model\Sale\Detraction;
 use \Greenter\Ws\Services\SunatEndpoints;
 use \Greenter\XMLSecLibs\Sunat\SignedXml;
 use \Greenter\See;
@@ -1003,6 +1004,7 @@ class SaleController extends Controller
                         ->setFactor(1)
                 ]);
             }
+
             $gravadas = $data['monto_gravado'] - $data['descuento'];
             $invoice
                 ->setMtoOperGravadas(number_format($gravadas, 2, '.', ''))
@@ -1013,6 +1015,20 @@ class SaleController extends Controller
                 ->setSubTotal(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
                 ->setMtoImpVenta(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
                 ;
+
+            if($data['subtotal'] > env('DETRACCION')){
+                $invoice->setDetraccion(
+                    (new Detraction())
+                        ->setCodBienDetraccion(env('EMPRESA_CODIGO_DETRACCION')) // catalog. 54 : Bien inmueble gravado con IGV
+                        // Deposito en cuenta
+                        ->setCodMedioPago('001') // catalog. 59 : Depósito en cuenta
+                        ->setCtaBanco(env('EMPRESA_CUENTA_BANCARIA_DETRACCION'))
+                        ->setPercent(env('EMPRESA_TASA_DETRACCION') * 100) // tasa según catalog. 54
+                        ->setMount(number_format(($gravadas) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION'), 2, '.', ''))
+                        ->setValueRef(1) // valor de S/.1
+                );
+
+            }
             
             // Detalle gravado
             if (!empty($data['detalle_gravado'])) {
@@ -1120,16 +1136,23 @@ class SaleController extends Controller
             list($enteros, $decimales) = explode('.', $data['oferta']);
             $formatter_es = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
             $letras = $formatter_es->format($enteros);
-                
+            
+            $legends[] = (new Legend())
+            ->setCode('1000')
+            ->setValue(mb_strtoupper($letras) . ' CON ' . $decimales.'/100 SOLES');
+
+            if($data['subtotal'] > env('DETRACCION')) {
+                $legends[] = (new Legend())
+                    ->setCode('2006')
+                    ->setValue('Operación sujeta a detracción');
+            }
+
+            // (new Legend())
+            //     ->setCode('1002')
+            //     ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE')
+
             $invoice->setDetails($items)
-            ->setLegends([
-                (new Legend())
-                    ->setCode('1000')
-                    ->setValue(mb_strtoupper($letras) . ' CON ' . $decimales.'/100 SOLES'),
-                // (new Legend())
-                //     ->setCode('1002')
-                //     ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE')
-            ]);         
+            ->setLegends($legends); 
             
             list($year, $month, $day) = explode('-', $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
