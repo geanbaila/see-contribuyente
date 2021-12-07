@@ -285,7 +285,17 @@ class SaleController extends Controller
                 $object_id = new ObjectId($encargo_id);
                 $fecha_hora_envia = date('d-m-Y H:i:s');
                 $documento_correlativo = sprintf("%0".env('ZEROFILL', 8)."d", Encargo::getNextSequence($encargo_id, $data['documento_serie']));
-                $encargo = Encargo::where('_id', $object_id)->update(['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo]);
+                $update = ['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo];
+                
+                if(number_format($data['subtotal'], 2, '.', '') > env('DETRACCION')) {
+                    $update = array_merge($update, [
+                        'detraccion_codigo' => env('EMPRESA_CODIGO_DETRACCION'),
+                        'detraccion_medio_pago' => '001', // catalog. 59 : Depósito en cuenta
+                        'detraccion_cta_banco' => env('EMPRESA_CUENTA_BANCARIA_DETRACCION'),
+                        'detraccion_porcentaje' => env('EMPRESA_TASA_DETRACCION') * 100,
+                    ]);
+                }
+                $encargo = Encargo::where('_id', $object_id)->update($update);
             }
 
             // registrar o actualizar el PDF
@@ -983,7 +993,6 @@ class SaleController extends Controller
             $invoice
                 ->setUblVersion('2.1')
                 // ->setFecVencimiento(new \DateTime())
-                ->setTipoOperacion('0101')
                 ->setTipoDoc('01')
                 ->setSerie($data['emisor_serie_documento_electronico']) // F001
                 ->setCorrelativo($data['emisor_correlativo_documento_electronico']) // 123
@@ -992,8 +1001,7 @@ class SaleController extends Controller
                 ->setTipoMoneda('PEN')
                 ->setCompany(Util::getCompany())
                 ->setClient($cliente);
-                 
-            
+
             if($data['descuento']>0){
                 $invoice->setDescuentos([
                     (new Charge())
@@ -1017,17 +1025,19 @@ class SaleController extends Controller
                 ;
 
             if($data['subtotal'] > env('DETRACCION')){
-                $invoice->setDetraccion(
+                $invoice->setTipoOperacion('1001') // Catalogo 51: Detracción
+                ->setDetraccion(
                     (new Detraction())
-                        ->setCodBienDetraccion(env('EMPRESA_CODIGO_DETRACCION')) // catalog. 54 : Bien inmueble gravado con IGV
+                        ->setCodBienDetraccion($data['detraccion_codigo']) // catalog. 54 : Bien inmueble gravado con IGV
                         // Deposito en cuenta
-                        ->setCodMedioPago('001') // catalog. 59 : Depósito en cuenta
-                        ->setCtaBanco(env('EMPRESA_CUENTA_BANCARIA_DETRACCION'))
-                        ->setPercent(env('EMPRESA_TASA_DETRACCION') * 100) // tasa según catalog. 54
-                        ->setMount(number_format(($gravadas) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION'), 2, '.', ''))
+                        ->setCodMedioPago($data['detraccion_medio_pago']) // catalog. 59 : Depósito en cuenta
+                        ->setCtaBanco($data['detraccion_cta_banco'])
+                        ->setPercent($data['detraccion_porcentaje']) // tasa según catalog. 54
+                        ->setMount(number_format(($gravadas) * (1 + env('IGV')) * ($data['detraccion_porcentaje'] / 100) , 2, '.', ''))
                         ->setValueRef(1) // valor de S/.1
                 );
-
+            } else {
+                $invoice->setTipoOperacion('0101');
             }
             
             // Detalle gravado

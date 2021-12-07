@@ -46,6 +46,11 @@ class Encargo extends Model
         'detalle_inafecto_gratuito',
         'cantidad_item',
 
+        'detraccion_codigo',
+        'detraccion_medio_pago',
+        'detraccion_cta_banco',
+        'detraccion_porcentaje',
+
         'monto_gravado', // valor de la venta
         'monto_exonerado', // valor de la venta
         'monto_inafecto', // valor de la venta
@@ -178,7 +183,6 @@ class Encargo extends Model
                 'emisor_direccion_distrito' => env('EMPRESA_DISTRITO', 'NO DEFINIDO'),
                 'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 
-
                 'adquiriente_ruc' => $encargo->adquirientes->documento,
                 'adquiriente_nombre_comerial' => mb_strtoupper($encargo->adquirientes->nombre_comercial),
                 'adquiriente_razon_social' => mb_strtoupper($encargo->adquirientes->razon_social),
@@ -206,6 +210,11 @@ class Encargo extends Model
                 'destino_direccion' => mb_strtoupper($encargo->agenciasDestino->direccion),
                 'documento_fecha' => $encargo->documento_fecha,
                 'documento_hora' => $encargo->documento_hora,
+
+                'detraccion_codigo' => $encargo->detraccion_codigo,
+                'detraccion_medio_pago' => $encargo->detraccion_medio_pago,
+                'detraccion_cta_banco' => $encargo->detraccion_cta_banco,
+                'detraccion_porcentaje' => $encargo->detraccion_porcentaje,
 
                 'detalle_gravado' => $encargo->detalle_gravado,
                 'detalle_exonerado' => $encargo->detalle_exonerado,
