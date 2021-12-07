@@ -41,6 +41,7 @@ Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
 Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
 Route::get('/api/v1/download/xml/{encargo_id}', 'ApiController@downloadXml');
 Route::get('/api/v1/download/cdr/{encargo_id}', 'ApiController@downloadCdr');
+Route::get('/api/v1/download/baja/{encargo_id}', 'ApiController@downloadCdrBaja');
 
 Route::post('/api/v1/despacho/{encargo_id}', 'ApiController@despacho');
 

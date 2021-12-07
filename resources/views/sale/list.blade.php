@@ -11,9 +11,10 @@
                             <th scope="col"></th>
                             <th scope="col">Documento</th>
                             <th scope="col">F. recepción</th>
-                            <th scope="col" width="150">Importe total (S/.)</th>
+                            <th scope="col" width="150">Importe (S/.)</th>
                             <th scope="col">Envía</th>
                             <th scope="col">Recibe</th>
+                            <th scope="col">Baja</th>
                             <th scope="col">PDF</th>
                             <th scope="col">XML</th>
                             <th scope="col">CDR</th>
@@ -29,9 +30,16 @@
                                     </th>
                                     <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_envia) !!}</td>
-                                    <td align="left">{{ $item->subtotal }}</td>
+                                    <td align="left">{{ $item->oferta }}</td>
                                     <td>{{ $item->doc_envia }}<br>{{ $item->nombre_envia }}</td>
                                     <td>{{ $item->doc_recibe }}<br>{{ $item->nombre_recibe }}</td>
+                                    <td>
+                                        @if ($item->url_documento_baja)
+                                            <a target="_blank" href="{{ url('/api/v1/download/baja/' . $item->id) }}"><img
+                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                    width="24"></a>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($item->url_documento_pdf)
                                             <a target="_blank" href="{{ url('/api/v1/download/pdf/' . $item->id) }}"><img

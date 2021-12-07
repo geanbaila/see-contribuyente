@@ -64,6 +64,7 @@ class Encargo extends Model
         'url_documento_pdf',
         'url_documento_xml',
         'url_documento_cdr',
+        'url_documento_baja',
         'cdr_id',
         'cdr_codigo',
         'cdr_descripcion',

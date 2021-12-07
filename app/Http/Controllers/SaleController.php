@@ -23,13 +23,13 @@ use \Greenter\XMLSecLibs\Sunat\SignedXml;
 use \Greenter\See;
 use \Greenter\Model\Client\Client;
 use \Greenter\Model\Company\Address;
+use \Greenter\Model\Voided\Voided;
+use \Greenter\Model\Voided\VoidedDetail;
 
 use \PHPQRCode\QRcode;
 use PDF;
 use App\Http\Controllers\Util;
 
-use \Greenter\Model\Voided\Reversion;
-use \Greenter\Model\Voided\VoidedDetail;
 
 class SaleController extends Controller
 {
@@ -56,7 +56,7 @@ class SaleController extends Controller
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO')) {
                                 array_push($gravado, [
                                     'carga' => $carga->id,
-                                    'codigo_producto' => $carga->id,
+                                    'codigo_producto' => $carga->codigo_producto,
                                     'descripcion' => $carga->nombre,
                                     'cantidad' => $item['cantidad'],
                                     'peso' => $item['peso'],
@@ -77,7 +77,7 @@ class SaleController extends Controller
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_EXONERADO')) {
                                 array_push($exonerado, [
                                     'carga' => $carga->id,
-                                    'codigo_producto' => $carga->id,
+                                    'codigo_producto' => $carga->codigo_producto,
                                     'descripcion' => $carga->nombre,
                                     'cantidad' => $item['cantidad'],
                                     'peso' => $item['peso'],
@@ -98,7 +98,7 @@ class SaleController extends Controller
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO')) {
                                 array_push($inafecto, [
                                     'carga' => $carga->id,
-                                    'codigo_producto' => $carga->id,
+                                    'codigo_producto' => $carga->codigo_producto,
                                     'descripcion' => $carga->nombre,
                                     'cantidad' => $item['cantidad'],
                                     'peso' => $item['peso'],
@@ -119,7 +119,7 @@ class SaleController extends Controller
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO_GRATUITO')) {
                                 array_push($gravado_gratuito, [
                                     'carga' => $carga->id,
-                                    'codigo_producto' => $carga->id,
+                                    'codigo_producto' => $carga->codigo_producto,
                                     'descripcion' => $carga->nombre,
                                     'cantidad' => $item['cantidad'],
                                     'peso' => $item['peso'],
@@ -140,7 +140,7 @@ class SaleController extends Controller
                             if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO_GRATUITO')) {
                                 array_push($inafecto_gratuito, [
                                     'carga' => $carga->id,
-                                    'codigo_producto' => $carga->id,
+                                    'codigo_producto' => $carga->codigo_producto,
                                     'descripcion' => $carga->nombre,
                                     'cantidad' => $item['cantidad'],
                                     'peso' => $item['peso'],
@@ -374,84 +374,89 @@ class SaleController extends Controller
     }
 
     public function baja(Request $request) {
-        $encargo = Encargo::find($request->encargo_id);
-        if ($encargo->documentos->alias === 'F') {
-            $tipo_documento = '01';
-        } else if ($encargo->documentos->alias === 'B') { 
-            $tipo_documento = '03';
-        } else {
-            $response = [
-            'result' => [
-                'status' => 'fails',
-                'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.',
-                ]
-            ];
-            return \response()->json($response);
-        }
-        $folder = 'comprobantes/2022/01/';
-        
-        $util = Util::getInstance();
-        
-        $item = new VoidedDetail();
-        $item->setTipoDoc('40')
-            ->setSerie('P001') // $encargo->documento_serie)
-            ->setCorrelativo('999') // $encargo->documento_correlativo)
-            ->setDesMotivoBaja('ERROR DE SISTEMA');
+        $prg_encargo = Encargo::whereIn('_id', [$request->encargo_id])->get();
+        if (!empty($prg_encargo)):
+            $util = Util::getInstance();
+            $items = null;
+            $documentos = '';
+            foreach($prg_encargo as $encargo):
+                if ($encargo->documentos->alias === 'F') {
+                    $tipo_documento = '01';
+                } else if ($encargo->documentos->alias === 'B') { 
+                    $tipo_documento = '03';
+                } else {
+                    continue;
+                }
+                $items[] = (new VoidedDetail())
+                    ->setTipoDoc($tipo_documento)
+                    ->setSerie($encargo->documento_serie)
+                    ->setCorrelativo($encargo->documento_correlativo)
+                    ->setDesMotivoBaja('ERROR DE SISTEMA');
+                $documentos .= $encargo->documento_serie . '-' .$encargo->documento_correlativo . '<br>';
 
-        $reversion = new Reversion();
-        $reversion->setCorrelativo(1)
-            ->setFecGeneracion(new \DateTime('-3days')) // 72 hr
-            ->setFecComunicacion(new \DateTime('-1days')) // 24 hr
-            // ->setFecGeneracion(new \DateTime($encargo->documento_fecha)) // 72 hr
-            // ->setFecComunicacion(new \DateTime()) // 24 hr
-            ->setCompany(Util::getCompany())
-            ->setDetails([$item]);
+            endforeach;
 
-        // Envio a SUNAT.
-        $see = $util->getSee(SunatEndpoints::RETENCION_BETA);
-        
-        $res = $see->send($reversion);
-        $util->writeXml($folder, $reversion, $see->getFactory()->getLastXml());
-        
-        if (!$res->isSuccess()) {
-            dd($res->getError());
-            $response = [
-                'result' => [
-                    'status' => 'fails',
-                    'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $res->getError(),
+            if(!empty($items)):
+                $voided = new Voided();
+                $voided->setCorrelativo('00001')
+                    ->setFecGeneracion(new \DateTime($encargo->documento_fecha.' '.$encargo->documento_hora))
+                    ->setFecComunicacion(new \DateTime())
+                    ->setCompany(Util::getCompany())
+                    ->setDetails($items);
+
+                list($year, $month, $day) = explode('-', $encargo->documento_fecha); // yyyy-mm-dd 
+                $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo->id;
+                    
+                $see = $util->getSee(SunatEndpoints::FE_BETA);
+                $res = $see->send($voided);
+                $util->writeXml($folder, $voided, $see->getFactory()->getLastXml());
+                
+                if (!$res->isSuccess()) {
+                    $response = [
+                        'result' => [
+                            'status' => 'fails',
+                            'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $util->getErrorResponse($res->getError()),
+                            ]
+                        ];
+                    return \response()->json($response);
+                }
+
+                $ticket = $res->getTicket();
+                $res = $see->getStatus($ticket);
+                if (!$res->isSuccess()) {
+                    $response = [
+                        'result' => [
+                            'status' => 'fails',
+                            'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $util->getErrorResponse($res->getError()),
+                            ]
+                        ];
+                    return \response()->json($response);
+                }
+
+                $cdr = $res->getCdrResponse();
+                $url_documento_baja = $util->writeCdr($folder, $voided, $res->getCdrZip());
+
+                $update = ['url_documento_baja' => $url_documento_baja];
+                $bool = Encargo::whereIn('_id', [$request->encargo_id])->update($update, ['upsert' => true]);
+                if (!$bool) {
+                    $documentos .= "La base de datos fue actualizada.";
+                }
+
+                $response = [
+                    'result' => [
+                        'status' => 'OK',
+                        'message' => 'Se comunicó a SUNAT la baja del Comprobante de Pago Electrónico <b>'.$documentos .'</b>.',
                     ]
                 ];
-            return \response()->json($response);
-        }
-
-
-        /**@var $res SummaryResult*/
-        $ticket = $res->getTicket();
-        echo 'Ticket :<strong>' . $ticket .'</strong>';
-
-        $res = $see->getStatus($ticket);
-        if (!$res->isSuccess()) {
-            $response = [
-                'result' => [
-                    'status' => 'fails',
-                    'message' => 'No se pudo comunicar la baja del comprobante de pago electrónico.' . $res->getError(),
-                    ]
-                ];
-            return \response()->json($response);
-        }
-
-        $cdr = $res->getCdrResponse();
-        $util->writeCdr($folder, $reversion, $res->getCdrZip());
-
-        // $util->showResponse($reversion, $cdr);
-
-        $documento = $encargo->documento_serie . '-' .$encargo->documento_correlativo;
+                return response()->json($response);
+            endif;
+        endif;
         $response = [
             'result' => [
-                'status' => 'OK',
-                'message' => 'Se comunicó a SUNAT la baja del Comprobante de Pago Electrónico <b>'.$documento .'</b>.',
-            ]
-        ];
+                'status' => 'fails',
+                'message' => 'No se ha encontrado Comprobante de Pago Electrónico para comunicar su baja.',
+                ]
+            ];
         return response()->json($response);
     }
 
@@ -1008,15 +1013,7 @@ class SaleController extends Controller
                 ->setSubTotal(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
                 ->setMtoImpVenta(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
                 ;
-            // dd(
-            //     number_format($gravadas, 2, '.', ''),
-            //     number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', ''),
-            //     number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', ''),
-            //     number_format(($gravadas), 2, '.', ''),
-            //     number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''),
-            //     number_format(($gravadas) * (1 + env('IGV')), 2, '.', '')
-            // );
-
+            
             // Detalle gravado
             if (!empty($data['detalle_gravado'])) {
                 foreach($data['detalle_gravado'] as $item):

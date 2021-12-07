@@ -172,21 +172,6 @@ HTML;
         echo $content;
     }
 
-    public static function getPathBin(): string
-    {
-        $path = __DIR__.'/../vendor/bin/wkhtmltopdf';
-        if (self::isWindows()) {
-            $path .= '.exe';
-        }
-
-        return $path;
-    }
-
-    public static function isWindows(): bool
-    {
-        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
-    }
-
     private function getHash(DocumentInterface $document): ?string
     {
         $see = $this->getSee('');
@@ -195,30 +180,6 @@ HTML;
         return (new XmlUtils())->getHashSign($xml);
     }
 
-    /**
-     * @return array<string, array>
-     */
-    private static function getParametersPdf(): array
-    {
-        $logo = file_get_contents(__DIR__.'/../resources/logo.png');
-
-        return [
-            'system' => [
-                'logo' => $logo,
-                'hash' => ''
-            ],
-            'user' => [
-                'resolucion' => '212321',
-                'header' => 'Telf: <b>(056) 123375</b>',
-                'extras' => [
-                    ['name' => 'FORMA DE PAGO', 'value' => 'Contado'],
-                    ['name' => 'VENDEDOR', 'value' => 'GITHUB SELLER'],
-                ],
-            ]
-        ];
-    }
-
-// ---
     public static function getCompany() {
         return (new Company())
             ->setRuc(env('EMPRESA_RUC'))

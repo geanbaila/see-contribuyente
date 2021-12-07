@@ -134,7 +134,7 @@
               <!--begin::Modal header-->
               <div class="modal-header">
                   <!--begin::Modal title-->
-                  <h2>Elimina Comprobante de Pago electrónico</h2>
+                  <h2>Eliminar Comprobante de Pago electrónico</h2>
                   <!--end::Modal title-->
                   <!--begin::Close-->
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -159,10 +159,10 @@
                   <div class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
                       id="kt_modal_create_app_stepper">
                       <!--begin::Content-->
-                      <div class="flex-row-fluid">
+                      <div class="flex-row-fluid" >
                           <!--begin::Form-->
-                            Está a punto de comunicar a SUNAT la baja del comprobante de pago.
-                            ¿Está seguro que desea continuar?
+                            <p class="fs-3">Está a punto de comunicar a SUNAT la baja del comprobante de pago.
+                            ¿Está seguro que desea continuar?</p>
                           <!--end::Form-->
                       </div>
                       <!--end::Content-->
@@ -172,8 +172,7 @@
               <!--end::Modal body-->
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                    onclick="javascript:eliminarCPE();">Sí, continuar</button>
+                <button type="button" class="btn btn-danger" id="btnBajaCPE" onclick="javascript:bajaCPE();">Sí, continuar</button>
               </div>
           </div>
           <!--end::Modal content-->

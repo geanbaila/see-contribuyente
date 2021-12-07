@@ -61,24 +61,31 @@ class ApiController extends Controller
     }
 
     public function downloadPdf($encargo_id) {
-        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_pdf', 'nombre_archivo']);
-        $file = storage_path('app/' . $prg_encargo[0]->url_documento_pdf);
+        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_pdf', 'nombre_archivo']);
+        $file = storage_path('app/' . $encargo[0]->url_documento_pdf);
         return \response()
-             ->download($file, $prg_encargo[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
+             ->download($file, $encargo[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
     }
 
     public function downloadXml($encargo_id) {
-        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_xml', 'nombre_archivo']);
-        $file = storage_path('app/' . $prg_encargo[0]->url_documento_xml);
+        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_xml', 'nombre_archivo']);
+        $file = storage_path('app/' . $encargo[0]->url_documento_xml);
         return \response()
-             ->download($file, $prg_encargo[0]->nombre_archivo . '.xml', ['Content-Type'=> 'application/xml']);
+             ->download($file, $encargo[0]->nombre_archivo . '.xml', ['Content-Type'=> 'application/xml']);
     }
 
     public function downloadCdr($encargo_id) {
-        $prg_encargo = \App\Business\Encargo::find(new ObjectId("$encargo_id"))->get(['url_documento_cdr', 'nombre_archivo']);
-        $file = storage_path('app/' . $prg_encargo[0]->url_documento_cdr);
+        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_cdr', 'nombre_archivo']);
+        $file = storage_path('app/' . $encargo[0]->url_documento_cdr);
         return \response()
-             ->download($file, $prg_encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
+             ->download($file, $encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
+    }
+
+    public function downloadCdrBaja($encargo_id) {
+        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_baja', 'nombre_archivo']);
+        $file = storage_path('app/' . $encargo[0]->url_documento_baja);
+        return \response()
+             ->download($file, $encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
     public function despacho($encargo_id) {

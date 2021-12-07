@@ -269,10 +269,10 @@
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
                                             </td>
                                             <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ $detalle_gravado['valor_unitario'] }}"
+                                                    value="{{ number_format($detalle_gravado['valor_unitario'], 2, '.','') }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                             <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_gravado['valor_venta'] }}" disabled></td>
+                                                    value="{{ number_format($detalle_gravado['valor_venta'], 2, '.', '') }}" disabled></td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -1096,7 +1096,7 @@
             });
         }
 
-        function eliminarCPE() {
+        function bajaCPE() {
             var encargo_id = $("[name='encargo_id']").val();
             $.ajax({
                 url: "{{ url('/venta/comunicar-baja') }}",
@@ -1109,7 +1109,7 @@
                     encargo_id: encargo_id
                 },
                 beforeSend: function() {
-                    // $("#btnEnviarEmail").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
+                    $("#btnBajaCPE").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
                 }
             }).done(function(response) {
                 if (response.result.status === 'OK') {
@@ -1117,9 +1117,9 @@
                 } else {
                     showErrorToastr(response.result.message);
                 }
-                // $("#btnEnviarEmail").html('Continuar');
+                $("#btnBajaCPE").html('Sí, Continuar');
             }).fail(function() {
-                // $("#btnEnviarEmail").html('Continuar');
+                $("#btnBajaCPE").html('Sí, Continuar');
                 showErrorToastr('No se pudo comunicar la baja del comprobante de pago electrónico.');
             });
         }
