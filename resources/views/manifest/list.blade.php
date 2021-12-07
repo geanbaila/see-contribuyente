@@ -19,7 +19,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link btn btn-sm btn-color-muted btn-active btn-active-light-primary fw-bolder px-4 me-1"
-                                    data-bs-toggle="tab" href="#kt_table_widget_5_tab_2">Manifiesto</a>
+                                    data-bs-toggle="tab" href="#kt_table_widget_5_tab_2">Manifiestos</a>
                             </li>
                         </ul>
                     </div>
@@ -58,13 +58,13 @@
                                         <div class="col-xxl-2  col-sm-2">
                                             <label for="exampleDataList" class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
-                                                onclick="javascript:transportar()">Transportar</button>
+                                                onclick="javascript:transportar()">Trasladar</button>
                                         </div>
                                         <div class="col-xxl-2  col-sm-2">
                                             <label for="exampleDataList" class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
                                                 onclick="javascript:noTransportar()">No
-                                                transportar</button>
+                                                Trasladar</button>
                                         </div>
                                         <!--
                                             <div class="col-xxl-1  col-sm-1">
@@ -113,11 +113,12 @@
                                                                 @if ($item->estado == '61af909ad3f9efe2cb27e8be')
                                                                     {{-- <img src="{{asset('assets/media/arrow-down-right.svg')}}" width="24" /> --}}
                                                                     <input class="form-check-input check-encargos"
-                                                                        type="checkbox" value="{{ $item->id }}">
+                                                                        type="checkbox" value="{{ $item->id }}"
+                                                                        data-verificado="{{ ($item->estado == '61af9089d3f9efe2cb27e8b6' || $item->estado == '61af909ad3f9efe2cb27e8be')?'1':'0' }}">
                                                                 @else
                                                                     <input class="form-check-input check-encargos"
-                                                                        type="checkbox" value="{{ $item->id }}">
-
+                                                                        type="checkbox" value="{{ $item->id }}" 
+                                                                        data-verificado="{{ ($item->estado == '61af9089d3f9efe2cb27e8b6' || $item->estado == '61af909ad3f9efe2cb27e8be')?'1':'0' }}">
                                                                 @endif
                                                             </th>
                                                             <td>{{ $item->estados->nombre }}</td>
@@ -147,14 +148,13 @@
                             <!--begin::Table container-->
                             <div class="table-responsive">
                                 <!--begin::content2-->
-                                <table
-                                            class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
+                                <table id="tblManifiesto" class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                                             <thead class="border-gray-200 fw-bold bg-lighten">
                                                 <tr>
                                                     <th valign="top" scope="col" width="50"></th>
+                                                    <th valign="top" scope="col" width="110">Manifiesto</th>
                                                     <th valign="top" scope="col" width="80">Fecha</th>
                                                     <th valign="top" scope="col" width="80">Hora</th>
-                                                    <th valign="top" scope="col" width="110">Manifiesto</th>
                                                     <th valign="top" scope="col" width="110">Origen</th>
                                                     <th valign="top" scope="col" width="110">Destino</th>
                                                     <th valign="top" scope="col" width="110">Ítems</th>
@@ -170,9 +170,9 @@
                                                     @foreach ($manifiesto as $item)
                                                         <tr>
                                                             <th scope="row"></th>
+                                                            <td></td>
                                                             <td>{{ $item->fecha }}</td>
                                                             <td>{{ $item->hora }}</td>
-                                                            <td></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -333,11 +333,12 @@
                     if (response) {
                         if (response.result.status === 'OK') {
                             showSuccessToastr(response.result.message);
+
                         } else {
                             showErrorToastr(response.result.message);
                         }
                     } else {
-                        showErrorToastr('No se ha podido registrar el estado del paquete.');
+                        showErrorToastr('No se ha podido registrar el estado del encargo.');
                     }
                 });
             });
@@ -368,7 +369,7 @@
                             showErrorToastr(response.result.message);
                         }
                     } else {
-                        showErrorToastr('No se ha podido registrar el estado del paquete.');
+                        showErrorToastr('No se ha podido registrar el estado del encargo.');
                     }
                 });
             });
@@ -378,30 +379,54 @@
             var encargos = [];
             $(".check-encargos").each(function(key, item) {
                 if ($(item).is(':checked')) {
-                    encargos.push($(item).val());
+                    if($(item).data('verificado') == '1') {
+                        encargos.push($(item).val());
+                        $(item).parent().parent().remove();
+                    } else {
+                        $(item).attr('checked', false);
+                    }
                 }
             }).promise().done(function() {
-                $.ajax({
-                    url: "{{ url('/api/v1/manifiesto/empaquetar-envio') }}",
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: "json",
-                    data: {
-                        encargos: encargos
-                    }
-                }).done(function(response) {
-                    if (response) {
-                        if (response.result.status === 'OK') {
-                            showSuccessToastr(response.result.message);
-                        } else {
-                            showErrorToastr(response.result.message);
+                if(encargos.length>0){
+                    $.ajax({
+                        url: "{{ url('/api/v1/manifiesto/empaquetar-envio') }}",
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        data: {
+                            encargos: encargos
                         }
-                    } else {
-                        showErrorToastr('No se ha podido generar el manifiesto.');
-                    }
-                });
+                    }).done(function(response) {
+                        if (response) {
+                            if (response.result.status === 'OK') {
+                                showSuccessToastr(response.result.message);
+                                console.log(response.result.manifiesto);
+                                var html = '<tr>';
+                                    html += '<td>&nbsp;</td>';
+                                    html += '<td></td>';
+                                    html += '<td>'+response.result.manifiesto.fecha+'</td>';
+                                    html += '<td>'+response.result.manifiesto.hora+'</td>';
+                                    html += '<td></td>';
+                                    html += '<td></td>';
+                                    html += '<td></td>';
+                                    html += '<td></td>';
+                                    html += '<td></td>';
+                                    html += '<td></td>';
+                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg" width="24"></a></td>';
+                                    html += '</tr>';
+                                $('#tblManifiesto').append(html);
+                            } else {
+                                showErrorToastr(response.result.message);
+                            }
+                        } else {
+                            showErrorToastr('No se ha podido generar el manifiesto.');
+                        }
+                    });
+                } else {
+                    showErrorToastr('No se ha podido genear el manifiesto.<br>Los CPE deben estar listos para el traslado.');
+                }
             });
         }
     </script>

@@ -8,6 +8,7 @@ use App\Business\Sede;
 use App\Business\Agencia;
 use App\Business\Encargo;
 use App\Business\Manifiesto;
+use MongoDB\BSON\ObjectId;
 use PDF;
 
 class ManifestController extends Controller
@@ -29,9 +30,10 @@ class ManifestController extends Controller
     }
     
     public function list() {
+        $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
+        $encargo = Encargo::where('estado', '!=', $en_manifiesto)->get()->sortBy(['documento_fecha','documento_hora']);
+        $manifiesto = Manifiesto::all()->sortBy('created_at');
         $agencia = Agencia::all();
-        $encargo = Encargo::all();
-        $manifiesto = Manifiesto::all();
         $data = [
             'origen' => $agencia,
             'encargo' => $encargo, 

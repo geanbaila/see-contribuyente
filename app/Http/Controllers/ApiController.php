@@ -104,7 +104,7 @@ class ApiController extends Controller
             $response = [
                 'result' =>[
                     'status' => 'OK',
-                    'message' => 'Paquete entregado.',
+                    'message' => 'Encargo entregado.',
                     'fecha_hora_recibe' => $fecha_hora_recibe,
                 ],
             ];
@@ -112,7 +112,7 @@ class ApiController extends Controller
             $response = [
                 'result' =>[
                     'status' => 'fails',
-                    'message' => 'No se ha podido registrar la entrega del paquete.',
+                    'message' => 'No se ha podido registrar la entrega del encargo.',
                     'fecha_hora_recibe' => $fecha_hora_recibe,
                 ],
             ];
@@ -127,14 +127,14 @@ class ApiController extends Controller
             $response = [
                 'result' =>[
                     'status' => 'OK',
-                    'message' => 'Paquetes transportados.',
+                    'message' => 'Encargos dejados.',
                 ],
             ];
         } else {
             $response = [
                 'result' =>[
                     'status' => 'fails',
-                    'message' => 'No se ha podido registrar el estado del paquete.',
+                    'message' => 'No se ha podido registrar el estado del encargo.',
                 ],
             ];   
         }
@@ -148,14 +148,14 @@ class ApiController extends Controller
             $response = [
                 'result' =>[
                     'status' => 'OK',
-                    'message' => 'Paquetes transportados.',
+                    'message' => 'Encargos listos para trasladar.',
                 ],
             ];
         } else {
             $response = [
                 'result' =>[
                     'status' => 'fails',
-                    'message' => 'No se ha podido registrar el estado del paquete.',
+                    'message' => 'No se ha podido registrar el estado del encargo.',
                 ],
             ];   
         }
@@ -194,6 +194,7 @@ class ApiController extends Controller
                 'result' =>[
                     'status' => 'OK',
                     'message' => 'Manifiesto generado.',
+                    'manifiesto' => $manifiesto,
                 ],
             ];
         } else {
