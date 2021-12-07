@@ -46,15 +46,17 @@ class Encargo extends Model
         'detalle_inafecto_gratuito',
         'cantidad_item',
 
-        'monto_gravado',
-        'monto_exonerado',
-        'monto_inafecto',
-        'monto_gravado_gratuito',
-        'monto_inafecto_gratuito',
+        'monto_gravado', // valor de la venta
+        'monto_exonerado', // valor de la venta
+        'monto_inafecto', // valor de la venta
+        'monto_gravado_gratuito', // valor de la venta
+        'monto_inafecto_gratuito', // valor de la venta
 
-        'subtotal',
+        // para UI
+        'subtotal', // importe_pagar_con_igv
         'oferta',
-        'importe_pagar',
+        'descuento',
+
         'importe_pagar_con_igv',
         'importe_pagar_sin_igv',
         'importe_pagar_igv',
@@ -147,6 +149,7 @@ class Encargo extends Model
 
                 'subtotal' => $encargo->subtotal,
                 'oferta' => $encargo->oferta,
+                'descuento' => $encargo->descuento,
                 'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
                 'importe_pagar_igv' => $encargo->importe_pagar_igv,
@@ -161,21 +164,19 @@ class Encargo extends Model
         $encargo = Encargo::find($encargo_id);
 
         if ($encargo->documentos->alias === 'F') {
-            $fecha = explode("-", $encargo->documento_fecha);
-            $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
             
             $data = [
                 'titulo_documento' => $encargo->documentos->nombre,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
                 'emisor_razon_social' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
-                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 'emisor_ruc' => env('EMPRESA_RUC','NO DEFINIDO'),
-                'emisor_ubigeo' =>'150101',
+                'emisor_ubigeo' => env('EMPRESA_UBIGEO', 'NO DEFINIDO'),
                 'emisor_direccion_pais' => 'PE',
-                'emisor_direccion_departamento' => 'LIMA',
-                'emisor_direccion_provincia' => 'LIMA',
-                'emisor_direccion_distrito' => 'SAN BORJA',
-                'emisor_direccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
+                'emisor_direccion_departamento' => env('EMPRESA_DEPARTAMENTO', 'NO DEFINIDO'),
+                'emisor_direccion_provincia' => env('EMPRESA_PROVINCIA', 'NO DEFINIDO'),
+                'emisor_direccion_distrito' => env('EMPRESA_DISTRITO', 'NO DEFINIDO'),
+                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                
 
                 'adquiriente_ruc' => $encargo->adquirientes->documento,
                 'adquiriente_nombre_comerial' => mb_strtoupper($encargo->adquirientes->nombre_comercial),
@@ -194,13 +195,14 @@ class Encargo extends Model
                 'emisor_serie_documento_electronico' => $encargo->documento_serie,
                 'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
                 'emisor_fecha_documento_electronico' => $encargo->documento_fecha, // yyyy-mm-dd
-                'emisor_fecha_documento_electronico_pe' => $documento_fecha_ddmmyyyy,
+                
                 'emisor_hora_documento_electronico' => $encargo->documento_hora,
 
                 'consigna' => [
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
-                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->sedes->nombre),
+                'destino_direccion' => mb_strtoupper($encargo->agenciasDestino->direccion),
                 'documento_fecha' => $encargo->documento_fecha,
                 'documento_hora' => $encargo->documento_hora,
 
@@ -218,6 +220,7 @@ class Encargo extends Model
                 
                 'subtotal' => $encargo->subtotal,
                 'oferta' => $encargo->oferta,
+                'descuento' => $encargo->descuento,
 
                 'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
@@ -277,7 +280,12 @@ class Encargo extends Model
                 'monto_inafecto_gratuito' => $encargo->monto_inafecto_gratuito,
 
                 'subtotal' => $encargo->subtotal,
-                'importe_pagar' => $encargo->importe_pagar,
+                'oferta' => $encargo->oferta,
+                'descuento' => $encargo->descuento,
+
+                'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
+                'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
+                'importe_pagar_igv' => $encargo->importe_pagar_igv,
             ];
             if(strlen($encargo->adquirientes->documento) === 11) {
                 $data['adquiriente_ruc'] = $encargo->adquirientes->documento;

@@ -17,6 +17,7 @@ use \Greenter\Model\Sale\FormaPagos\FormaPagoContado;
 use \Greenter\Model\Sale\Invoice;
 use \Greenter\Model\Sale\SaleDetail;
 use \Greenter\Model\Sale\Legend;
+use \Greenter\Model\Sale\Charge;
 use \Greenter\Ws\Services\SunatEndpoints;
 use \Greenter\XMLSecLibs\Sunat\SignedXml;
 use \Greenter\See;
@@ -42,7 +43,7 @@ class SaleController extends Controller
                 $inafecto = [];
                 $gravado_gratuito = [];
                 $inafecto_gratuito = [];
-                $total = 0;
+                $precio_venta = 0;
                 $monto_gravado = 0;
                 $monto_exonerado = 0;
                 $monto_inafecto = 0;
@@ -69,7 +70,7 @@ class SaleController extends Controller
                                     'precio_unitario' => $item['valor_unitario'] * (1 + env('IGV')),
                                 ]);
                                 $monto_gravado += $item['cantidad'] * $item['valor_unitario'];
-                                $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
                             }
                             
@@ -90,7 +91,7 @@ class SaleController extends Controller
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_exonerado += $item['cantidad'] * $item['valor_unitario'];
-                                $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
                             }
                             
@@ -111,7 +112,7 @@ class SaleController extends Controller
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_inafecto += $item['cantidad'] * $item['valor_unitario'];
-                                $total += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
+                                $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
                             }
 
@@ -132,7 +133,7 @@ class SaleController extends Controller
                                     'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
-                                $total += $item['cantidad'] * 0;
+                                $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
                             }
 
@@ -153,7 +154,7 @@ class SaleController extends Controller
                                     'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
-                                $total += $item['cantidad'] * 0;
+                                $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
                             }
                         }
@@ -172,10 +173,9 @@ class SaleController extends Controller
                     'monto_exonerado' => number_format($monto_exonerado, 2, '.', ''),
                     'monto_inafecto' => number_format($monto_inafecto, 2, '.', ''),
                     
-
-                    'importe_pagar_con_igv' => number_format($total, 2, '.', ''),
-                    'importe_pagar_sin_igv' => number_format($total / (1 + env('IGV')) , 2, '.', ''),
-                    'importe_pagar_igv' => number_format($total - ($total / (1 + env('IGV'))), 2, '.', ''),
+                    'importe_pagar_con_igv' => number_format($precio_venta, 2, '.', ''),
+                    'importe_pagar_sin_igv' => number_format($precio_venta / (1 + env('IGV')) , 2, '.', ''),
+                    'importe_pagar_igv' => number_format($precio_venta - ($precio_venta / (1 + env('IGV'))), 2, '.', ''),
                 ];
             };
 
@@ -236,14 +236,14 @@ class SaleController extends Controller
             $insert_encargo = array_merge([
                 'doc_envia' => $data['doc_envia'],
                 'nombre_envia' => $data['nombre_envia'],
-                'celular_envia' => $data['celular_envia'],
-                'email_envia' => $data['email_envia'],
+                // 'celular_envia' => $data['celular_envia'],
+                // 'email_envia' => $data['email_envia'],
                 'fecha_hora_envia' => $data['fecha_hora_envia'],
 
                 'doc_recibe' => $data['doc_recibe'],
                 'nombre_recibe' => $data['nombre_recibe'],
-                'celular_recibe' => $data['celular_recibe'],
-                'email_recibe' => $data['email_recibe'],
+                // 'celular_recibe' => $data['celular_recibe'],
+                // 'email_recibe' => $data['email_recibe'],
                 'fecha_recibe' => $data['fecha_recibe'],
 
                 // 'origen' => $data['origen'],
@@ -253,7 +253,7 @@ class SaleController extends Controller
                 
                 'agencia' => new ObjectId($agencia_id),
                 'adquiriente' => new ObjectId($adquiriente),
-                'medio_pago' => $data['medio_pago'],
+                // 'medio_pago' => $data['medio_pago'],
                 'documento' => new ObjectId($data['documento']),
                 'documento_serie' => $data['documento_serie'],
                 'documento_correlativo' => $data['documento_correlativo'],
@@ -262,6 +262,7 @@ class SaleController extends Controller
 
                 'subtotal' => number_format($data['subtotal'], 2, '.', ''),
                 'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
+                'descuento' => number_format($data['descuento'], 2, '.', ''),
             ], $encargo);
             
             $encargo = null;
@@ -273,10 +274,10 @@ class SaleController extends Controller
                 
                 // bloquear actualizar los registros
                 $object_id = new ObjectId($data['encargo_id']);
-                // $encargo = Encargo::where('_id', $object_id)->update($insert_encargo, ['upsert' => true]);
-                // if (!$encargo) {
-                //     return \response()->json(['result' => ['status' => 'fails', 'message' => 'No hubo ningún cambio.']]);
-                // }
+                $encargo = Encargo::where('_id', $object_id)->update($insert_encargo, ['upsert' => true]);
+                if (!$encargo) {
+                    return \response()->json(['result' => ['status' => 'fails', 'message' => 'No hubo ningún cambio.']]);
+                }
             } else {
                 $encargo = Encargo::create($insert_encargo);
                 $encargo_id = $encargo['id'];
@@ -291,7 +292,7 @@ class SaleController extends Controller
                 $url_documento_pdf = $this->escribirBoleta($encargo_id);
                 $url_documento = $this->escribirXMLBoleta($encargo_id);
             } else if($documento->alias === 'F') {
-                $url_documento_pdf = ''; // = $this->escribirFactura($encargo_id);
+                $url_documento_pdf = $this->escribirFactura($encargo_id);
                 $url_documento = $this->escribirXMLFactura($encargo_id);
                 
             } else if ($documento->alias === 'G') {
@@ -549,12 +550,12 @@ class SaleController extends Controller
 
             // $importeTotal = 0.00;
             PDF::SetFont('times', '', $font_size_regular);
-            foreach($data['encargo_detalle'] as $encargo):
+            foreach($data['detalle_gravado'] as $encargo):
                 // $importeTotal += $encargo['precioUnitarioConIGV'];
                 PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
                 PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, $encargo['precio_unitario_con_igv'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, $encargo['precio_con_igv'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(12, $height, $encargo['precio_unitario'] , '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.',''), '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             endforeach;
             
@@ -630,6 +631,7 @@ class SaleController extends Controller
         $data = Encargo::buscarFactura($encargo_id);
         if ($data) {
             $textodniruc = 'RUC: '.$data['adquiriente_ruc'];
+            list($year, $month, $day) = explode("-", $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
             
             PDF::SetTitle($data['titulo_documento']);
             PDF::setPrintHeader(false);
@@ -683,7 +685,7 @@ class SaleController extends Controller
             PDF::SetFont('times', '', $font_size_regular);
             PDF::MultiCell($width, $height, "OPERADOR: ", '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
-            PDF::Cell($width/2, $height, "FECHA: " . $data['emisor_fecha_documento_electronico_pe'], 'B', 0, 'L', 0);
+            PDF::Cell($width/2, $height, "FECHA: " .$day.'/'.$month.'/'.$year, 'B', 0, 'L', 0);
             PDF::Cell($width/2, $height, "HORA: " . $data['emisor_hora_documento_electronico'], 'B', 1, 'R', 0);
             // -------------
             PDF::SetFont('times', '', $font_size_regular);
@@ -705,10 +707,15 @@ class SaleController extends Controller
             endforeach;
 
             PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "DIRECCIÓN: ". $data['destino_direccion'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $font_size_regular);
             PDF::MultiCell(20, $height, "DESTINO:", '', $align_left, 1, 0, $x, $y);
             PDF::SetFont('times', 'B', $font_size_gigante);
-            PDF::MultiCell(40, $height, $data['destino'], $border, $align_right, 1, 0, $x, $y);
+            PDF::MultiCell(40, $height, $data['destino'], '', $align_right, 1, 0, $x, $y);
             PDF::Ln();
+
             PDF::Cell($width, $height, "", 'T', 1, 'L', 0, '', 10);
             
             PDF::SetFont('times', 'B', $font_size_regular);
@@ -720,22 +727,16 @@ class SaleController extends Controller
 
             // $importeTotal = 0.00;
             PDF::SetFont('times', '', $font_size_regular);
-            foreach($data['encargo_detalle'] as $encargo):
+            foreach($data['detalle_gravado'] as $encargo):
                 PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
                 PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, $encargo['precio_unitario_con_igv'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, $encargo['precio_con_igv'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(12, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             endforeach;
-            
-            // $total_operacion_gravada = number_format($data['importe_pagar_sin_igv'], 2, '.', '');
-            // $oferta_sin_igv = number_format($data['oferta']/1.18, 2, '.', '');
-            // $porcentaje_descontado_operacion_gravada = number_format(($total_operacion_gravada-$oferta_sin_igv)/$total_operacion_gravada, 2, '.', '');
-            // $descontado_operacion_gravada = number_format($porcentaje_descontado_operacion_gravada*$total_operacion_gravada, 2, '.', '');
-                
-            $descuentos = number_format($data['subtotal']-$data['oferta'], 2, '.', '');
-         
-            PDF::Cell(35, $height, "DESCUENTOS", 'T', 0, 'L', 1);
+     
+            $descuentos = number_format($data['descuento'], 2, '.', '');         
+            PDF::Cell(35, $height, "DESCUENTOS GLOBALES", 'T', 0, 'L', 1);
             PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
             PDF::Cell(20, $height, $descuentos, 'T', 0, 'R', 1);
             PDF::Ln();
@@ -775,9 +776,7 @@ class SaleController extends Controller
             // PDF::SetFont('times', '', $font_size_grande);
             // PDF::Cell($width, $height, "hash SUNAT:", 'T', 1, 'L', 1);
             // PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
-
-            $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
-            $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
+ 
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
             $filename = $data['emisor_ruc'].'-01-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = base_path('public/'.$tree);
@@ -986,15 +985,37 @@ class SaleController extends Controller
                 ->setFormaPago(new FormaPagoContado())
                 ->setTipoMoneda('PEN')
                 ->setCompany(Util::getCompany())
-                ->setClient($cliente)
-                ->setMtoOperGravadas($data['monto_gravado'])
-                ->setMtoOperExoneradas($data['monto_exonerado'])
-                ->setMtoIGV($data['importe_pagar_igv'])
-                ->setTotalImpuestos($data['importe_pagar_igv'])
-                ->setValorVenta($data['importe_pagar_sin_igv'])
-                ->setSubTotal($data['importe_pagar_con_igv'])
-                ->setMtoImpVenta($data['importe_pagar_con_igv'])
-            ;
+                ->setClient($cliente);
+                 
+            
+            if($data['descuento']>0){
+                $invoice->setDescuentos([
+                    (new Charge())
+                        ->setCodTipo('02') // Catalog. 53
+                        ->setFactor(1)
+                        ->setMontoBase(number_format($data['descuento'], 2, '.', ''))
+                        ->setMonto(number_format($data['descuento'], 2, '.', ''))
+                        ->setFactor(1)
+                ]);
+            }
+            $gravadas = $data['monto_gravado'] - $data['descuento'];
+            $invoice
+                ->setMtoOperGravadas(number_format($gravadas, 2, '.', ''))
+                // ->setMtoOperExoneradas(number_format($data['monto_exonerado'], 2, '.', ''))
+                ->setMtoIGV(number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', '') )
+                ->setTotalImpuestos(number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', '') )
+                ->setValorVenta(number_format(($gravadas), 2, '.', ''))
+                ->setSubTotal(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
+                ->setMtoImpVenta(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
+                ;
+            // dd(
+            //     number_format($gravadas, 2, '.', ''),
+            //     number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', ''),
+            //     number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', ''),
+            //     number_format(($gravadas), 2, '.', ''),
+            //     number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''),
+            //     number_format(($gravadas) * (1 + env('IGV')), 2, '.', '')
+            // );
 
             // Detalle gravado
             if (!empty($data['detalle_gravado'])) {
@@ -1005,13 +1026,14 @@ class SaleController extends Controller
                         ->setDescripcion($item['descripcion'])
                         ->setCantidad($item['cantidad']) // 2
                         ->setMtoValorUnitario($item['valor_unitario']) // S/.100 no exite
-                        ->setMtoValorVenta($item['valor_venta']) // S/.200
-                        ->setMtoBaseIgv($item['valor_base_igv']) // S/.200
-                        ->setPorcentajeIgv($item['porcentaje_igv']) // 18
-                        ->setIgv($item['igv_venta']) // 36
+                        ->setMtoValorVenta(number_format($item['valor_venta'], 2, '.', '')) // S/.200
+                        ->setMtoBaseIgv(number_format($item['valor_base_igv'], 2, '.', '')) // S/.200
+                        ->setPorcentajeIgv(number_format($item['porcentaje_igv'], 2, '.', '')) // 18
+                        ->setIgv(number_format($item['igv_venta'], 2, '.', '')) // 36
                         ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
-                        ->setTotalImpuestos($item['igv_venta']) // 36
-                        ->setMtoPrecioUnitario($item['precio_unitario']) // 118
+                        ->setFactorIcbper(null)
+                        ->setTotalImpuestos(number_format($item['igv_venta'], 2, '.', '')) // 36
+                        ->setMtoPrecioUnitario(number_format($item['precio_unitario'], 2, '.', '')) // 118
                     ;
                 endforeach;
             }
@@ -1098,7 +1120,7 @@ class SaleController extends Controller
                 endforeach;
             }
             
-            list($enteros, $decimales) = explode('.', $data['importe_pagar_con_igv']);
+            list($enteros, $decimales) = explode('.', $data['oferta']);
             $formatter_es = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
             $letras = $formatter_es->format($enteros);
                 
@@ -1107,23 +1129,14 @@ class SaleController extends Controller
                 (new Legend())
                     ->setCode('1000')
                     ->setValue(mb_strtoupper($letras) . ' CON ' . $decimales.'/100 SOLES'),
-                (new Legend())
-                    ->setCode('1002')
-                    ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE')
+                // (new Legend())
+                //     ->setCode('1002')
+                //     ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE')
             ]);         
             
-            $year = substr($data['emisor_fecha_documento_electronico'], 0, 4);
-            $month = substr($data['emisor_fecha_documento_electronico'], 5, 2);
+            list($year, $month, $day) = explode('-', $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-            // $path = base_path('public/' . $folder);
-            // $documento_sin_firmar = 'documento_sin_firmar.xml';
-            
-            // @mkdir($path, 0777, true);
-            // @unlink($path . '/' . $documento_sin_firmar);
-            // $documento_xml = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.xml';
-            // $documento_zip = $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
-            // $documento_cdr = 'R-' . $data['emisor_ruc'] . '-01-' . $data['emisor_numero_documento_electronico'] . '.zip';
-            
+           
             $util = Util::getInstance();
             $see = $util->getSee(SunatEndpoints::FE_BETA);
             // $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
@@ -1138,6 +1151,7 @@ class SaleController extends Controller
             // $res = $see->sendXmlFile($contents);
             if (!$res->isSuccess()) {
                 $document['error'] = 'SUNAT no ha podido recibir facura en XML<br>'. $util->getErrorResponse($res->getError());
+                
             } else {
                 $cdr = (array) $res->getCdrResponse();
                 $cdr_descripcion = "";

@@ -7,20 +7,26 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
-        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
+        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="hidden" name="nombre_comercial_recibe"
+            value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="hidden" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-7">
                             <div class="row gy-5">
-                                <div class="col-xxl-4">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">Envía:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia"
@@ -29,9 +35,8 @@
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia" value=""
                                             placeholder="" />
                                     @endif
-
                                 </div>
-                                <div class="col-xxl-8">
+                                <div class="col-xxl-7">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
@@ -43,29 +48,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-4">
                             <div class="row gy-5">
-                                <div class="col-xxl-3">
-                                    <!-- <label for="exampleDataList" class="form-label">Celular:</label>-->
-                                    @if (isset($encargo))
-                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia"
-                                            value="{{ $encargo->celular_envia }}" placeholder="" />
-                                    @else
-                                        <input type="hidden" class="form-control" id="celular_envia" name="celular_envia"
-                                            value="" placeholder="" />
-                                    @endif
-                                </div>
                                 <div class="col-xxl-5">
-                                    <!-- <label for="exampleDataList" class="form-label">E-mail:</label> -->
-                                    @if (isset($encargo))
-                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia"
-                                            value="{{ $encargo->email_envia }}" placeholder="" />
-                                    @else
-                                        <input type="hidden" class="form-control" id="email_envia" name="email_envia"
-                                            value="" placeholder="" />
-                                    @endif
-                                </div>
-                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">F. recepción:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_hora_envia"
@@ -81,16 +66,15 @@
                         <div class="col-xxl-1">
                             <div class="row gy-5">
                                 <div class="col-xxl-12">
-
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-7">
                             <div class="row gy-5">
-                                <div class="col-xxl-4">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe"
@@ -100,7 +84,7 @@
                                             placeholder="" />
                                     @endif
                                 </div>
-                                <div class="col-xxl-8">
+                                <div class="col-xxl-7">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
@@ -112,30 +96,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-4">
                             <div class="row gy-5">
-                                <div class="col-xxl-3">
-                                    <!-- <label for="exampleDataList" class="form-label">Celular:</label> -->
-                                    @if (isset($encargo))
-                                        <input type="hidden" class="form-control" id="celular_recibe"
-                                            name="celular_recibe" value="{{ $encargo->celular_recibe }}"
-                                            placeholder="" />
-                                    @else
-                                        <input type="hidden" class="form-control" id="celular_recibe"
-                                            name="celular_recibe" value="" placeholder="" />
-                                    @endif
-                                </div>
                                 <div class="col-xxl-5">
-                                    <!-- <label for="exampleDataList" class="form-label">E-mail:</label> -->
-                                    @if (isset($encargo))
-                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe"
-                                            value="{{ $encargo->email_recibe }}" placeholder="" />
-                                    @else
-                                        <input type="hidden" class="form-control" id="email_recibe" name="email_recibe"
-                                            value="" placeholder="" />
-                                    @endif
-                                </div>
-                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">F. entrega:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
@@ -160,9 +123,9 @@
                         </div>
                     </div>
                     <div class="row gy-5 g-xl-12">
-                        <div class="col-xxl-5">
+                        <div class="col-xxl-7">
                             <div class="row gy-5">
-                                <div class="col-xxl-4">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">Origen:</label>
                                     <select class="form-select" aria-label="--" name="agencia_origen"
                                         onchange="javascript:getSerie();getAgenciaDestino(this.value, false);">
@@ -187,7 +150,7 @@
                                         @endif
                                     </select>
                                 </div>
-                                <div class="col-xxl-8">
+                                <div class="col-xxl-7">
                                     <label for="exampleDataList" class="form-label">Agencia:</label>
                                     <select class="form-select" aria-label="--" name="agencia_destino"
                                         onchange="javascript:getSerie()">
@@ -196,23 +159,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-6">
+                        <div class="col-xxl-4">
                             <div class="row gy-5">
-                                <div class="col-xxl-3">
-                                    <input type="hidden" name="medio_pago" value="2" />
-                                    <!--<label for="exampleDataList" class="form-label">Medio de pago:</label>-->
-                                    <!--<select class="form-select" aria-label="--" id="medio_pago" name="medio_pago">
-                                            <option value="--"> -- </option>
-                                            <option value="1"
-                                                {{ isset($encargo) && $encargo->medio_pago == '1' ? 'selected' : '' }}>CRÉDITO
-                                            </option>
-                                            <option value="2"
-                                                {{ isset($encargo) && $encargo->medio_pago == '2' ? 'selected' : '' }}>CONTADO
-                                            </option>
-                                        </select>-->
-                                </div>
-
-                                <div class="col-xxl-4">
+                                <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">Documento:</label>
                                     <select class="form-select" aria-label="--" id="documento" name="documento"
                                         onchange="javascript:getSerie()">
@@ -231,7 +180,7 @@
                                         @endif
                                     </select>
                                 </div>
-                                <div class="col-xxl-2">
+                                <div class="col-xxl-3">
                                     <label for="exampleDataList" class="form-label">Serie:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="documento_serie"
@@ -241,7 +190,7 @@
                                             name="documento_serie" value="" disabled />
                                     @endif
                                 </div>
-                                <div class="col-xxl-3">
+                                <div class="col-xxl-4">
                                     <label for="exampleDataList" class="form-label">Correlativo:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="documento_correlativo"
@@ -258,7 +207,6 @@
                         <div class="col-xxl-1">
                             <div class="row gy-5">
                                 <div class="col-xxl-12">
-
                                 </div>
                             </div>
                         </div>
@@ -281,8 +229,10 @@
                                 <th scope="col">Descripción</th>
                                 <!-- <th scope="col" width="150" style="text-align:right">Peso&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
                                 <th scope="col" width="150" style="text-align:right">Cantidad&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                <th scope="col" width="150" style="text-align:right">Precio&nbsp;&nbsp;&nbsp;&nbsp;<br></th>
-                                <th scope="col" width="150" style="text-align:right">Total&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th scope="col" width="150" style="text-align:right">Valor
+                                    unitario&nbsp;&nbsp;&nbsp;&nbsp;<br></th>
+                                <th scope="col" width="150" style="text-align:right">Valor venta&nbsp;&nbsp;&nbsp;&nbsp;
+                                </th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
                                             src="{{ asset('assets/media/plus-circle.svg') }}" width="24" /></a>
@@ -310,7 +260,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_gravado['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -346,7 +296,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_exonerado['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -382,7 +332,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_inafecto['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -418,7 +368,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_gravado_gratuito['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -454,7 +404,7 @@
                                                 </select>
                                             </td>
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                            onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
                                                     value="{{ $detalle_inafecto_gratuito['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
@@ -487,7 +437,7 @@
                                         </select>
                                     </td>
                                     <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
+                                                                    onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                     <td><input type="hidden" class="form-control fw8" name="peso"
                                             onkeyup="javascript:calculatePayChargeDetail(this);" value="1">
                                         <input type="number" class="form-control fw8" name="cantidad"
@@ -501,13 +451,26 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" align="right">Subtotal + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                @if (isset($encargo))
-                                    <td><input type="number" class="form-control fw8" name="subtotal"
-                                            value="{{ $encargo->subtotal }}" disabled></td>
-                                @else
-                                    <td><input type="number" class="form-control fw8" name="subtotal" disabled></td>
-                                @endif
+                                <td align="right">Descuento global&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td align="right">
+                                    @if (isset($encargo))
+                                        <input type="number" class="form-control fw8" name="descuento"
+                                            value="{{ $encargo->descuento }}" disabled>
+                                    @else
+                                        <input type="number" class="form-control fw8" name="descuento"
+                                            value="0.00" disabled>
+                                    @endif
+                                </td>
+
+                                <td align="right">Subtotal + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if (isset($encargo))
+                                        <input type="number" class="form-control fw8" name="subtotal"
+                                            value="{{ $encargo->subtotal }}" disabled>
+                                    @else
+                                        <input type="number" class="form-control fw8" name="subtotal" value="0" disabled>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="3" align="right">Importe a pagar + IGV&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -564,18 +527,22 @@
 
                             <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">
                                 Confirmar</a>
-                            <a id="btnImprimir" class="btn btn-secondary disabled" data-bs-toggle="modal"
+                            @php
+                                $img_enable = (isset($encargo))?'-white': '';
+                                $btn_enable = (isset($encargo))?'btn-primary': 'btn-secondary disabled';
+                            @endphp
+                                <a id="btnImprimir" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                <img src="{{ asset('assets/media/printer.svg') }}" width="24" />
-                            </a>
-                            <a id="btnEmail" class="btn btn-secondary disabled" data-bs-toggle="modal"
+                                    <img src="{{ asset('assets/media/printer'.$img_enable.'.svg') }}" width="24" />
+                                </a>
+                                <a id="btnEmail" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalEnviarEmail">
-                                <img src="{{ asset('assets/media/email.svg') }}" width="24" />
-                            </a>
-                            <a id="btnEliminar" class="btn btn-secondary disabled" data-bs-toggle="modal"
-                                data-bs-target="#modalEliminarVenta">
-                                <img src="{{ asset('assets/media/trash-2.svg') }}" width="24" />
-                            </a>
+                                    <img src="{{ asset('assets/media/email'.$img_enable.'.svg') }}" width="24" />
+                                </a>
+                                <a id="btnEliminar" class="btn {{$btn_enable}}" data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminarVenta">
+                                    <img src="{{ asset('assets/media/trash-2'.$img_enable.'.svg') }}" width="24" />
+                                </a>
                         </div>
                     </div>
                 </div>
@@ -586,6 +553,7 @@
 @section('scripts')
     <script>
         const factura = '617122a2a8c74c6bfc5e36e6';
+        const otros = '6175bf2e8f1a2809dcb499c9';
         const RUC = 11;
         const DNI = 8;
         const CE = 12;
@@ -657,11 +625,10 @@
             toastr.warning(message);
         }
 
-
         function updateChargeDetail(element) {
             var tr = $(element).parent().parent();
             var valor_unitario = 0;
-            if (element.value === '6175bf2e8f1a2809dcb499c9') {
+            if (element.value === otros) {
                 // ABRIR EL valor_unitario PARA *OTROS*
                 $(tr).find("td [name='valor_unitario']").removeAttr("disabled");
             } else {
@@ -688,13 +655,15 @@
         }
 
         function reCalculatePayChargeDetail() {
-            subtotal = 0.00;
+            var subtotal = 0.00;
+            var total = 0.00;
             $("#chargeRow >tr>td:nth-child(4)").each(function(index, element) {
                 total = parseFloat($(element).find("[name='total']").val());
                 subtotal = subtotal + total + (total * parseFloat("{{ env('IGV') }}"));
                 $("[name='subtotal']").val(subtotal.toFixed(2));
                 $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
             });
+            $("[name='descuento']").val('0.00');
         }
 
         function addChargeRow() {
@@ -743,15 +712,15 @@
 
             $("[name='doc_envia']").val(data.doc_envia);
             $("[name='nombre_envia']").val(data.nombre_envia);
-            $("[name='celular_envia']").val(data.celular_envia);
-            $("[name='email_envia']").val(data.email_envia);
+            // $("[name='celular_envia']").val(data.celular_envia);
+            // $("[name='email_envia']").val(data.email_envia);
             $("[name='fecha_hora_envia']").val(data.fecha_hora_envia);
 
 
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
-            $("[name='celular_recibe']").val(data.celular_recibe);
-            $("[name='email_recibe']").val(data.email_recibe);
+            // $("[name='celular_recibe']").val(data.celular_recibe);
+            // $("[name='email_recibe']").val(data.email_recibe);
             $("[name='fecha_recibe']").val(data.fecha_recibe);
             $("[name='fecha_recibe_blocked']").val(data.fecha_recibe);
 
@@ -760,7 +729,7 @@
             // $("[name='destino']").val(data.destino).change();
             getAgenciaDestino(data.destino, data.agencia_destino);
 
-            $("[name='medio_pago']").val(data.medio_pago).change();
+            // $("[name='medio_pago']").val(data.medio_pago).change();
             $("[name='documento']").val(data.documento).change();
             $("[name='documento_serie']").val(data.documento_serie);
             $("[name='documento_correlativo']").val(data.documento_correlativo);
@@ -790,28 +759,29 @@
             var nombre_envia = $("[name='nombre_envia']").val().trim();
             var nombre_comercial_envia = $("[name='nombre_comercial_envia']").val().trim();
             var direccion_envia = $("[name='direccion_envia']").val().trim();
-            var celular_envia = $("[name='celular_envia']").val().trim();
-            var email_envia = $("[name='email_envia']").val().trim();
+            // var celular_envia = $("[name='celular_envia']").val().trim();
+            // var email_envia = $("[name='email_envia']").val().trim();
             var fecha_hora_envia = $("[name='fecha_hora_envia']").val().trim();
 
             var doc_recibe = $("[name='doc_recibe']").val().trim();
             var nombre_recibe = $("[name='nombre_recibe']").val().trim();
             var nombre_comercial_recibe = $("[name='nombre_comercial_recibe']").val().trim();
             var direccion_recibe = $("[name='direccion_recibe']").val().trim();
-            var celular_recibe = $("[name='celular_recibe']").val().trim();
-            var email_recibe = $("[name='email_recibe']").val().trim();
+            // var celular_recibe = $("[name='celular_recibe']").val().trim();
+            // var email_recibe = $("[name='email_recibe']").val().trim();
             var fecha_recibe = $("[name='fecha_recibe']").val().trim();
 
             // var origen = $("[name='origen']").val().trim();
             var agencia_origen = $("[name='agencia_origen']").val().trim();
             var agencia_destino = $("[name='agencia_destino']").val().trim();
-            var medio_pago = $("[name='medio_pago']").val().trim();
+            // var medio_pago = $("[name='medio_pago']").val().trim();
             var adquiriente = $("[name='adquiriente']").val().trim();
             var documento = $("[name='documento']").val().trim();
             var documento_serie = $("[name='documento_serie']").val().trim();
             var documento_correlativo = $("[name='documento_correlativo']").val().trim();
             var subtotal = $("[name='subtotal']").val().trim();
             var importe_pagar_con_descuento = $("[name='importe_pagar_con_descuento']").val().trim();
+            var descuento = $("[name='descuento']").val().trim();
 
             var descripcion = document.getElementsByName("descripcion");
             var cantidad = document.getElementsByName("cantidad");
@@ -833,28 +803,29 @@
                 nombre_envia: nombre_envia,
                 nombre_comercial_envia: nombre_comercial_envia,
                 direccion_envia: direccion_envia,
-                celular_envia: celular_envia,
-                email_envia: email_envia,
+                // celular_envia: celular_envia,
+                // email_envia: email_envia,
                 fecha_hora_envia: fecha_hora_envia,
 
                 doc_recibe: doc_recibe,
                 nombre_recibe: nombre_recibe,
                 nombre_comercial_recibe: nombre_comercial_recibe,
                 direccion_recibe: direccion_recibe,
-                celular_recibe: celular_recibe,
-                email_recibe: email_recibe,
+                // celular_recibe: celular_recibe,
+                // email_recibe: email_recibe,
                 fecha_recibe: fecha_recibe,
 
                 // data.push("origen", origen);
                 agencia_origen: agencia_origen,
                 agencia_destino: agencia_destino,
-                medio_pago: medio_pago,
+                // medio_pago: medio_pago,
                 adquiriente: adquiriente,
                 documento: documento,
                 documento_serie: documento_serie,
                 documento_correlativo: documento_correlativo,
                 subtotal: subtotal,
                 importe_pagar_con_descuento: importe_pagar_con_descuento,
+                descuento: descuento,
                 encargo: encargo
             };
             return data;
@@ -997,7 +968,7 @@
                                 '<td>' + element.doc_recibe + '</td>' +
                                 '<td>' + element.agencia_destino + '</td>' +
                                 '<td>' + element.documento_fecha + '</td>' +
-                                '<td>' + element.importe_pagar + '</td>' +
+                                '<td>' + element.oferta + '</td>' +
                                 '</tr>';
                             $("#responseChargeRow").html(html);
                             putChargeForm(element);
@@ -1048,7 +1019,7 @@
                 beforeSend: function() {
                     $("#btnConfirmar").html(
                         '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando'
-                        );
+                    );
                 }
             }).done(function(response) {
                 if (response.result.status === 'OK') {
@@ -1058,7 +1029,7 @@
                         $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
                         $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
                             {{ env('ZEROFILL', 8) }}));
-                        $("[name='url_documento_pdf']").html(response.result.url_documento_pdf);
+                        $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
                         $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
                         enabledBtn();
                         showSuccessToastr(response.result.message);
@@ -1088,7 +1059,7 @@
         function printElement() {
             var url_documento_pdf = $("[name='url_documento_pdf']").val();
             if (url_documento_pdf) {
-                $("#comprobantePago").attr("src", url_documento_pdf);
+                $("#comprobantePago").attr("src", '{{url('/')}}/'+url_documento_pdf);
                 return true;
             }
         }
@@ -1104,14 +1075,16 @@
                 },
                 dataType: "json",
                 data: {
-                    email_adquiriente : email_adquiriente,
-                    encargo_id : encargo_id
+                    email_adquiriente: email_adquiriente,
+                    encargo_id: encargo_id
                 },
                 beforeSend: function() {
-                    $("#btnEnviarEmail").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
+                    $("#btnEnviarEmail").html(
+                        '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando'
+                    );
                 }
             }).done(function(response) {
-                if(response.result.status === 'OK') {
+                if (response.result.status === 'OK') {
                     showSuccessToastr(response.result.message);
                 } else {
                     showErrorToastr(response.result.message);
@@ -1133,13 +1106,13 @@
                 },
                 dataType: "json",
                 data: {
-                    encargo_id : encargo_id
+                    encargo_id: encargo_id
                 },
                 beforeSend: function() {
                     // $("#btnEnviarEmail").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');
                 }
             }).done(function(response) {
-                if(response.result.status === 'OK') {
+                if (response.result.status === 'OK') {
                     showSuccessToastr(response.result.message);
                 } else {
                     showErrorToastr(response.result.message);
@@ -1149,6 +1122,10 @@
                 // $("#btnEnviarEmail").html('Continuar');
                 showErrorToastr('No se pudo comunicar la baja del comprobante de pago electrónico.');
             });
+        }
+
+        function addReceivesRow() {
+
         }
 
         $("[name='doc_envia']").on('keypress', function(e) {
@@ -1225,9 +1202,16 @@
                 }
             }
         });
+
+        $("[name='importe_pagar_con_descuento']").on('keyup', function(e) {
+            var oferta = parseFloat($(this).val());
+            var precio_venta = parseFloat($("[name='subtotal']").val());
+            var descuento = precio_venta-oferta;
+            $("[name='descuento']").val(descuento.toFixed(2));
+        });
         @if (isset($encargo))
             getAgenciaDestino("{{ $encargo->agencia_origen }}","{{ $encargo->agencia_destino }}");
-            $("[name='cantidad']").trigger('onkeyup');
+            // $("[name='cantidad']").trigger('onkeyup');
         @endif
     </script>
 @endsection
