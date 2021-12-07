@@ -42,8 +42,10 @@ Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
 Route::get('/api/v1/download/xml/{encargo_id}', 'ApiController@downloadXml');
 Route::get('/api/v1/download/cdr/{encargo_id}', 'ApiController@downloadCdr');
 Route::get('/api/v1/download/baja/{encargo_id}', 'ApiController@downloadCdrBaja');
+Route::get('/api/v1/download/manifiesto/{encargo_id}', 'ApiController@downloadManifiesto');
 
 Route::post('/api/v1/despacho/{encargo_id}', 'ApiController@despacho');
 
 Route::post('/api/v1/manifiesto/transportar', 'ApiController@transportar');
 Route::post('/api/v1/manifiesto/no-transportar', 'ApiController@noTransportar');
+Route::post('/api/v1/manifiesto/empaquetar-envio', 'ApiController@empaquetarEnvio');

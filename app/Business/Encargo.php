@@ -98,6 +98,10 @@ class Encargo extends Model
         return $this->belongsTo('App\Business\Adquiriente', 'adquiriente');
     }
 
+    public function estados() {
+        return $this->belongsTo('App\Business\EncargoEstado', 'estado');
+    }
+
     static function buscarBoleta($encargo_id) {
         $encargo = Encargo::find($encargo_id);
         if ($encargo->documentos->alias === 'B') {

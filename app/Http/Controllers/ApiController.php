@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use MongoDB\BSON\ObjectId;
+use App\Http\Controllers\ManifestController;
 
 class ApiController extends Controller
 {
@@ -88,6 +89,14 @@ class ApiController extends Controller
              ->download($file, $encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
+    public function downloadManifiesto($manifiesto_id) {
+        $manifiesto = \App\Business\Manifiesto::where('_id', new ObjectId("$manifiesto_id"))->get(['url_documento_pdf', 'nombre_archivo']);
+        // $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
+        $file = base_path('public/' . $manifiesto[0]->url_documento_pdf);
+        return \response()
+             ->download($file, $manifiesto[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
+    }
+
     public function despacho($encargo_id) {
         $fecha_hora_recibe = date('d-m-Y H:i:s');
         $bool = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
@@ -111,9 +120,9 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
-    public function transportar(Request $request) {
+    public function noTransportar(Request $request) {
         $prg_encargo_id = $request->input('encargos');
-        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => 'Transportado']);
+        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => new ObjectId('61af9090d3f9efe2cb27e8b9')]);
         if($bool) {
             $response = [
                 'result' =>[
@@ -132,9 +141,9 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
-    public function noTransportar(Request $request) {
+    public function transportar(Request $request) {
         $prg_encargo_id = $request->input('encargos');
-        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => 'No transpotado']);
+        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => new ObjectId('61af9089d3f9efe2cb27e8b6')]);
         if($bool) {
             $response = [
                 'result' =>[
@@ -147,6 +156,51 @@ class ApiController extends Controller
                 'result' =>[
                     'status' => 'fails',
                     'message' => 'No se ha podido registrar el estado del paquete.',
+                ],
+            ];   
+        }
+        return response()->json($response);
+    }
+
+    public function empaquetarEnvio(Request $request) {
+        $prg_encargo_id = $request->input('encargos');
+        $encargo = \App\Business\Encargo::whereIn('_id', $prg_encargo_id);
+        $bool = $encargo->update(['estado' => new ObjectId('61af909ad3f9efe2cb27e8be')]);
+        if($bool) {
+            $prg_encargo = $encargo->get(['agencia_origen', 'agencia_destino', 'documento_serie', 'documento_correlativo']);
+            $detalle = [];
+            foreach($prg_encargo as $encargo):
+                $detalle[] = [
+                    'agencia_origen' => $encargo->agencia_origen,
+                    'agencia_destino' => $encargo->agencia_destino,
+                    'documento_serie' => $encargo->documento_serie,
+                    'documento_correlativo' => $encargo->documento_correlativo,
+                ];
+            endforeach;
+
+            $fecha = date('Y/m/d');
+            $nombre_archivo = 'manifiesto.pdf';
+            $url_documento_pdf = 'resources/manifiesto/'.$fecha.'/'.$nombre_archivo;
+            $manifiesto = \App\Business\Manifiesto::create([
+                'fecha' => date('d-m-Y'),
+                'hora' => date('H:i:s'),
+                'url_documento_pdf' => $url_documento_pdf,
+                'nombre_archivo' => $nombre_archivo,
+                'items' => 10,
+                'detalle' => $detalle,
+            ]);
+            (new ManifestController())->escribirPDF($manifiesto);
+            $response = [
+                'result' =>[
+                    'status' => 'OK',
+                    'message' => 'Manifiesto generado.',
+                ],
+            ];
+        } else {
+            $response = [
+                'result' =>[
+                    'status' => 'fails',
+                    'message' => 'No se ha podido generar el manifiesto.',
                 ],
             ];   
         }

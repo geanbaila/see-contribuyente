@@ -264,6 +264,8 @@ class SaleController extends Controller
                 'subtotal' => number_format($data['subtotal'], 2, '.', ''),
                 'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
                 'descuento' => number_format($data['descuento'], 2, '.', ''),
+
+                'estado' => new ObjectId('61af9090d3f9efe2cb27e8b9'), // no transportar
             ], $encargo);
             
             $encargo = null;
