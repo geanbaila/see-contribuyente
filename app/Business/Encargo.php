@@ -215,6 +215,7 @@ class Encargo extends Model
                 'detraccion_medio_pago' => $encargo->detraccion_medio_pago,
                 'detraccion_cta_banco' => $encargo->detraccion_cta_banco,
                 'detraccion_porcentaje' => $encargo->detraccion_porcentaje,
+                'detraccion_monto' => $encargo->detraccion_monto,
 
                 'detalle_gravado' => $encargo->detalle_gravado,
                 'detalle_exonerado' => $encargo->detalle_exonerado,

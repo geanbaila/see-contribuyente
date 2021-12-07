@@ -293,6 +293,7 @@ class SaleController extends Controller
                         'detraccion_medio_pago' => '001', // catalog. 59 : Depósito en cuenta
                         'detraccion_cta_banco' => env('EMPRESA_CUENTA_BANCARIA_DETRACCION'),
                         'detraccion_porcentaje' => env('EMPRESA_TASA_DETRACCION') * 100,
+                        'detraccion_monto' => number_format(($encargo['monto_gravado']-$encargo['descuento']) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION') , 2, '.', ''),
                     ]);
                 }
                 $encargo = Encargo::where('_id', $object_id)->update($update);
@@ -1033,7 +1034,7 @@ class SaleController extends Controller
                         ->setCodMedioPago($data['detraccion_medio_pago']) // catalog. 59 : Depósito en cuenta
                         ->setCtaBanco($data['detraccion_cta_banco'])
                         ->setPercent($data['detraccion_porcentaje']) // tasa según catalog. 54
-                        ->setMount(number_format(($gravadas) * (1 + env('IGV')) * ($data['detraccion_porcentaje'] / 100) , 2, '.', ''))
+                        ->setMount(number_format($data['detraccion_monto'], 2, '.', ''))
                         ->setValueRef(1) // valor de S/.1
                 );
             } else {
