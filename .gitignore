@@ -15,3 +15,4 @@ yarn-error.log
 carga.json
 /public/comprobantes
 /public/resources
+/node_modules

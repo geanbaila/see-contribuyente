@@ -49,3 +49,7 @@ Route::post('/api/v1/despacho/{encargo_id}', 'ApiController@despacho');
 Route::post('/api/v1/manifiesto/transportar', 'ApiController@transportar');
 Route::post('/api/v1/manifiesto/no-transportar', 'ApiController@noTransportar');
 Route::post('/api/v1/manifiesto/empaquetar-envio', 'ApiController@empaquetarEnvio');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
