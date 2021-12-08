@@ -11,6 +11,7 @@ use App\Business\Agencia;
 use App\Business\Documento;
 use App\Business\Encargo;
 use App\Business\Adquiriente;
+use App\Business\Baja;
 use MongoDB\BSON\ObjectId;
 use \Greenter\Model\Response\BillResult;
 use \Greenter\Model\Sale\FormaPagos\FormaPagoContado;
@@ -388,7 +389,7 @@ class SaleController extends Controller
     }
 
     public function baja(Request $request) {
-        $prg_encargo = Encargo::whereIn('_id', [$request->encargo_id])->get();
+        $prg_encargo = Encargo::whereIn('_id', $request->encargo_id)->get();
         if (!empty($prg_encargo)):
             $util = Util::getInstance();
             $items = null;
@@ -411,15 +412,16 @@ class SaleController extends Controller
             endforeach;
 
             if(!empty($items)):
+                $correlativo = sprintf("%05d", Baja::getNextSequence());
                 $voided = new Voided();
-                $voided->setCorrelativo('00001')
+                $voided->setCorrelativo($correlativo)
                     ->setFecGeneracion(new \DateTime($encargo->documento_fecha.' '.$encargo->documento_hora))
                     ->setFecComunicacion(new \DateTime())
                     ->setCompany(Util::getCompany())
                     ->setDetails($items);
 
                 list($year, $month, $day) = explode('-', $encargo->documento_fecha); // yyyy-mm-dd 
-                $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo->id;
+                $folder = 'bajas/' . $year . '/' . $month . '/' . $correlativo;
                     
                 $see = $util->getSee(SunatEndpoints::FE_BETA);
                 $res = $see->send($voided);
@@ -451,7 +453,7 @@ class SaleController extends Controller
                 $url_documento_baja = $util->writeCdr($folder, $voided, $res->getCdrZip());
 
                 $update = ['url_documento_baja' => $url_documento_baja];
-                $bool = Encargo::whereIn('_id', [$request->encargo_id])->update($update, ['upsert' => true]);
+                $bool = Encargo::whereIn('_id', $request->encargo_id)->update($update, ['upsert' => true]);
                 if (!$bool) {
                     $documentos .= "La base de datos fue actualizada.";
                 }

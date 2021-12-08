@@ -22,6 +22,8 @@ Route::get('/venta/editar/{encargo_id}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 Route::post('/venta/comunicar-baja', 'SaleController@baja');
 
+Route::get('/reporte', 'ReportController@list');
+
 Route::get('/manifiesto', 'ManifestController@list');
 
 Route::get('/despacho', 'DispatchController@list');

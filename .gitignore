@@ -14,5 +14,8 @@ yarn-error.log
 /.vscode
 carga.json
 /public/comprobantes
+/public/bajas
 /public/resources
 /node_modules
+feature.txt
+

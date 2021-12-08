@@ -161,7 +161,7 @@
                       <!--begin::Content-->
                       <div class="flex-row-fluid" >
                           <!--begin::Form-->
-                            <p class="fs-3">Está a punto de comunicar a SUNAT la baja del comprobante de pago.
+                            <p class="fs-3">Está a punto de comunicar a SUNAT la baja de comprobantes de pago electrónico.
                             ¿Está seguro que desea continuar?</p>
                           <!--end::Form-->
                       </div>
