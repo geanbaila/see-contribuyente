@@ -92,14 +92,14 @@ class ManifestController extends Controller
         $pagado = 0;
         foreach($manifiesto->detalle as $item):
             $por_pagar += 0;
-            $pagado += 0;
+            $pagado += $item['oferta'];
             PDF::Cell(24, $height, $item['documento_serie'] . '-' . $item['documento_correlativo'], '', 0, 'L', 1);
-            PDF::Cell(15, $height, "9999.99", '', 0, 'L', 1);
-            PDF::Cell(15, $height, "9999.99", '', 0, 'L', 1);
-            PDF::Cell(40, $height, "PEZO DILLERVA VALERIA PEZO DILLERVA VALERIA", '', 0, 'L', 1, '', 0);
+            PDF::Cell(15, $height, number_format(0, 2, '.', ''), '', 0, 'L', 1);
+            PDF::Cell(15, $height, number_format($item['oferta'], 2, '.', ''), '', 0, 'L', 1);
+            PDF::Cell(40, $height, "-", '', 0, 'L', 1, '', 0);
             PDF::Cell(40, $height, $item['agencia_destino'], '', 0, 'L', 1);
             PDF::Cell(45, $height, "Descripcion", '', 0, 'L', 1);
-            PDF::Cell(10, $height, "50", '', 0, 'L', 1);
+            PDF::Cell(10, $height, $item['cantidad_item'], '', 0, 'L', 1);
             PDF::Ln();
         endforeach;
 

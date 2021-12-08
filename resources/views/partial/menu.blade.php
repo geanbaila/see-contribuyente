@@ -11,7 +11,7 @@
 </div>
 <div class="menu-item me-lg-1">
     <a class="menu-link py-3 {{(isset($menu_despacho_active))?"active":""}}" href="{{ url('/despacho') }}">
-        <span class="menu-title">DESPACHO</span>
+        <span class="menu-title">DESPACHOS</span>
     </a>
 </div>
 <div class="menu-item me-lg-1">

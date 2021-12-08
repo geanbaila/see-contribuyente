@@ -175,10 +175,10 @@
                                                             <td>{{ $item->hora }}</td>
                                                             <td></td>
                                                             <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td>{{ $item->cantidad_item }}</td>
+                                                            <td>{{ number_format($item->subtotal_por_pagar, 2, '.', '') }}</td>
+                                                            <td>{{ number_format($item->subtotal_pagado, 2, '.', '') }}</td>
+                                                            <td>{{ number_format($item->total_general, 2, '.', '') }}</td>
                                                             <td>
                                                                 @if ($item->url_documento_pdf)
                                                                     <a target="_blank"
@@ -402,7 +402,6 @@
                         if (response) {
                             if (response.result.status === 'OK') {
                                 showSuccessToastr(response.result.message);
-                                console.log(response.result.manifiesto);
                                 var html = '<tr>';
                                     html += '<td>&nbsp;</td>';
                                     html += '<td></td>';
@@ -410,10 +409,10 @@
                                     html += '<td>'+response.result.manifiesto.hora+'</td>';
                                     html += '<td></td>';
                                     html += '<td></td>';
-                                    html += '<td></td>';
-                                    html += '<td></td>';
-                                    html += '<td></td>';
-                                    html += '<td></td>';
+                                    html += '<td>'+response.result.manifiesto.cantidad_item+'</td>';
+                                    html += '<td>'+response.result.manifiesto.subtotal_por_pagar.toFixed(2)+'</td>';
+                                    html += '<td>'+response.result.manifiesto.subtotal_pagado.toFixed(2)+'</td>';
+                                    html += '<td>'+response.result.manifiesto.total_general.toFixed(2)+'</td>';
                                     html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg" width="24"></a></td>';
                                     html += '</tr>';
                                 $('#tblManifiesto').append(html);

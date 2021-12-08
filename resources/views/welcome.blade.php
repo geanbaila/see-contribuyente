@@ -86,6 +86,7 @@
 
                 <div class="links">
                     <a href="{{url('/venta/nuevo')}}">ENCARGOS</a>
+                    <a href="{{url('/despacho')}}">DESPACHOS</a>
                     <a href="{{url('/manifiesto')}}">MANIFIESTO</a>
                     <a href="{{url('/configuracion')}}">CONFIGURACIÓN</a>
                 </div>

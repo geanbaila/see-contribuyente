@@ -14,7 +14,10 @@ class Manifiesto extends Model
     protected $fillable = [
         'fecha',
         'hora',
-        'items',
+        'cantidad_item',
+        'subtotal_pagado',
+        'subtotal_por_pagar',
+        'total_general',
         'url_documento_pdf',
         'nombre_archivo',
         'detalle',

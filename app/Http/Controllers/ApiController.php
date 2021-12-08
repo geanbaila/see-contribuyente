@@ -167,15 +167,23 @@ class ApiController extends Controller
         $encargo = \App\Business\Encargo::whereIn('_id', $prg_encargo_id);
         $bool = $encargo->update(['estado' => new ObjectId('61af909ad3f9efe2cb27e8be')]);
         if($bool) {
-            $prg_encargo = $encargo->get(['agencia_origen', 'agencia_destino', 'documento_serie', 'documento_correlativo']);
+            $prg_encargo = $encargo->get(['agencia_origen', 'agencia_destino', 'documento_serie', 'documento_correlativo', 'cantidad_item', 'oferta']);
             $detalle = [];
+            $cantidad_item = 0;
+            $subtotal_pagado = 0;
+            $subtotal_por_pagar = 0;
             foreach($prg_encargo as $encargo):
                 $detalle[] = [
+                    'oferta' => $encargo->oferta,
+                    'subtotal' => $encargo->subtotal,
+                    'cantidad_item' => $encargo->cantidad_item,
                     'agencia_origen' => $encargo->agencia_origen,
                     'agencia_destino' => $encargo->agencia_destino,
                     'documento_serie' => $encargo->documento_serie,
                     'documento_correlativo' => $encargo->documento_correlativo,
                 ];
+                $cantidad_item += $encargo->cantidad_item;
+                $subtotal_pagado += $encargo->oferta;
             endforeach;
 
             $fecha = date('Y/m/d');
@@ -188,6 +196,10 @@ class ApiController extends Controller
                 'nombre_archivo' => $nombre_archivo,
                 'items' => 10,
                 'detalle' => $detalle,
+                'cantidad_item' =>$cantidad_item,
+                'subtotal_pagado' =>$subtotal_pagado,
+                'subtotal_por_pagar' =>$subtotal_por_pagar,
+                'total_general' =>$subtotal_por_pagar + $subtotal_pagado,
             ]);
             (new ManifestController())->escribirPDF($manifiesto);
             $response = [
