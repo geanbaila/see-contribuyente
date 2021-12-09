@@ -75,7 +75,7 @@
                         ?>
                         <tr>
                             <td scope="row" class="text-center">
-                                <a><img src="{{ asset('assets/media/eye.svg') }}" width="24"></a>
+                                <a><img src="{{ asset('assets/media/eye.svg') }}" width="20"></a>
                             </td>
                             <td>{{$item->agencias->nombre}}</td>
                             <td>{{$item->$columna}}</td>

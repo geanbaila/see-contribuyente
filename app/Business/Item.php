@@ -16,6 +16,7 @@ class Item extends Model
         'precio_unitario',
         'codigo_item', // nuevo
         'tipo_afectacion_id', // nuevo
+        'estado', // nuevo
     ];
 
     public function encargo()

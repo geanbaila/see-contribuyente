@@ -107,22 +107,19 @@ class Encargo extends Model
 
     static function buscarBoleta($encargo_id) {
         $encargo = Encargo::find($encargo_id);
+        $data = [];
         if ($encargo->documentos->alias === 'B') {
-            $fecha = explode("-", $encargo->documento_fecha);
-            $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
-            
             $data = [
                 'titulo_documento' => $encargo->documentos->nombre,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
                 'emisor_razon_social' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
-                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 'emisor_ruc' => env('EMPRESA_RUC','NO DEFINIDO'),
-                'emisor_ubigeo' =>'150101',
+                'emisor_ubigeo' => env('EMPRESA_UBIGEO', 'NO DEFINIDO'),
                 'emisor_direccion_pais' => 'PE',
-                'emisor_direccion_departamento' => 'LIMA',
-                'emisor_direccion_provincia' => 'LIMA',
-                'emisor_direccion_distrito' => 'SAN BORJA',
-                'emisor_direccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
+                'emisor_direccion_departamento' => env('EMPRESA_DEPARTAMENTO', 'NO DEFINIDO'),
+                'emisor_direccion_provincia' => env('EMPRESA_PROVINCIA', 'NO DEFINIDO'),
+                'emisor_direccion_distrito' => env('EMPRESA_DISTRITO', 'NO DEFINIDO'),
+                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
 
                 'adquiriente_ruc_dni_ce' => $encargo->adquirientes->documento,
                 'adquiriente_nombre_comerial' => mb_strtoupper($encargo->adquirientes->razon_social),
@@ -138,44 +135,48 @@ class Encargo extends Model
                 'emisor_agencia_telefono' => $encargo->agencias->telefono,
                 'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
                 'emisor_numero_documento_electronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
+                'emisor_serie_documento_electronico' => $encargo->documento_serie,
+                'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
                 'emisor_fecha_documento_electronico' => $encargo->documento_fecha, // yyyy-mm-dd
-                'emisor_fecha_documento_electronico_pe' => $documento_fecha_ddmmyyyy,
                 'emisor_hora_documento_electronico' => $encargo->documento_hora,
 
                 'consigna' => [
                     'nombre' => $encargo->doc_recibe . ' - ' . mb_strtoupper($encargo->nombre_recibe),
                 ],
-                // 'destino' => mb_strtoupper($encargo->sedes->nombre),
-                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->sedes->nombre),
+                'destino_direccion' => mb_strtoupper($encargo->agenciasDestino->direccion),
+                'documento_fecha' => $encargo->documento_fecha,
+                'documento_hora' => $encargo->documento_hora,
                 
-                'detalle_gravado' =>$encargo->detalle_gravado,
-                'detalle_exonerado' =>$encargo->detalle_exonerado,
-                'detalle_inafecto' =>$encargo->detalle_inafecto,
-                'detalle_gravado_gratuito' =>$encargo->detalle_gravado_gratuito,
-                'detalle_inafecto_gratuito' =>$encargo->detalle_inafecto_gratuito,
+                'detraccion_codigo' => $encargo->detraccion_codigo,
+                'detraccion_medio_pago' => $encargo->detraccion_medio_pago,
+                'detraccion_cta_banco' => $encargo->detraccion_cta_banco,
+                'detraccion_porcentaje' => $encargo->detraccion_porcentaje,
+                'detraccion_monto' => $encargo->detraccion_monto,
+
+                'detalle' => $encargo->detalles,
 
                 'monto_gravado' => $encargo->monto_gravado,
                 'monto_exonerado' => $encargo->monto_exonerado,
                 'monto_inafecto' => $encargo->monto_inafecto,
                 'monto_gravado_gratuito' => $encargo->monto_gravado_gratuito,
                 'monto_inafecto_gratuito' => $encargo->monto_inafecto_gratuito,
-
+                
                 'subtotal' => $encargo->subtotal,
                 'oferta' => $encargo->oferta,
                 'descuento' => $encargo->descuento,
+
                 'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
                 'importe_pagar_igv' => $encargo->importe_pagar_igv,
             ]; 
-        } else {
-            $data = [];
         }
         return $data;
     }
     
     static function buscarFactura($encargo_id) {
         $encargo = Encargo::find($encargo_id);
-
+        $data = [];
         if ($encargo->documentos->alias === 'F') {    
             $data = [
                 'titulo_documento' => $encargo->documentos->nombre,
@@ -206,7 +207,6 @@ class Encargo extends Model
                 'emisor_serie_documento_electronico' => $encargo->documento_serie,
                 'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
                 'emisor_fecha_documento_electronico' => $encargo->documento_fecha, // yyyy-mm-dd
-                
                 'emisor_hora_documento_electronico' => $encargo->documento_hora,
 
                 'consigna' => [
@@ -239,8 +239,6 @@ class Encargo extends Model
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
                 'importe_pagar_igv' => $encargo->importe_pagar_igv,
             ];
-        } else {
-            $data = [];
         }
         return $data;
     }

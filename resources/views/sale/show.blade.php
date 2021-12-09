@@ -7,19 +7,19 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
-        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
-        <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
-        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
-        <input type="text" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
+        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="hidden" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <input type="hidden" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
 
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
@@ -121,7 +121,7 @@
                                     <label>&nbsp;</label>
                                     <a class="float-end" onclick="javascript:addReceivesRow()">
                                         <img src="http://localhost/dev.enlaces.sis/public/assets/media/plus-circle.svg"
-                                            width="24" />
+                                            width="20" />
                                     </a>
                                 </div>
                             </div>
@@ -236,7 +236,7 @@
                                 </th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
-                                            src="{{ asset('assets/media/plus-circle.svg') }}" width="24" /></a>
+                                            src="{{ asset('assets/media/plus-circle.svg') }}" width="20" /></a>
                                 </th>
                             </tr>
                         </thead>
@@ -354,9 +354,9 @@
                             @if (isset($encargo))
                                 <span name="cdr_descripcion">{{ $encargo->cdr_descripcion }}
                                     @if ($encargo->cdr_codigo === '0')
-                                        <img src="{{ asset('assets/media/check-circle.svg') }}" width="24" />
+                                        <img src="{{ asset('assets/media/check-circle.svg') }}" width="20" />
                                     @else
-                                        <img src="{{ asset('assets/media/alert-circle.svg') }}" width="24" />
+                                        <img src="{{ asset('assets/media/alert-circle.svg') }}" width="20" />
                                     @endif
                                 </span>
                             @else
@@ -377,28 +377,27 @@
                             </div>
                         </div>
                         <div class="col-5 text-end align-top">
-                            <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
-                                <img src="{{ asset('assets/media/search-white.svg') }}" width="24" />
-                            </a>
-
-                            <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">
-                                Confirmar</a>
-                            @php
-                                $img_enable = (isset($encargo))?'-white': '';
-                                $btn_enable = (isset($encargo))?'btn-primary': 'btn-secondary disabled';
-                            @endphp
+                            
+                                <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">Confirmar</a>
+                                <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
+                                    <img src="{{ asset('assets/media/search-white.svg') }}" width="20" />
+                                </a>
+                                @php
+                                    $img_enable = (isset($encargo))?'-white': '';
+                                    $btn_enable = (isset($encargo))?'btn-primary': 'btn-secondary disabled';
+                                @endphp
                                 <a id="btnImprimir" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                    <img src="{{ asset('assets/media/printer'.$img_enable.'.svg') }}" width="24" />
+                                    <img src="{{ asset('assets/media/printer'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                                 <a id="btnEmail" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalEnviarEmail">
-                                    <img src="{{ asset('assets/media/email'.$img_enable.'.svg') }}" width="24" />
+                                    <img src="{{ asset('assets/media/email'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                                 <a id="btnEliminar" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                     data-bs-target="#modalEliminarVenta">
-                                    <img src="{{ asset('assets/media/trash-2'.$img_enable.'.svg') }}" width="24" />
+                                    <img src="{{ asset('assets/media/trash-2'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                         </div>
                     </div>
@@ -409,8 +408,8 @@
 @endsection
 @section('scripts')
     <script>
-        const factura = '617122a2a8c74c6bfc5e36e6';
-        const otros = '6175bf2e8f1a2809dcb499c9';
+        const factura = '2'; //documento : id para el valor factura
+        const otros = '1'; // item: id para el valor otros
         const RUC = 11;
         const DNI = 8;
         const CE = 12;
@@ -543,7 +542,7 @@
                 '<td><input type="number" class="form-control fw8" name="valor_unitario" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
-                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/minus-circle.svg') }}" width="24" /></a>' +
+                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/minus-circle.svg') }}" width="20" /></a>' +
                 '</td>' +
                 '</tr>';
             $("#chargeRow").append(html);

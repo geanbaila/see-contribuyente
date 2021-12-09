@@ -59,7 +59,7 @@
                                 <tr>
                                     <th scope="row">
                                         <a onclick="javascript:entregarPaquete('{{ $item->id }}', this)"><img
-                                                src="{{ asset('assets/media/package.svg') }}" width="24" /></a>
+                                                src="{{ asset('assets/media/package.svg') }}" width="20" /></a>
                                     </th>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_recibe) !!}</td>
                                     <td>{{ $item->cantidad_item }}</td>
@@ -180,9 +180,9 @@
                 } else {
                     showErrorToastr(response.result.message);
                 }
-                $(element).html('<img src="{{ asset('assets/media/package.svg') }}" width="24" />');
+                $(element).html('<img src="{{ asset('assets/media/package.svg') }}" width="20" />');
             }).fail(function() {
-                $(element).html('<img src="{{ asset('assets/media/package.svg') }}" width="24" />');
+                $(element).html('<img src="{{ asset('assets/media/package.svg') }}" width="20" />');
                 showErrorToastr('No se ha podido registrar la entrega del paquete.');
             });
         }

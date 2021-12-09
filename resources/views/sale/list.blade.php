@@ -29,11 +29,13 @@
                             @foreach ($encargo as $item)
                                 <tr>
                                     <td>
-                                        <input class="form-check-input check-encargos" type="checkbox" data-verificado="{{(!empty($item->url_documento_cdr))?'1':'0'}}" value="{{$item->id}}"/>
+                                        @if (!$item->url_documento_baja)
+                                            <input class="form-check-input check-encargos" type="checkbox" data-verificado="{{(!empty($item->url_documento_cdr))?'1':'0'}}" value="{{$item->id}}"/>
+                                        @endif
                                     </td>
                                     <td>
                                         <a href="{{ url('/venta/editar/' . $item->id) }}"><img
-                                                src="{{ asset('/assets/media/edit.svg') }}" width="24" /></a>
+                                                src="{{ asset('/assets/media/edit.svg') }}" width="20" /></a>
                                     </td>
                                     <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_envia) !!}</td>
@@ -46,28 +48,28 @@
                                             <a target="_blank"
                                                 href="{{ url('/api/v1/download/baja/' . $item->id) }}"><img
                                                     src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
-                                                    width="24"></a>
+                                                    width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_pdf)
                                             <a target="_blank" href="{{ url('/api/v1/download/pdf/' . $item->id) }}"><img
                                                     src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
-                                                    width="24"></a>
+                                                    width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_xml)
                                             <a target="_blank" href="{{ url('/api/v1/download/xml/' . $item->id) }}"><img
                                                     src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
-                                                    width="24"></a>
+                                                    width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_cdr)
                                             <a target="_blank" href="{{ url('/api/v1/download/cdr/' . $item->id) }}"><img
                                                     src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
-                                                    width="24"></a>
+                                                    width="20"></a>
                                         @endif
                                     </td>
                                 </tr>

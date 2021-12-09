@@ -13,7 +13,7 @@
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                       <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                       <span class="svg-icon svg-icon-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"
                               fill="none">
                               <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                   transform="rotate(-45 6 17.3137)" fill="black" />
@@ -73,7 +73,7 @@
                                           <span class="indicator-label">Submit
                                               <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
                                               <span class="svg-icon svg-icon-3 ms-2 me-0">
-                                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24"
                                                       viewBox="0 0 24 24" fill="none">
                                                       <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1"
                                                           transform="rotate(-180 18 13)" fill="black" />
@@ -94,7 +94,7 @@
                                           data-kt-stepper-action="next">Generar Boleta E. / Factura E.
                                           <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
                                           <span class="svg-icon svg-icon-3 ms-1 me-0">
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24"
                                                   viewBox="0 0 24 24" fill="none">
                                                   <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1"
                                                       transform="rotate(-180 18 13)" fill="black" />
@@ -140,7 +140,7 @@
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                       <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                       <span class="svg-icon svg-icon-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"
                               fill="none">
                               <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                   transform="rotate(-45 6 17.3137)" fill="black" />
@@ -196,7 +196,7 @@
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                       <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                       <span class="svg-icon svg-icon-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"
                               fill="none">
                               <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                   transform="rotate(-45 6 17.3137)" fill="black" />
@@ -258,7 +258,7 @@
                   <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                       <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                       <span class="svg-icon svg-icon-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24"
                               fill="none">
                               <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                   transform="rotate(-45 6 17.3137)" fill="black" />
