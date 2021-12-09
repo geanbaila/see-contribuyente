@@ -2,13 +2,11 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Serie extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'serie';
-    protected $primaryKey = '_id';
+    protected $table = 'serie';
+    protected $primaryKey = 'id';
 
 }

@@ -8,10 +8,9 @@
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
         <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente : '' }}" />
+        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
         <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="hidden" name="nombre_comercial_recibe"
-            value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
         <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
         <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
         <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
@@ -20,6 +19,8 @@
         <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
         <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
         <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <input type="hidden" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
@@ -30,20 +31,20 @@
                                     <label for="exampleDataList" class="form-label">Envía:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia"
-                                            value="{{ $encargo->doc_envia }}" placeholder="" />
+                                            value="{{ $encargo->doc_envia }}" />
                                     @else
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia" value=""
-                                            placeholder="" />
+                                         />
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
-                                            value="{{ $encargo->nombre_envia }}" placeholder="" disabled>
+                                            value="{{ $encargo->nombre_envia }}" disabled>
                                     @else
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
-                                            value="" placeholder="" disabled>
+                                            value="" disabled>
                                     @endif
                                 </div>
                             </div>
@@ -53,12 +54,16 @@
                                 <div class="col-xxl-5">
                                     <label for="exampleDataList" class="form-label">F. recepción:</label>
                                     @if (isset($encargo))
-                                        <input type="text" class="form-control" id="fecha_hora_envia"
-                                            name="fecha_hora_envia" value="{{ $encargo->fecha_hora_envia }}"
-                                            placeholder="" disabled />
+                                    @php
+                                    list($fecha, $hora) = explode(' ', $encargo->fecha_hora_envia);
+                                    list($year, $month, $day) = explode('-', $fecha);
+                                    
+                                        $fecha_hora_envia_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
+                                    @endphp
+                                        <input type="text" class="form-control" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
+                                         disabled />
                                     @else
-                                        <input type="text" class="form-control" id="fecha_hora_envia"
-                                            name="fecha_hora_envia" value="" placeholder="" disabled />
+                                        <input type="text" class="form-control" value="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -78,20 +83,20 @@
                                     <label for="exampleDataList" class="form-label">Recibe:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe"
-                                            value="{{ $encargo->doc_recibe }}" placeholder="" />
+                                            value="{{ $encargo->doc_recibe }}" />
                                     @else
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe" value=""
-                                            placeholder="" />
+                                         />
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
-                                            value="{{ $encargo->nombre_recibe }}" placeholder="" disabled />
+                                            value="{{ $encargo->nombre_recibe }}" disabled />
                                     @else
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
-                                            value="" placeholder="" disabled />
+                                            value="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -102,10 +107,10 @@
                                     <label for="exampleDataList" class="form-label">F. entrega:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
-                                            value="{{ $encargo->fecha_recibe }}" placeholder="" disabled>
+                                            value="{{ $encargo->fecha_recibe }}" disabled>
                                     @else
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
-                                            value="" placeholder="" disabled>
+                                            value="" disabled>
                                     @endif
                                 </div>
                             </div>
@@ -132,18 +137,16 @@
                                         <!-- getSerie();-->
                                         <option> -- </option>
                                         @isset($encargo)
-                                            @foreach ($encargo->agencia_origen as $item)
-                                                <?php $agencia_origen_selected = $item; ?>
-                                            @endforeach
+                                                <?php $agencia_origen_selected = $encargo->agencia_origen; ?>
                                         @endisset
                                         @if (count($agencia_origen))
                                             @foreach ($agencia_origen as $item)
                                                 @if (isset($agencia_origen_selected))
-                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}"
-                                                        {{ $agencia_origen_selected == $item->_id ? 'selected' : '' }}>
+                                                    <option value="{{ $item->id }}" data-sede="{{ $item->sede_id }}"
+                                                        {{ $agencia_origen_selected == $item->id ? 'selected' : '' }}>
                                                         {{ $item->nombre }}</option>
                                                 @else
-                                                    <option value="{{ $item->_id }}" data-sede="{{ $item->sede }}">
+                                                    <option value="{{ $item->id }}" data-sede="{{ $item->sede_id }}">
                                                         {{ $item->nombre }}</option>
                                                 @endif
                                             @endforeach
@@ -167,14 +170,12 @@
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected>--</option>
                                         @isset($encargo)
-                                            @foreach ($encargo->documento as $d)
-                                                <?php $documento_selected = $d; ?>
-                                            @endforeach
+                                                <?php $documento_selected = $encargo->documento_id; ?>
                                         @endisset
                                         @if (count($documento))
                                             @foreach ($documento as $item)
-                                                <option value="{{ $item->_id }}"
-                                                    {{ isset($documento_selected) && $documento_selected == $item->_id ? 'selected' : '' }}>
+                                                <option value="{{ $item->id }}"
+                                                    {{ isset($documento_selected) && $documento_selected == $item->id ? 'selected' : '' }}>
                                                     {{ $item->nombre }}</option>
                                             @endforeach
                                         @endif
@@ -241,8 +242,8 @@
                         </thead>
                         <tbody id="chargeRow">
                             @if (isset($encargo))
-                                @if (!empty($encargo->detalle_gravado))
-                                    @foreach ($encargo->detalle_gravado as $detalle_gravado)
+                                @if (!empty($encargo->detalles))
+                                    @foreach ($encargo->detalles as $detalle)
                                         <tr>
                                             <td>
                                                 <select class="form-select" aria-label="--" name="descripcion"
@@ -252,7 +253,7 @@
                                                         @foreach ($carga as $item)
                                                             <option value="{{ $item->id }}"
                                                                 data-amount="{{ $item->valor_unitario }}"
-                                                                {{ $detalle_gravado['descripcion'] == $item->nombre ? 'selected' : '' }}>
+                                                                {{ $detalle['descripcion'] == $item->nombre ? 'selected' : '' }}>
                                                                 {{ $item->nombre }}
                                                             </option>
                                                         @endforeach
@@ -262,165 +263,21 @@
                                             <!-- <td><input type="number" class="form-control fw8" name="peso"
                                                                         onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
                                             <td><input type="hidden" class="form-control fw8" name="peso"
-                                                    value="{{ $detalle_gravado['peso'] }}"
+                                                    value="{{ $detalle['peso'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
                                                 <input type="number" class="form-control fw8" name="cantidad"
-                                                    value="{{ $detalle_gravado['cantidad'] }}"
+                                                    value="{{ $detalle['cantidad_item'] }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this);" />
                                             </td>
                                             <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ number_format($detalle_gravado['valor_unitario'], 2, '.','') }}"
+                                                    value="{{ number_format($detalle['valor_unitario'], 2, '.','') }}"
                                                     onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
                                             <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ number_format($detalle_gravado['valor_venta'], 2, '.', '') }}" disabled></td>
+                                                    value="{{ number_format($detalle['valor_venta'], 2, '.', '') }}" disabled></td>
                                         </tr>
                                     @endforeach
                                 @endif
 
-                                @if (!empty($encargo->detalle_exonerado))
-                                    @foreach ($encargo->detalle_exonerado as $detalle_exonerado)
-                                        <tr>
-                                            <td>
-                                                <select class="form-select" aria-label="--" name="descripcion"
-                                                    onchange="javascript:updateChargeDetail(this)">
-                                                    <option value="--" selected> -- </option>
-                                                    @if (isset($carga))
-                                                        @foreach ($carga as $item)
-                                                            <option value="{{ $item->id }}"
-                                                                data-amount="{{ $item->valor_unitario }}"
-                                                                {{ $detalle_exonerado['descripcion'] == $item->nombre ? 'selected' : '' }}>
-                                                                {{ $item->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </td>
-                                            <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
-                                            <td><input type="hidden" class="form-control fw8" name="peso"
-                                                    value="{{ $detalle_exonerado['peso'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                                <input type="number" class="form-control fw8" name="cantidad"
-                                                    value="{{ $detalle_exonerado['cantidad'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                            </td>
-                                            <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ $detalle_exonerado['valor_unitario'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                            <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_exonerado['valor_venta'] }}" disabled></td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-
-                                @if (!empty($encargo->detalle_inafecto))
-                                    @foreach ($encargo->detalle_inafecto as $detalle_inafecto)
-                                        <tr>
-                                            <td>
-                                                <select class="form-select" aria-label="--" name="descripcion"
-                                                    onchange="javascript:updateChargeDetail(this)">
-                                                    <option value="--" selected> -- </option>
-                                                    @if (isset($carga))
-                                                        @foreach ($carga as $item)
-                                                            <option value="{{ $item->id }}"
-                                                                data-amount="{{ $item->valor_unitario }}"
-                                                                {{ $detalle_inafecto['descripcion'] == $item->nombre ? 'selected' : '' }}>
-                                                                {{ $item->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </td>
-                                            <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
-                                            <td><input type="hidden" class="form-control fw8" name="peso"
-                                                    value="{{ $detalle_inafecto['peso'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                                <input type="number" class="form-control fw8" name="cantidad"
-                                                    value="{{ $detalle_inafecto['cantidad'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                            </td>
-                                            <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ $detalle_inafecto['valor_unitario'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                            <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_inafecto['valor_venta'] }}" disabled></td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-
-                                @if (!empty($encargo->detalle_gravado_gratuito))
-                                    @foreach ($encargo->detalle_gravado_gratuito as $detalle_gravado_gratuito)
-                                        <tr>
-                                            <td>
-                                                <select class="form-select" aria-label="--" name="descripcion"
-                                                    onchange="javascript:updateChargeDetail(this)">
-                                                    <option value="--" selected> -- </option>
-                                                    @if (isset($carga))
-                                                        @foreach ($carga as $item)
-                                                            <option value="{{ $item->id }}"
-                                                                data-amount="{{ $item->valor_unitario }}"
-                                                                {{ $detalle_gravado_gratuito['descripcion'] == $item->nombre ? 'selected' : '' }}>
-                                                                {{ $item->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </td>
-                                            <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
-                                            <td><input type="hidden" class="form-control fw8" name="peso"
-                                                    value="{{ $detalle_gravado_gratuito['peso'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                                <input type="number" class="form-control fw8" name="cantidad"
-                                                    value="{{ $detalle_gravado_gratuito['cantidad'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                            </td>
-                                            <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ $detalle_gravado_gratuito['valor_unitario'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                            <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_gravado_gratuito['valor_venta'] }}" disabled></td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-
-                                @if (!empty($encargo->detalle_inafecto_gratuito))
-                                    @foreach ($encargo->detalle_inafecto_gratuito as $detalle_inafecto_gratuito)
-                                        <tr>
-                                            <td>
-                                                <select class="form-select" aria-label="--" name="descripcion"
-                                                    onchange="javascript:updateChargeDetail(this)">
-                                                    <option value="--" selected> -- </option>
-                                                    @if (isset($carga))
-                                                        @foreach ($carga as $item)
-                                                            <option value="{{ $item->id }}"
-                                                                data-amount="{{ $item->valor_unitario }}"
-                                                                {{ $detalle_inafecto_gratuito['descripcion'] == $item->nombre ? 'selected' : '' }}>
-                                                                {{ $item->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </td>
-                                            <!-- <td><input type="number" class="form-control fw8" name="peso"
-                                                                        onkeyup="javascript:calculatePayChargeDetail(this);"></td>-->
-                                            <td><input type="hidden" class="form-control fw8" name="peso"
-                                                    value="{{ $detalle_inafecto_gratuito['peso'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                                <input type="number" class="form-control fw8" name="cantidad"
-                                                    value="{{ $detalle_inafecto_gratuito['cantidad'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this);" />
-                                            </td>
-                                            <td><input type="number" class="form-control fw8" name="valor_unitario"
-                                                    value="{{ $detalle_inafecto_gratuito['valor_unitario'] }}"
-                                                    onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>
-                                            <td><input type="number" class="form-control fw8" name="total"
-                                                    value="{{ $detalle_inafecto_gratuito['valor_venta'] }}" disabled>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
                             @else
                                 <tr>
                                     <td>
@@ -708,7 +565,7 @@
         }
 
         function putChargeForm(data) {
-            $("[name='encargo_id']").val(data._id);
+            $("[name='encargo_id']").val(data.id);
 
             $("[name='doc_envia']").val(data.doc_envia);
             $("[name='nombre_envia']").val(data.nombre_envia);
@@ -775,8 +632,8 @@
             var agencia_origen = $("[name='agencia_origen']").val().trim();
             var agencia_destino = $("[name='agencia_destino']").val().trim();
             // var medio_pago = $("[name='medio_pago']").val().trim();
-            var adquiriente = $("[name='adquiriente']").val().trim();
-            var documento = $("[name='documento']").val().trim();
+            var adquiriente_id = $("[name='adquiriente']").val().trim();
+            var documento_id = $("[name='documento']").val().trim();
             var documento_serie = $("[name='documento_serie']").val().trim();
             var documento_correlativo = $("[name='documento_correlativo']").val().trim();
             var subtotal = $("[name='subtotal']").val().trim();
@@ -819,8 +676,8 @@
                 agencia_origen: agencia_origen,
                 agencia_destino: agencia_destino,
                 // medio_pago: medio_pago,
-                adquiriente: adquiriente,
-                documento: documento,
+                adquiriente: adquiriente_id,
+                documento: documento_id,
                 documento_serie: documento_serie,
                 documento_correlativo: documento_correlativo,
                 subtotal: subtotal,
@@ -898,8 +755,8 @@
                 }).done(function(result) {
                     if (result) {
                         _.forEach(result, function(element, index) {
-                            agencia_destino_selected = (selected == element._id) ? "selected" : "";
-                            $("[name='agencia_destino']").append("<option value='" + element._id + "' " +
+                            agencia_destino_selected = (selected == element.id) ? "selected" : "";
+                            $("[name='agencia_destino']").append("<option value='" + element.id + "' " +
                                 agencia_destino_selected + ">" +
                                 element.direccion + "</option>");
 
@@ -915,11 +772,10 @@
             var agencia_origen = $("[name='agencia_origen']").val();
             var agencia_destino = $("[name='agencia_destino']").val();
             var documento_id = $("[name='documento']").val();
-
+            
             if (agencia_origen !== '--' && agencia_destino !== '--' && documento_id !== '--') {
                 $.ajax({
-                    url: "{{ url('/api/v1/serie') }}/" + agencia_origen + "/" + agencia_destino + "/" +
-                        documento_id,
+                    url: "{{ url('/api/v1/serie') }}/" + agencia_origen + "/" + agencia_destino + "/" + documento_id,
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -929,9 +785,7 @@
                     dataType: "json"
                 }).done(function(result) {
                     if (result) {
-                        var documento_serie = result[0].correlativo;
-                        $("[name='documento_serie']").val(documento_serie);
-                        // var documento_serie = str_pad(result[0].correlativo, 3);
+                        $("[name='documento_serie']").val(result[0].serie);
                     }
                 });
             } else {
@@ -1025,7 +879,7 @@
                 if (response.result.status === 'OK') {
                     if (data.encargo_id.length === 0) {
                         $("[name='encargo_id']").val(response.result.encargo_id);
-                        $("[name='adquiriente']").val(response.result.adquiriente);
+                        $("[name='adquiriente']").val(response.result.adquiriente_id);
                         $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
                         $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
                             {{ env('ZEROFILL', 8) }}));
@@ -1142,6 +996,7 @@
                         dataType: "json"
                     }).done(function(response) {
                         $("[name='nombre_envia']").val(response.result.nombre);
+                        $("[name='direccion_envia']").val(response.result.direccion);
                     });
 
                 } else if (doc_envia.length === RUC) {
@@ -1156,6 +1011,7 @@
                     }).done(function(response) {
                         $("[name='nombre_envia']").val(response.result.nombre);
                         $("[name='nombre_comercial_envia']").val(response.result.nombre_comercial);
+                        $("[name='direccion_envia']").val(response.result.direccion);
 
                     });
                 } else {
@@ -1181,6 +1037,7 @@
                     }).done(function(result) {
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
+                        $("[name='direccion_recibe']").val(result.result.direccion);
                     });
 
                 } else if (doc_recibe.length === RUC) {
@@ -1195,6 +1052,7 @@
                     }).done(function(result) {
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
+                        $("[name='direccion_recibe']").val(result.result.direccion);
                     });
                 } else {
                     showErrorToastr("Ha ingresado " + doc_recibe.length + " caracteres, complételo por favor.");

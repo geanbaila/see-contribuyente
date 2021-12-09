@@ -29,7 +29,7 @@ Route::get('/manifiesto', 'ManifestController@list');
 Route::get('/despacho', 'DispatchController@list');
 
 Route::get('/configuracion', 'ConfigurationController@list');
-Route::post('/configuracion/salida', 'ConfigurationController@update');
+// Route::post('/configuracion/salida', 'ConfigurationController@update');
 
 Route::post('/enviar-comprobante', 'MailerController@enviarComprobante');
 

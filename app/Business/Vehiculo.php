@@ -2,13 +2,11 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Vehiculo extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'vehiculo';
-    protected $primaryKey = '_id';
+    protected $table = 'vehiculo';
+    protected $primaryKey = 'id';
 
 }

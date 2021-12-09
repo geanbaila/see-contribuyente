@@ -90,7 +90,7 @@ class ManifestController extends Controller
 
         $por_pagar = 0;
         $pagado = 0;
-        foreach($manifiesto->detalle as $item):
+        foreach($manifiesto->detalles as $item):
             $por_pagar += 0;
             $pagado += $item['oferta'];
             PDF::Cell(24, $height, $item['documento_serie'] . '-' . $item['documento_correlativo'], '', 0, 'L', 1);
@@ -140,7 +140,7 @@ class ManifestController extends Controller
         PDF::SetFont('times', 'I', $font_size_regular);
         PDF::Cell(0, 10, 'pág. '.PDF::getAliasNumPage().'/'.PDF::getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     
-        list($day, $month, $year) = explode('-', $manifiesto->fecha); // dd-mm-yyyy
+        list($year, $month, $day) = explode('-', $manifiesto->fecha); // yyyy-mm-dd
         $tree = 'resources/manifiesto/' . $year . '/' . $month . '/' . $day;
         $estructura = base_path('public/'.$tree);
         if(!@mkdir($estructura, 0777, true)) {

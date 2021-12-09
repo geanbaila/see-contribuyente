@@ -2,17 +2,16 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Sede extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'sede';
-    protected $primaryKey = '_id';
+    protected $table = 'sede';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'nombre',
+        'estado',
     ];
 
     // public function agencia()

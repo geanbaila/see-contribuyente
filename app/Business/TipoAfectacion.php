@@ -2,17 +2,16 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class TipoAfectacion extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'tipo_afectacion'; // catálogo 7
-    protected $primaryKey = '_id';
+    protected $table = 'tipo_afectacion'; // catálogo 7
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'codigo',
+        'nombre',
         'descripcion',
     ];
 }
