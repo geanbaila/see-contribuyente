@@ -13,12 +13,14 @@ class ConfigurationController extends Controller
 {
     
     public function list() {
-        $agencia = Agencia::all();
-        $salida = Salida::all()->sortBy("agencia");
-        $vehiculo = Vehiculo::all();
-        return view('config.list')->with(['agencia' => $agencia, 'salida' => $salida, 'vehiculo' => $vehiculo, 'menu_configuracion_active' => 'active']);
+        // $agencia = Agencia::all();
+        // $salida = Salida::all()->sortBy("agencia");
+        // $vehiculo = Vehiculo::all();
+        // return view('config.list')->with(['agencia' => $agencia, 'salida' => $salida, 'vehiculo' => $vehiculo, 'menu_configuracion_active' => 'active']);
+        return view('config.list');
     }
 
+    /*
     public function update(Request $request) {
         $w = $request->input("dia");
         $column = $this->getDay($w, 0);
@@ -69,5 +71,6 @@ class ConfigurationController extends Controller
     public function register(Request $request) {
         // acción para ingreso de más buses
     }
+    */
 
 }

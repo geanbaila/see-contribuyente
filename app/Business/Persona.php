@@ -2,13 +2,11 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'persona';
-    protected $primaryKey = '_id';
+    protected $table = 'persona';
+    protected $primaryKey = 'id';
 
 }

@@ -2,24 +2,26 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Manifiesto extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'manifiesto';
-    protected $primaryKey = '_id';
+    protected $table = 'manifiesto';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
+        'id',
         'fecha',
         'hora',
         'cantidad_item',
         'subtotal_pagado',
         'subtotal_por_pagar',
         'total_general',
-        'url_documento_pdf',
         'nombre_archivo',
-        'detalle',
+        'url_documento_pdf',        
     ];
+
+    public function detalles() {
+        return $this->hasMany('App\Business\ManifiestoDetalle');
+    }
 }

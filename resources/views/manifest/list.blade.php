@@ -110,15 +110,15 @@
                                                     @foreach ($encargo as $item)
                                                         <tr>
                                                             <th scope="row">
-                                                                @if ($item->estado == '61af909ad3f9efe2cb27e8be')
+                                                                @if ($item->estado == '3')
                                                                     {{-- <img src="{{asset('assets/media/arrow-down-right.svg')}}" width="24" /> --}}
                                                                     <input class="form-check-input check-encargos"
                                                                         type="checkbox" value="{{ $item->id }}"
-                                                                        data-verificado="{{ ($item->estado == '61af9089d3f9efe2cb27e8b6' || $item->estado == '61af909ad3f9efe2cb27e8be')?'1':'0' }}">
+                                                                        data-verificado="{{ ($item->estado == '1' || $item->estado == '3')?'1':'0' }}">
                                                                 @else
                                                                     <input class="form-check-input check-encargos"
                                                                         type="checkbox" value="{{ $item->id }}" 
-                                                                        data-verificado="{{ ($item->estado == '61af9089d3f9efe2cb27e8b6' || $item->estado == '61af909ad3f9efe2cb27e8be')?'1':'0' }}">
+                                                                        data-verificado="{{ ($item->estado == '1' || $item->estado == '3')?'1':'0' }}">
                                                                 @endif
                                                             </th>
                                                             <td>{{ $item->estados->nombre }}</td>
@@ -323,8 +323,6 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    // contentType: false,
-                    // processData: false,
                     dataType: "json",
                     data: {
                         encargos: encargos

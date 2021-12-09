@@ -2,17 +2,15 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Salida extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'salida';
-    protected $primaryKey = '_id';
+    protected $table = 'salida';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'agencia',
+        'agencia_id',
         'horario',
         'horario_predeterminado',
         'lunes',
@@ -26,6 +24,6 @@ class Salida extends Model
 
     public function agencias()
     {
-        return $this->belongsTo('App\Business\Agencia', 'agencia');
+        return $this->belongsTo('App\Business\Agencia', 'agencia_id');
     }
 }

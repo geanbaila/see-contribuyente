@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use MongoDB\BSON\ObjectId;
 use App\Http\Controllers\ManifestController;
 
 class ApiController extends Controller
@@ -19,17 +18,15 @@ class ApiController extends Controller
             return response()->json([ 'result' => ['encargo' => $encargo->get()] ]);
     }
 
-    public function getAgencia(String $sede_id) {
-        $agencia = \App\Business\Agencia::where('sede', '!=', new ObjectId("$sede_id"))->get();
+    public function getAgencia(int $sede_id) {
+        $agencia = \App\Business\Agencia::where('sede_id', '!=', $sede_id)->get();
         return response()->json($agencia);
     }
 
     public function getSerie($agencia_origen_id, $agencia_destino_id, $documento_id) {
         $documento = \App\Business\Documento::find($documento_id);
         $agencia = ($documento->alias === 'G') ? $agencia_destino_id : $agencia_origen_id;
-        $serie = \App\Business\Serie::where('agencia', new ObjectId("$agencia"))
-        ->where('documento', new ObjectId("$documento_id"))
-        ->get();
+        $serie = \App\Business\Serie::where('agencia_id', $agencia)->where('documento_id', $documento_id)->get();
         return response()->json($serie);
     }
 
@@ -54,7 +51,7 @@ class ApiController extends Controller
         $response = [
             'result' =>[
                 'nombre' => 'GEAN CARLOS BAILA LAURENTE',
-                'direccion' => '', 
+                'direccion' => 'DIRECCIÓN HIPOTÉTICA 1', 
                 'foto' => '',
             ],
         ];
@@ -62,35 +59,35 @@ class ApiController extends Controller
     }
 
     public function downloadPdf($encargo_id) {
-        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_pdf', 'nombre_archivo']);
+        $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_pdf', 'nombre_archivo']);
         $file = storage_path('app/' . $encargo[0]->url_documento_pdf);
         return \response()
              ->download($file, $encargo[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
     }
 
     public function downloadXml($encargo_id) {
-        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_xml', 'nombre_archivo']);
+        $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_xml', 'nombre_archivo']);
         $file = storage_path('app/' . $encargo[0]->url_documento_xml);
         return \response()
              ->download($file, $encargo[0]->nombre_archivo . '.xml', ['Content-Type'=> 'application/xml']);
     }
 
     public function downloadCdr($encargo_id) {
-        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_cdr', 'nombre_archivo']);
+        $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_cdr', 'nombre_archivo']);
         $file = storage_path('app/' . $encargo[0]->url_documento_cdr);
         return \response()
              ->download($file, $encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
     public function downloadCdrBaja($encargo_id) {
-        $encargo = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->get(['url_documento_baja', 'nombre_archivo']);
+        $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_baja', 'nombre_archivo']);
         $file = storage_path('app/' . $encargo[0]->url_documento_baja);
         return \response()
              ->download($file, $encargo[0]->nombre_archivo . '.zip', ['Content-Type'=> 'application/zip']);
     }
 
     public function downloadManifiesto($manifiesto_id) {
-        $manifiesto = \App\Business\Manifiesto::where('_id', new ObjectId("$manifiesto_id"))->get(['url_documento_pdf', 'nombre_archivo']);
+        $manifiesto = \App\Business\Manifiesto::where('id', $manifiesto_id)->get(['url_documento_pdf', 'nombre_archivo']);
         // $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
         $file = base_path('public/' . $manifiesto[0]->url_documento_pdf);
         return \response()
@@ -98,8 +95,8 @@ class ApiController extends Controller
     }
 
     public function despacho($encargo_id) {
-        $fecha_hora_recibe = date('d-m-Y H:i:s');
-        $bool = \App\Business\Encargo::where('_id', new ObjectId("$encargo_id"))->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
+        $fecha_hora_recibe = date(env('FORMATO_DATETIME'));
+        $bool = \App\Business\Encargo::where('id', $encargo_id)->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
         if($bool) {
             $response = [
                 'result' =>[
@@ -122,7 +119,7 @@ class ApiController extends Controller
 
     public function noTransportar(Request $request) {
         $prg_encargo_id = $request->input('encargos');
-        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => new ObjectId('61af9090d3f9efe2cb27e8b9')]);
+        $bool = \App\Business\Encargo::whereIn('id', $prg_encargo_id)->update(['estado' => 2]); // encargo_estado: no transportar
         if($bool) {
             $response = [
                 'result' =>[
@@ -143,7 +140,7 @@ class ApiController extends Controller
 
     public function transportar(Request $request) {
         $prg_encargo_id = $request->input('encargos');
-        $bool = \App\Business\Encargo::whereIn('_id', $prg_encargo_id)->update(['estado' => new ObjectId('61af9089d3f9efe2cb27e8b6')]);
+        $bool = \App\Business\Encargo::whereIn('id', $prg_encargo_id)->update(['estado' => 1]);  // encargo_estado:  transportar
         if($bool) {
             $response = [
                 'result' =>[
@@ -164,43 +161,54 @@ class ApiController extends Controller
 
     public function empaquetarEnvio(Request $request) {
         $prg_encargo_id = $request->input('encargos');
-        $encargo = \App\Business\Encargo::whereIn('_id', $prg_encargo_id);
-        $bool = $encargo->update(['estado' => new ObjectId('61af909ad3f9efe2cb27e8be')]);
+        $encargo = \App\Business\Encargo::whereIn('id', $prg_encargo_id);
+        $bool = $encargo->update(['estado' => 3]);  // encargo_estado: en manifiesto
         if($bool) {
-            $prg_encargo = $encargo->get(['agencia_origen', 'agencia_destino', 'documento_serie', 'documento_correlativo', 'cantidad_item', 'oferta']);
-            $detalle = [];
+            $prg_encargo = $encargo->get([
+                'oferta',
+                'subtotal',
+                'cantidad_item',
+                'agencia_origen',
+                'agencia_destino',
+                'documento_serie',
+                'documento_correlativo',
+            ]);
+            $manifiesto_detalle = [];
             $cantidad_item = 0;
             $subtotal_pagado = 0;
             $subtotal_por_pagar = 0;
-            foreach($prg_encargo as $encargo):
-                $detalle[] = [
-                    'oferta' => $encargo->oferta,
-                    'subtotal' => $encargo->subtotal,
-                    'cantidad_item' => $encargo->cantidad_item,
-                    'agencia_origen' => $encargo->agencia_origen,
-                    'agencia_destino' => $encargo->agencia_destino,
-                    'documento_serie' => $encargo->documento_serie,
-                    'documento_correlativo' => $encargo->documento_correlativo,
+            foreach($prg_encargo as $item):
+                $manifiesto_detalle[] = [
+                    'oferta' => $item->oferta,
+                    'subtotal' => $item->subtotal,
+                    'cantidad_item' => $item->cantidad_item,
+                    'agencia_origen' => $item->agencia_origen,
+                    'agencia_destino' => $item->agencia_destino,
+                    'documento_serie' => $item->documento_serie,
+                    'documento_correlativo' => $item->documento_correlativo,
                 ];
-                $cantidad_item += $encargo->cantidad_item;
-                $subtotal_pagado += $encargo->oferta;
+                $cantidad_item += $item->cantidad_item;
+                $subtotal_pagado += $item->oferta;
             endforeach;
 
             $fecha = date('Y/m/d');
             $nombre_archivo = 'manifiesto.pdf';
             $url_documento_pdf = 'resources/manifiesto/'.$fecha.'/'.$nombre_archivo;
             $manifiesto = \App\Business\Manifiesto::create([
-                'fecha' => date('d-m-Y'),
+                'fecha' => date(env('FORMATO_DATE')),
                 'hora' => date('H:i:s'),
                 'url_documento_pdf' => $url_documento_pdf,
                 'nombre_archivo' => $nombre_archivo,
                 'items' => 10,
-                'detalle' => $detalle,
                 'cantidad_item' =>$cantidad_item,
                 'subtotal_pagado' =>$subtotal_pagado,
                 'subtotal_por_pagar' =>$subtotal_por_pagar,
                 'total_general' =>$subtotal_por_pagar + $subtotal_pagado,
             ]);
+            foreach($manifiesto_detalle as $item):
+                \App\Business\ManifiestoDetalle::create(array_merge($item, ['manifiesto_id' => $manifiesto['id']]));
+            endforeach;
+            
             (new ManifestController())->escribirPDF($manifiesto);
             $response = [
                 'result' =>[

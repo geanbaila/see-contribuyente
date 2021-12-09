@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use MongoDB\BSON\ObjectId;
+
 
 class MailerController extends Controller
 {
@@ -14,7 +14,7 @@ class MailerController extends Controller
         require base_path("vendor/autoload.php");
         $mail = new PHPMailer(true);     // Passing `true` enables exceptions
         $encargo_id = $request->encargo_id;
-        $encargo = \App\Business\Encargo::find(new ObjectId($encargo_id));
+        $encargo = \App\Business\Encargo::find($encargo_id);
         
         $body = env('MAIL_BODY');
         $body = str_replace('_RAZON_SOCIAL_',$encargo->adquirientes->razon_social, $body);
@@ -77,10 +77,10 @@ class MailerController extends Controller
             $response = [
                 'result' =>[
                     'status' => 'fails',
-                    'message' => 'No se pudo enviar el e-mail, ha ocurrido un error interno.' .  $e->getMessage()
+                    'message' => 'No se pudo enviar el e-mail, ha ocurrido un error interno.<br>' .  $e->getMessage()
                 ]
             ];
-            return response()-json($response);
+            return response()->json($response);
         }
     }
 }

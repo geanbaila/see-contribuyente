@@ -2,14 +2,12 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Encargo extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'encargo';
-    protected $primaryKey = '_id';
+    protected $table = 'encargo';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'doc_envia',
@@ -30,10 +28,10 @@ class Encargo extends Model
         'agencia_origen',
         'agencia_destino',
 
-        'agencia',
-        'adquiriente',
+        'agencia_id',
+        'adquiriente_id',
         'medio_pago',
-        'documento',
+        'documento_id',
         'documento_serie',
         'documento_correlativo',
         'documento_fecha',
@@ -87,19 +85,24 @@ class Encargo extends Model
     }
 
     public function documentos() {
-        return $this->belongsTo('App\Business\Documento','documento');
+        return $this->belongsTo('App\Business\Documento','documento_id');
     }
     
     public function agencias() {
-        return $this->belongsTo('App\Business\Agencia', 'agencia');
+        return $this->belongsTo('App\Business\Agencia', 'agencia_id');
     }
     
     public function adquirientes() {
-        return $this->belongsTo('App\Business\Adquiriente', 'adquiriente');
+        return $this->belongsTo('App\Business\Adquiriente', 'adquiriente_id');
     }
 
     public function estados() {
         return $this->belongsTo('App\Business\EncargoEstado', 'estado');
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany('App\Business\EncargoDetalle');
     }
 
     static function buscarBoleta($encargo_id) {
@@ -173,8 +176,7 @@ class Encargo extends Model
     static function buscarFactura($encargo_id) {
         $encargo = Encargo::find($encargo_id);
 
-        if ($encargo->documentos->alias === 'F') {
-            
+        if ($encargo->documentos->alias === 'F') {    
             $data = [
                 'titulo_documento' => $encargo->documentos->nombre,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
@@ -221,12 +223,8 @@ class Encargo extends Model
                 'detraccion_porcentaje' => $encargo->detraccion_porcentaje,
                 'detraccion_monto' => $encargo->detraccion_monto,
 
-                'detalle_gravado' => $encargo->detalle_gravado,
-                'detalle_exonerado' => $encargo->detalle_exonerado,
-                'detalle_inafecto' => $encargo->detalle_inafecto,
-                'detalle_gravado_gratuito' => $encargo->detalle_gravado_gratuito,
-                'detalle_inafecto_gratuito' => $encargo->detalle_inafecto_gratuito,
-
+                'detalle' => $encargo->detalles,
+                
                 'monto_gravado' => $encargo->monto_gravado,
                 'monto_exonerado' => $encargo->monto_exonerado,
                 'monto_inafecto' => $encargo->monto_inafecto,

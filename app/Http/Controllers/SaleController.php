@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Business\Sede;
-use App\Business\Carga;
+use App\Business\Item;
 use App\Business\Agencia;
 use App\Business\Documento;
 use App\Business\Encargo;
+use App\Business\EncargoDetalle;
 use App\Business\Adquiriente;
 use App\Business\Baja;
-use MongoDB\BSON\ObjectId;
 use \Greenter\Model\Response\BillResult;
 use \Greenter\Model\Sale\FormaPagos\FormaPagoContado;
 use \Greenter\Model\Sale\Invoice;
@@ -35,6 +35,44 @@ use App\Http\Controllers\Util;
 
 class SaleController extends Controller
 {
+    public function list() {
+        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
+        return view('sale.list')->with([
+            'encargo' => $encargo,
+            'menu_venta_active' => 'active',
+        ]);
+    }
+
+    public function show() {
+        $sede = Sede::all();
+        $item = Item::orderBy('nombre','asc')->get();
+        $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
+        $documento = Documento::all();
+        return view('sale.show')->with([
+            'agencia_origen' => $agencia_origen,
+            'sede' => $sede,
+            'documento' => $documento,
+            'carga' => $item,
+            'menu_venta_active' => 'active',
+        ]);
+    }
+
+    public function edit($encargo_id) {
+        $sede = Sede::all();
+        $item = Item::all();
+        $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
+        $documento = Documento::all();
+        $encargo = Encargo::find($encargo_id);
+        return view('sale.edit')->with([
+            'agencia_origen' => $agencia_origen,
+            'sede' => $sede,
+            'documento' => $documento,
+            'carga' => $item,
+            'encargo' => $encargo,
+            'menu_venta_active' => 'active',
+        ]);
+    }
+
     public function register(Request $request) {
         // try {
             $data = $request->all();
@@ -53,22 +91,21 @@ class SaleController extends Controller
 
                 foreach($prg as $item) {
                     if ($item['descripcion'] !== "--") {
-                        $carga = Carga::find($item['descripcion']);
-                        if ($carga) {
-                            if ($carga->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO')) {
+                        $row_item = Item::find($item['descripcion']);
+                        if ($row_item) {
+                            if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO')) {
                                 array_push($gravado, [
-                                    'carga' => $carga->id,
-                                    'codigo_producto' => $carga->codigo_producto,
-                                    'descripcion' => $carga->nombre,
-                                    'cantidad' => $item['cantidad'],
+                                    'item_id' => $row_item->id,
+                                    'codigo_producto' => $row_item->codigo_producto,
+                                    'descripcion' => $row_item->nombre,
+                                    'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
-                                    
                                     'valor_unitario' => $item['valor_unitario'],
                                     'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => env('IGV') * 100,
                                     'igv_venta' => ($item['cantidad'] * $item['valor_unitario'] * env('IGV') * 100) / 100,
-                                    'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
+                                    'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'] * (1 + env('IGV')),
                                 ]);
                                 $monto_gravado += $item['cantidad'] * $item['valor_unitario'];
@@ -76,20 +113,19 @@ class SaleController extends Controller
                                 $cantidad_item += $item['cantidad'];
                             }
                             
-                            if ($carga->tipo_afectaciones->codigo == env('AFECTACION_EXONERADO')) {
+                            if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_EXONERADO')) {
                                 array_push($exonerado, [
-                                    'carga' => $carga->id,
-                                    'codigo_producto' => $carga->codigo_producto,
-                                    'descripcion' => $carga->nombre,
-                                    'cantidad' => $item['cantidad'],
+                                    'item_id' => $row_item->id,
+                                    'codigo_producto' => $row_item->codigo_producto,
+                                    'descripcion' => $row_item->nombre,
+                                    'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
-                                    
                                     'valor_unitario' => $item['valor_unitario'],
                                     'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => 0,
                                     'igv_venta' => 0,
-                                    'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
+                                    'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_exonerado += $item['cantidad'] * $item['valor_unitario'];
@@ -97,20 +133,19 @@ class SaleController extends Controller
                                 $cantidad_item += $item['cantidad'];
                             }
                             
-                            if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO')) {
+                            if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO')) {
                                 array_push($inafecto, [
-                                    'carga' => $carga->id,
-                                    'codigo_producto' => $carga->codigo_producto,
-                                    'descripcion' => $carga->nombre,
-                                    'cantidad' => $item['cantidad'],
+                                    'item_id' => $row_item->id,
+                                    'codigo_producto' => $row_item->codigo_producto,
+                                    'descripcion' => $row_item->nombre,
+                                    'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
-                                    
                                     'valor_unitario' => $item['valor_unitario'],
                                     'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => 0,
                                     'igv_venta' => 0,
-                                    'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
+                                    'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_inafecto += $item['cantidad'] * $item['valor_unitario'];
@@ -118,70 +153,64 @@ class SaleController extends Controller
                                 $cantidad_item += $item['cantidad'];
                             }
 
-                            if ($carga->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO_GRATUITO')) {
+                            if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO_GRATUITO')) {
                                 array_push($gravado_gratuito, [
-                                    'carga' => $carga->id,
-                                    'codigo_producto' => $carga->codigo_producto,
-                                    'descripcion' => $carga->nombre,
-                                    'cantidad' => $item['cantidad'],
+                                    'item_id' => $row_item->id,
+                                    'codigo_producto' => $row_item->codigo_producto,
+                                    'descripcion' => $row_item->nombre,
+                                    'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
-                                    
                                     'valor_unitario' => 0,
                                     'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_gratuito' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => env('IGV') * 100,
                                     'igv_venta' => ($item['cantidad'] * $item['valor_unitario'] * env('IGV') * 100) / 100,
-                                    'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
+                                    'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
                                 $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
                             }
 
-                            if ($carga->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO_GRATUITO')) {
+                            if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO_GRATUITO')) {
                                 array_push($inafecto_gratuito, [
-                                    'carga' => $carga->id,
-                                    'codigo_producto' => $carga->codigo_producto,
-                                    'descripcion' => $carga->nombre,
-                                    'cantidad' => $item['cantidad'],
+                                    'item_id' => $row_item->id,
+                                    'codigo_producto' => $row_item->codigo_producto,
+                                    'descripcion' => $row_item->nombre,
+                                    'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
-                                    
                                     'valor_unitario' => 0,
                                     'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_gratuito' => $item['cantidad'] * $item['valor_unitario'],
                                     'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => 0,
                                     'igv_venta' => 0,
-                                    'tipo_afectacion' => $carga->tipo_afectaciones->codigo,
+                                    'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
                                 $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
-                            }
+                            } 
                         }
                     }
                 }
-
                 return [
-                    'detalle_gravado' => $gravado,
-                    'detalle_exonerado' => $exonerado,
-                    'detalle_inafecto' => $inafecto,
-                    'detalle_gravado_gratuito' => $gravado_gratuito,
-                    'detalle_inafecto_gratuito' => $inafecto_gratuito,
-                    'cantidad_item' => $cantidad_item,
-                    
-                    'monto_gravado' => number_format($monto_gravado, 2, '.', ''),
-                    'monto_exonerado' => number_format($monto_exonerado, 2, '.', ''),
-                    'monto_inafecto' => number_format($monto_inafecto, 2, '.', ''),
-                    
-                    'importe_pagar_con_igv' => number_format($precio_venta, 2, '.', ''),
-                    'importe_pagar_sin_igv' => number_format($precio_venta / (1 + env('IGV')) , 2, '.', ''),
-                    'importe_pagar_igv' => number_format($precio_venta - ($precio_venta / (1 + env('IGV'))), 2, '.', ''),
+                        array_merge($gravado, $exonerado,$inafecto,$gravado_gratuito,$inafecto_gratuito)
+                    ,
+                    [
+                        'cantidad_item' => $cantidad_item,
+                        'monto_gravado' => number_format($monto_gravado, 2, '.', ''),
+                        'monto_exonerado' => number_format($monto_exonerado, 2, '.', ''),
+                        'monto_inafecto' => number_format($monto_inafecto, 2, '.', ''),
+                        'importe_pagar_con_igv' => number_format($precio_venta, 2, '.', ''),
+                        'importe_pagar_sin_igv' => number_format($precio_venta / (1 + env('IGV')) , 2, '.', ''),
+                        'importe_pagar_igv' => number_format($precio_venta - ($precio_venta / (1 + env('IGV'))), 2, '.', ''),
+                    ]
                 ];
             };
 
-            if (!$encargo = $var($data['encargo'])) {
+            if (!$columnas = $var($data['encargo'])) {
                 return \response()->json([
                     'result' => [
                         'status' => 'fails', 
@@ -211,7 +240,17 @@ class SaleController extends Controller
                 ];
             } else if ($documento->alias === 'G') {
                 // guía de remisión
+
+                if (strlen($data['doc_recibe']) === 8) {
+                    $tipo_documento = 'DNI';
+                }else if (strlen($data['doc_recibe']) === 11) {
+                    $tipo_documento = 'RUC';
+                } else {
+                    $tipo_documento = '';
+                }
+
                 $insert_adquiriente = [
+                    'tipo_documento' => $tipo_documento,
                     'documento' => $data['doc_recibe'],
                     'razon_social' => $data['nombre_recibe'],
                     'nombre_comercial' => $data['nombre_comercial_recibe'],
@@ -227,10 +266,10 @@ class SaleController extends Controller
             }
 
             if (strlen($data['encargo_id']) > 0) {
-                $adquiriente = $data['adquiriente'];
+                $adquiriente_id = $data['adquiriente'];
             } else {
                 $adquiriente = (Adquiriente::create($insert_adquiriente));
-                $adquiriente = $adquiriente->id;
+                $adquiriente_id = $adquiriente->id;
             }
             
             // registrar o actualizar el encargo
@@ -240,23 +279,23 @@ class SaleController extends Controller
                 'nombre_envia' => $data['nombre_envia'],
                 // 'celular_envia' => $data['celular_envia'],
                 // 'email_envia' => $data['email_envia'],
-                'fecha_hora_envia' => $data['fecha_hora_envia'],
+                'fecha_hora_envia' => (empty($data['fecha_hora_envia']))?date(env('FORMATO_DATETIME')):$data['fecha_hora_envia'],
 
                 'doc_recibe' => $data['doc_recibe'],
                 'nombre_recibe' => $data['nombre_recibe'],
                 // 'celular_recibe' => $data['celular_recibe'],
                 // 'email_recibe' => $data['email_recibe'],
-                'fecha_recibe' => $data['fecha_recibe'],
+                'fecha_recibe' => (empty($data['fecha_recibe']))?date(env('FORMATO_DATE')):$data['fecha_recibe'],
 
                 // 'origen' => $data['origen'],
-                // 'destino' => new ObjectId($data['destino']),
-                'agencia_origen' => new ObjectId($data['agencia_origen']),
-                'agencia_destino' => new ObjectId($data['agencia_destino']),
-                
-                'agencia' => new ObjectId($agencia_id),
-                'adquiriente' => new ObjectId($adquiriente),
+                // 'destino' => $data['destino']),
+                'agencia_origen' => $data['agencia_origen'],
+                'agencia_destino' => $data['agencia_destino'],
+
+                'agencia_id' => $agencia_id,
+                'adquiriente_id' => $adquiriente_id,
                 // 'medio_pago' => $data['medio_pago'],
-                'documento' => new ObjectId($data['documento']),
+                'documento_id' => $data['documento'],
                 'documento_serie' => $data['documento_serie'],
                 'documento_correlativo' => $data['documento_correlativo'],
                 'documento_fecha' => date('Y-m-d'),
@@ -266,8 +305,8 @@ class SaleController extends Controller
                 'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
                 'descuento' => number_format($data['descuento'], 2, '.', ''),
 
-                'estado' => new ObjectId('61af9090d3f9efe2cb27e8b9'), // no transportar
-            ], $encargo);
+                'estado' => 2, // encargo_estado: no trasladar
+            ], $columnas[1]);
             
             $encargo = null;
             if (strlen($data['encargo_id']) > 0) {
@@ -277,17 +316,22 @@ class SaleController extends Controller
                 $documento_correlativo = $data['documento_correlativo'];
                 
                 // bloquear actualizar los registros
-                $object_id = new ObjectId($data['encargo_id']);
-                $encargo = Encargo::where('_id', $object_id)->update($insert_encargo, ['upsert' => true]);
+                $object_id = $data['encargo_id'];
+                $encargo = Encargo::where('id', $object_id)->update($insert_encargo, ['upsert' => true]);
                 if (!$encargo) {
                     return \response()->json(['result' => ['status' => 'fails', 'message' => 'No hubo ningún cambio.']]);
                 }
             } else {
                 $encargo = Encargo::create($insert_encargo);
                 $encargo_id = $encargo['id'];
-                $object_id = new ObjectId($encargo_id);
-                $fecha_hora_envia = date('d-m-Y H:i:s');
-                $documento_correlativo = sprintf("%0".env('ZEROFILL', 8)."d", Encargo::getNextSequence($encargo_id, $data['documento_serie']));
+                $object_id = $encargo_id;
+                
+                foreach($columnas[0] as $row):
+                    $insert_encargo_detalle = array_merge($row, ['encargo_id' => $encargo_id]);
+                    $encargo_detalle = EncargoDetalle::create($insert_encargo_detalle);
+                endforeach;
+                $fecha_hora_envia = date(env('FORMATO_DATETIME'));
+                $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
                 $update = ['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo];
                 
                 if(number_format($data['subtotal'], 2, '.', '') > env('DETRACCION')) {
@@ -299,7 +343,7 @@ class SaleController extends Controller
                         'detraccion_monto' => number_format(($encargo['monto_gravado']-$encargo['descuento']) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION') , 2, '.', ''),
                     ]);
                 }
-                $encargo = Encargo::where('_id', $object_id)->update($update);
+                $encargo = Encargo::where('id', $encargo_id)->update($update);
             }
 
             // registrar o actualizar el PDF
@@ -326,8 +370,9 @@ class SaleController extends Controller
                         ]
                     ]);
             }
+
             list($cdr_id, $cdr_codigo, $cdr_descripcion, $cdr_notas) = explode('|', $url_documento['cdr_descripcion']);
-            Encargo::where('_id', $object_id)->update([
+            Encargo::where('id', $object_id)->update([
                 'url_documento_pdf' => $url_documento_pdf,
                 'url_documento_xml' => $url_documento['xml'],
                 'url_documento_cdr' => $url_documento['cdr'],
@@ -343,7 +388,7 @@ class SaleController extends Controller
                     'status' => 'OK', 
                     'message' => 'Registrado correctamente', 
                     'encargo_id' => $encargo_id, 
-                    'adquiriente' => $adquiriente, 
+                    'adquiriente' => $adquiriente_id, 
                     'documento_correlativo' => $documento_correlativo,
                     'fecha_hora_envia' => $fecha_hora_envia,
                     'url_documento_pdf' => $url_documento_pdf,
@@ -358,34 +403,6 @@ class SaleController extends Controller
         //             ]
         //         ]);
         // }
-    }
-
-    public function show() {
-        $sede = Sede::all();
-        $carga = Carga::orderBy('nombre','asc')->get();
-        $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
-        $documento = Documento::all();
-        return view('sale.show')->with([
-            'agencia_origen' => $agencia_origen,
-            'sede' => $sede,
-            'documento' => $documento,
-            'carga' => $carga,
-            'menu_venta_active' => 'active',
-        ]);
-    }
-
-    public function edit($encargo_id) {
-        $sede = Sede::all();
-        $carga = Carga::all();
-        $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
-        $documento = Documento::all();
-        $encargo = Encargo::find($encargo_id);
-        return view('sale.edit')->with([ 'agencia_origen' => $agencia_origen, 'sede' => $sede, 'documento' => $documento, 'carga' => $carga, 'encargo' => $encargo, 'menu_venta_active' => 'active', ]);
-    }
-
-    public function list() {
-        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
-        return view('sale.list')->with([ 'encargo' => $encargo, 'menu_venta_active' => 'active', ]);
     }
 
     public function baja(Request $request) {
@@ -748,9 +765,9 @@ class SaleController extends Controller
 
             // $importeTotal = 0.00;
             PDF::SetFont('times', '', $font_size_regular);
-            foreach($data['detalle_gravado'] as $encargo):
+            foreach($data['detalle'] as $encargo):
                 PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
-                PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(14, $height, $encargo['cantidad_item'], '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(12, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
                 PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
@@ -1042,109 +1059,108 @@ class SaleController extends Controller
                         ->setValueRef(1) // valor de S/.1
                 );
             } else {
-                $invoice->setTipoOperacion('0101');
+                $invoice->setTipoOperacion('0101'); //facturas
             }
             
-            // Detalle gravado
-            if (!empty($data['detalle_gravado'])) {
-                foreach($data['detalle_gravado'] as $item):
-                    $items[] = (new SaleDetail())
-                        ->setCodProducto($item['codigo_producto'])
-                        ->setUnidad('ZZ') // servicio
-                        ->setDescripcion($item['descripcion'])
-                        ->setCantidad($item['cantidad']) // 2
-                        ->setMtoValorUnitario($item['valor_unitario']) // S/.100 no exite
-                        ->setMtoValorVenta(number_format($item['valor_venta'], 2, '.', '')) // S/.200
-                        ->setMtoBaseIgv(number_format($item['valor_base_igv'], 2, '.', '')) // S/.200
-                        ->setPorcentajeIgv(number_format($item['porcentaje_igv'], 2, '.', '')) // 18
-                        ->setIgv(number_format($item['igv_venta'], 2, '.', '')) // 36
-                        ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
-                        ->setFactorIcbper(null)
-                        ->setTotalImpuestos(number_format($item['igv_venta'], 2, '.', '')) // 36
-                        ->setMtoPrecioUnitario(number_format($item['precio_unitario'], 2, '.', '')) // 118
-                    ;
-                endforeach;
-            }
+            // Detalles
+            if (!empty($data['detalle'])) {
+                $items_gravado = [];
+                $items_exonerado = [];
+                $items_inafecto = [];
+                $items_gravado_gratuito = [];
+                $items_inafecto_gratuito = [];
+                
+                foreach($data['detalle'] as $item):
+                    // gravado
+                    if ($item['tipo_afectacion'] == 10) {
+                        $items_gravado[] = (new SaleDetail())
+                            ->setCodProducto($item['codigo_producto'])
+                            ->setUnidad('ZZ') // servicio
+                            ->setDescripcion($item['descripcion'])
+                            ->setCantidad($item['cantidad_item']) // 2
+                            ->setMtoValorUnitario($item['valor_unitario']) // S/.100 no exite
+                            ->setMtoValorVenta(number_format($item['valor_venta'], 2, '.', '')) // S/.200
+                            ->setMtoBaseIgv(number_format($item['valor_base_igv'], 2, '.', '')) // S/.200
+                            ->setPorcentajeIgv(number_format($item['porcentaje_igv'], 2, '.', '')) // 18
+                            ->setIgv(number_format($item['igv_venta'], 2, '.', '')) // 36
+                            ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
+                            ->setFactorIcbper(null)
+                            ->setTotalImpuestos(number_format($item['igv_venta'], 2, '.', '')) // 36
+                            ->setMtoPrecioUnitario(number_format($item['precio_unitario'], 2, '.', '')) // 118
+                        ;
+                    }
+                    // exonerado
+                    if ($item['tipo_afectacion'] == 20) {
+                        $items_exonerado[] = (new SaleDetail())
+                            ->setCodProducto($item['codigo_producto'])
+                            ->setUnidad('ZZ') // servicio
+                            ->setDescripcion($item['descripcion'])
+                            ->setCantidad($item['cantidad_item']) // 2
+                            ->setMtoValorUnitario($item['valor_unitario']) // S/. 50
+                            ->setMtoValorVenta($item['valor_venta']) // S/. 100
+                            ->setMtoBaseIgv($item['valor_base_igv']) // S/. 100
+                            ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
+                            ->setIgv( $item['igv_venta']) // S/. 0
+                            ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
+                            ->setTotalImpuestos($item['igv_venta']) // S/.0
+                            ->setMtoPrecioUnitario($item['precio_unitario']) // S/. 50
+                        ;
+                    }
+                    // inafecto
+                    if ($item['tipo_afectacion'] == 30) {
+                        $items_inafecto[] = (new SaleDetail())
+                            ->setCodProducto($item['codigo_producto'])
+                            ->setUnidad('ZZ')
+                            ->setDescripcion($item['descripcion'])
+                            ->setCantidad($item['cantidad_item']) // 2
+                            ->setMtoValorUnitario($item['valor_unitario']) // S/. 100
+                            ->setMtoValorVenta($item['valor_venta']) // S/. 200
+                            ->setMtoBaseIgv($item['valor_base_igv']) // S/. 200
+                            ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
+                            ->setIgv( $item['igv_venta']) // S/. 0
+                            ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
+                            ->setTotalImpuestos($item['igv_venta']) // S/.0
+                            ->setMtoPrecioUnitario($item['precio_unitario']) // S/.100
+                        ;
+                    }
+                    
+                    // gravado gratuito 
+                    if ($item['tipo_afectacion'] == 13) {
+                        $items_gravado_gratuito[] = (new SaleDetail())
+                            ->setCodProducto($item['codigo_producto'])
+                            ->setUnidad('ZZ')
+                            ->setDescripcion($item['descripcion'])
+                            ->setCantidad($item['cantidad_item']) // 1
+                            ->setMtoValorUnitario($item['valor_unitario']) // S/. 0
+                            ->setMtoValorGratuito($item['valor_gratuito'])
+                            ->setMtoValorVenta($item['valor_venta']) // S/. 100
+                            ->setMtoBaseIgv($item['valor_base_igv']) // S/. 100
+                            ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 18
+                            ->setIgv($item['igv_venta']) // S/. 18
+                            ->setTipAfeIgv($item['tipo_afectacion']) // Catalog 07: Gravado - Retiro,
+                            ->setTotalImpuestos($item['igv_venta']) // 18
+                            ->setMtoPrecioUnitario($item['precio_unitario']) // 0
+                        ;
+                    }
 
-            // Detalle Exonerado
-            if(!empty($data['detalle_exoneado'])) {
-                foreach($data['detalle_exoneado'] as $item):
-                    $items[] = (new SaleDetail())
-                        ->setCodProducto($item['codigo_producto'])
-                        ->setUnidad('ZZ') // servicio
-                        ->setDescripcion($item['descripcion'])
-                        ->setCantidad($item['cantidad']) // 2
-                        ->setMtoValorUnitario($item['valor_unitario']) // S/. 50
-                        ->setMtoValorVenta($item['valor_venta']) // S/. 100
-                        ->setMtoBaseIgv($item['valor_base_igv']) // S/. 100
-                        ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
-                        ->setIgv( $item['igv_venta']) // S/. 0
-                        ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
-                        ->setTotalImpuestos($item['igv_venta']) // S/.0
-                        ->setMtoPrecioUnitario($item['precio_unitario']) // S/. 50
-                    ;
-                endforeach;
-            }
-            
-            // Inafecto
-            if (!empty($data['detalle_inafecto'])) {
-                foreach($data['detalle_inafecto'] as $item):
-                    $items[] = (new SaleDetail())
-                        ->setCodProducto($item['codigo_producto'])
-                        ->setUnidad('ZZ')
-                        ->setDescripcion($item['descripcion'])
-                        ->setCantidad($item['cantidad']) // 2
-                        ->setMtoValorUnitario($item['valor_unitario']) // S/. 100
-                        ->setMtoValorVenta($item['valor_venta']) // S/. 200
-                        ->setMtoBaseIgv($item['valor_base_igv']) // S/. 200
-                        ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
-                        ->setIgv( $item['igv_venta']) // S/. 0
-                        ->setTipAfeIgv($item['tipo_afectacion']) // Catalog: 07
-                        ->setTotalImpuestos($item['igv_venta']) // S/.0
-                        ->setMtoPrecioUnitario($item['precio_unitario']) // S/.100
-                    ;
-                endforeach;
-            }
-            
-            // Gravado gratuito
-            if (!empty($data['detalle_gravado_gratuito'])) {
-                foreach($data['detalle_gravado_gratuito'] as $item):
-                    $items[] = (new SaleDetail())
-                        ->setCodProducto($item['codigo_producto'])
-                        ->setUnidad('ZZ')
-                        ->setDescripcion($item['descripcion'])
-                        ->setCantidad($item['cantidad']) // 1
-                        ->setMtoValorUnitario($item['valor_unitario']) // S/. 0
-                        ->setMtoValorGratuito($item['valor_gratuito'])
-                        ->setMtoValorVenta($item['valor_venta']) // S/. 100
-                        ->setMtoBaseIgv($item['valor_base_igv']) // S/. 100
-                        ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 18
-                        ->setIgv($item['igv_venta']) // S/. 18
-                        ->setTipAfeIgv($item['tipo_afectacion']) // Catalog 07: Gravado - Retiro,
-                        ->setTotalImpuestos($item['igv_venta']) // 18
-                        ->setMtoPrecioUnitario($item['precio_unitario']) // 0
-                    ;
-                endforeach;
-            }
-
-            // Inafecto gratuito
-            if (!empty($data['detalle_inafecto_gratuito'])) {
-                foreach($data['detalle_inafecto_gratuito'] as $item):
-                    $items[] = (new SaleDetail())
-                        ->setCodProducto($item['codigo_producto'])
-                        ->setUnidad('ZZ')
-                        ->setDescripcion($item['descripcion'])
-                        ->setCantidad($item['cantidad']) // 2
-                        ->setMtoValorUnitario($item['valor_unitario']) // S/. 0
-                        ->setMtoValorGratuito($item['valor_gratuito']) //  S/.100
-                        ->setMtoValorVenta($item['valor_venta']) // S/. 200
-                        ->setMtoBaseIgv($item['valor_base_igv']) // S/. 200
-                        ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
-                        ->setIgv($item['igv_venta']) // S/. 0
-                        ->setTipAfeIgv($item['tipo_afectacion']) // Catalog 07: Inafecto - Retiro,
-                        ->setTotalImpuestos($item['igv_venta']) // S/. 0
-                        ->setMtoPrecioUnitario($item['precio_unitario']) // S/. 0
-                    ;
+                    // inafecto gratuito
+                    if ($item['tipo_afectacion'] == 32) {
+                        $items_inafecto_gratuito[] = (new SaleDetail())
+                            ->setCodProducto($item['codigo_producto'])
+                            ->setUnidad('ZZ')
+                            ->setDescripcion($item['descripcion'])
+                            ->setCantidad($item['cantidad_item']) // 2
+                            ->setMtoValorUnitario($item['valor_unitario']) // S/. 0
+                            ->setMtoValorGratuito($item['valor_gratuito']) //  S/.100
+                            ->setMtoValorVenta($item['valor_venta']) // S/. 200
+                            ->setMtoBaseIgv($item['valor_base_igv']) // S/. 200
+                            ->setPorcentajeIgv($item['porcentaje_igv']) // S/. 0
+                            ->setIgv($item['igv_venta']) // S/. 0
+                            ->setTipAfeIgv($item['tipo_afectacion']) // Catalog 07: Inafecto - Retiro,
+                            ->setTotalImpuestos($item['igv_venta']) // S/. 0
+                            ->setMtoPrecioUnitario($item['precio_unitario']) // S/. 0
+                        ;
+                    }
                 endforeach;
             }
             
@@ -1166,9 +1182,11 @@ class SaleController extends Controller
             //     ->setCode('1002')
             //     ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE')
 
+            // $items = array_merge($items_gravado, $items_exonerado, $items_inafecto, $items_gravado_gratuito, $items_inafecto_gratuito); 
+            $items = $items_gravado;
             $invoice->setDetails($items)
             ->setLegends($legends); 
-            
+
             list($year, $month, $day) = explode('-', $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
            

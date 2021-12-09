@@ -2,25 +2,23 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Agencia extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'agencia';
-    protected $primaryKey = '_id';
+    protected $table = 'agencia';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
+        'sede_id', // nuevo
         'nombre',
         'direccion',
         'telefono',
-        'sede',
     ];
 
     public function sedes()
     {
-        return $this->belongsTo('App\Business\Sede', 'sede');
+        return $this->belongsTo('App\Business\Sede', 'sede_id');
     }
 
 }

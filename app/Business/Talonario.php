@@ -2,14 +2,12 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Talonario extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'talonario';
-    protected $primaryKey = '_id';
+    protected $table = 'talonario';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'documento_serie',

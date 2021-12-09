@@ -2,14 +2,12 @@
 
 namespace App\Business;
 
-// use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class EncargoEstado extends Model
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'encargo_estado';
-    protected $primaryKey = '_id';
+    protected $table = 'encargo_estado';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'nombre',
