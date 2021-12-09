@@ -960,7 +960,7 @@
                 },
                 dataType: "json",
                 data: {
-                    encargo_id: encargo_id
+                    encargo_id: [encargo_id]
                 },
                 beforeSend: function() {
                     $("#btnBajaCPE").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando');

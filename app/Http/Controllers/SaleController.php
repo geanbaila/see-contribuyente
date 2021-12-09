@@ -406,7 +406,7 @@ class SaleController extends Controller
     }
 
     public function baja(Request $request) {
-        $prg_encargo = Encargo::whereIn('_id', $request->encargo_id)->get();
+        $prg_encargo = Encargo::whereIn('id', $request->encargo_id)->get();
         if (!empty($prg_encargo)):
             $util = Util::getInstance();
             $items = null;
@@ -470,7 +470,7 @@ class SaleController extends Controller
                 $url_documento_baja = $util->writeCdr($folder, $voided, $res->getCdrZip());
 
                 $update = ['url_documento_baja' => $url_documento_baja];
-                $bool = Encargo::whereIn('_id', $request->encargo_id)->update($update, ['upsert' => true]);
+                $bool = Encargo::whereIn('id', $request->encargo_id)->update($update, ['upsert' => true]);
                 if (!$bool) {
                     $documentos .= "La base de datos fue actualizada.";
                 }
