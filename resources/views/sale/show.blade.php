@@ -7,20 +7,20 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
-        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
-        <input type="hidden" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
-        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
-        <input type="hidden" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
-        
+        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
+        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <input type="text" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
                 <div class="card-body pt-9 pb-0">
