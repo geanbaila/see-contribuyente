@@ -41,6 +41,7 @@ Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
 Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
 
 Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
+Route::get('/api/v1/download/pdf64/{encargo_id}', 'ApiController@downloadPdfBase64');
 Route::get('/api/v1/download/xml/{encargo_id}', 'ApiController@downloadXml');
 Route::get('/api/v1/download/cdr/{encargo_id}', 'ApiController@downloadCdr');
 Route::get('/api/v1/download/baja/{encargo_id}', 'ApiController@downloadCdrBaja');

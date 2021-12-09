@@ -58,6 +58,12 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
+    public function downloadPdfBase64($encargo_id) {
+        $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_pdf', 'nombre_archivo']);
+        $file = storage_path('app/' . $encargo[0]->url_documento_pdf);
+        return \response(base64_encode(file_get_contents($file)));
+    }
+
     public function downloadPdf($encargo_id) {
         $encargo = \App\Business\Encargo::where('id', $encargo_id)->get(['url_documento_pdf', 'nombre_archivo']);
         $file = storage_path('app/' . $encargo[0]->url_documento_pdf);

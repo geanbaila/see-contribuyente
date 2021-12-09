@@ -911,11 +911,24 @@
         }
 
         function printElement() {
-            var url_documento_pdf = $("[name='url_documento_pdf']").val();
-            if (url_documento_pdf) {
-                $("#comprobantePago").attr("src", '{{url('/')}}/'+url_documento_pdf);
-                return true;
-            }
+            var encargo_id = $("[name='encargo_id']").val();
+            $.ajax({
+                url: "{{ url('/api/v1/download/pdf64') }}/" + encargo_id,
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $("#btnEnviarEmail").html(
+                        '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Enviando'
+                    );
+                }
+            }).done(function(response) {
+                if (response) {
+                    $("#comprobantePago").attr("src", 'data:application/pdf;base64,' + response);
+                    return true;
+                }
+            });
         }
 
         function enviarEmail() {

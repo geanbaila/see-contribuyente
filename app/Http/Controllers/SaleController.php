@@ -817,7 +817,7 @@ class SaleController extends Controller
  
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
             $filename = $data['emisor_ruc'].'-01-'.$data['emisor_numero_documento_electronico'] . '.pdf';
-            $estructura = base_path('public/'.$tree);
+            $estructura = storage_path('app/'.$tree);
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
             }
@@ -830,7 +830,7 @@ class SaleController extends Controller
             PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
-            $output = public_path($tree . "/" . $filename);
+            $output = $estructura . "/" . $filename;
             PDF::Output($output, 'F');
             PDF::reset();
             return $tree . "/" . $filename;
