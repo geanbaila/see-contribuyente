@@ -9,13 +9,35 @@ use App\Http\Controllers\ManifestController;
 class ApiController extends Controller
 {
     public function getEncargo(Request $request) {
-            $doc_recibe_envia = $request->input('doc_recibe_envia');
-            $documento = $request->input('documento');
-            $encargo = new \App\Business\Encargo();
-            if (strlen($doc_recibe_envia)>0) {
-                $encargo = $encargo->where('doc_envia', $doc_recibe_envia)->orWhere('doc_recibe', $doc_recibe_envia);
-            }
-            return response()->json([ 'result' => ['encargo' => $encargo->get()] ]);
+        $doc_recibe_envia = $request->input('doc_recibe_envia');
+        $documento = $request->input('documento');
+        $encargo = \App\Business\Encargo::getAllGuiaRemision($doc_recibe_envia, $documento);
+        return response()->json([
+            'result' => [
+                'encargo' => $encargo
+                ]
+        ]);
+    }
+
+    public function getGuiaRemision(Request $request) {
+        $encargo_id = $request->input('encargo_id');
+        $encargo = \App\Business\Encargo::find($encargo_id);
+        $encargo_detalles = [];
+        foreach($encargo->detalles as $item):
+            array_push($encargo_detalles, [
+                'descripcion' => $item['descripcion'], 
+                'codigo_producto' => $item['codigo_producto'], 
+                'cantidad_item' => $item['cantidad_item'], 
+                'valor_unitario' => $item['valor_unitario'], 
+            ]);
+        endforeach;
+        return response()->json([
+            'result' => [
+                'status' => 'OK',
+                'encargo' => $encargo,
+                'detalles' =>$encargo_detalles,
+                ]
+        ]);
     }
 
     public function getAgencia(int $sede_id) {

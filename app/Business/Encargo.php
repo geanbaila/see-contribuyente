@@ -3,6 +3,7 @@
 namespace App\Business;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Encargo extends Model
 {
@@ -110,7 +111,7 @@ class Encargo extends Model
         $data = [];
         if ($encargo->documentos->alias === 'B') {
             $data = [
-                'titulo_documento' => $encargo->documentos->nombre,
+                'titulo_documento' => $encargo->documentos->descripcion,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
                 'emisor_razon_social' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
                 'emisor_ruc' => env('EMPRESA_RUC','NO DEFINIDO'),
@@ -133,7 +134,7 @@ class Encargo extends Model
                 
                 'emisor_agencia_direccion' => mb_strtoupper($encargo->agencias->direccion),
                 'emisor_agencia_telefono' => $encargo->agencias->telefono,
-                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
+                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->descripcion),
                 'emisor_numero_documento_electronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
                 'emisor_serie_documento_electronico' => $encargo->documento_serie,
                 'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
@@ -179,7 +180,7 @@ class Encargo extends Model
         $data = [];
         if ($encargo->documentos->alias === 'F') {    
             $data = [
-                'titulo_documento' => $encargo->documentos->nombre,
+                'titulo_documento' => $encargo->documentos->descripcion,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
                 'emisor_razon_social' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
                 'emisor_ruc' => env('EMPRESA_RUC','NO DEFINIDO'),
@@ -202,7 +203,7 @@ class Encargo extends Model
                 
                 'emisor_agencia_direccion' => mb_strtoupper($encargo->agencias->direccion),
                 'emisor_agencia_telefono' => $encargo->agencias->telefono,
-                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->nombre) . ' DE VENTA ELECTRÓNICA',
+                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->descripcion),
                 'emisor_numero_documento_electronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
                 'emisor_serie_documento_electronico' => $encargo->documento_serie,
                 'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
@@ -246,43 +247,54 @@ class Encargo extends Model
     static function buscarGuiaRemision($encargo_id) {
         $encargo = Encargo::find($encargo_id);
         if ($encargo->documentos->alias === 'G') {
-            $fecha = explode("-", $encargo->documento_fecha);
-            $documento_fecha_ddmmyyyy = $fecha[2].'/'.$fecha[1].'/'.$fecha[0];
             $data = [
-                'titulo_documento' => $encargo->documentos->nombre,
+                'titulo_documento' => $encargo->documentos->descripcion,
                 'emisor_nombre_comercial' => env('EMPRESA_COMERCIAL', 'NO DEFINIDO'),
                 'emisor_razon_social' => env('EMPRESA_RAZON_SOCIAL', 'NO DEFINIDO'),
-                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
                 'emisor_ruc' => env('EMPRESA_RUC','NO DEFINIDO'),
-                'emisor_ubigeo' =>'150101',
+                'emisor_ubigeo' => env('EMPRESA_UBIGEO', 'NO DEFINIDO'),
                 'emisor_direccion_pais' => 'PE',
-                'emisor_direccion_departamento' => 'LIMA',
-                'emisor_direccion_provincia' => 'LIMA',
-                'emisor_direccion_distrito' => 'SAN BORJA',
-                'emisor_direccion' => 'DIRECCIÓN DE LA AGENCIA DONDE SE EMITE..?',
-
-                'emisor_agencia_direccion' => mb_strtoupper($encargo->emisores->direccion),
-                'emisor_agencia_telefono' => $encargo->emisores->telefono,
-                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->nombre),
+                'emisor_direccion_departamento' => env('EMPRESA_DEPARTAMENTO', 'NO DEFINIDO'),
+                'emisor_direccion_provincia' => env('EMPRESA_PROVINCIA', 'NO DEFINIDO'),
+                'emisor_direccion_distrito' => env('EMPRESA_DISTRITO', 'NO DEFINIDO'),
+                'emisor_direccion_fiscal' => env('EMPRESA_DIRECCION', 'NO DEFINIDO'),
+                 
+                'emisor_agencia_direccion' => mb_strtoupper($encargo->agencias->direccion),
+                'emisor_agencia_telefono' => $encargo->agencias->telefono,
+                'emisor_tipo_documento_electronico' => strtoupper($encargo->documentos->descripcion),
                 'emisor_numero_documento_electronico' => $encargo->documento_serie . '-' . $encargo->documento_correlativo,
-                'emisor_fecha_documento_electronico' => $encargo->documento_fecha,
-                'emisor_fecha_documento_electronico_pe' => $documento_fecha_ddmmyyyy,
+                'emisor_serie_documento_electronico' => $encargo->documento_serie,
+                'emisor_correlativo_documento_electronico' => $encargo->documento_correlativo,
+                'emisor_fecha_documento_electronico' => $encargo->documento_fecha, // yyyy-mm-dd
                 'emisor_hora_documento_electronico' => $encargo->documento_hora,
 
+                'adquiriente_ruc' => $encargo->adquirientes->documento,
+
+                'adquiriente_ruc_dni_ce' => $encargo->adquirientes->documento,
+                'adquiriente_nombre_comerial' => mb_strtoupper($encargo->adquirientes->nombre_comercial),
                 'adquiriente_razon_social' => mb_strtoupper($encargo->adquirientes->razon_social),
                 'adquiriente_direccion_fiscal' => $encargo->adquirientes->direccion,
-                'adquiriente_ruc' => $encargo->adquirientes->documento, // dni o ruc
+                'adquiriente_direccion_departamento' => $encargo->adquirientes->departamento,
+                'adquiriente_direccion_provincia' => $encargo->adquirientes->provincia,
+                'adquiriente_direccion_distrito' => $encargo->adquirientes->distrito,
+                'adquiriente_direccion' => '',
+                'adquiriente_direccion_pais' => 'PE',
+
                 'consigna' => [
                     'nombre' => mb_strtoupper($encargo->nombre_recibe),
                 ],
-                // 'destino' => mb_strtoupper($encargo->sedes->nombre),
-                'destino' => mb_strtoupper($encargo->agenciasDestino->nombre),
+                'destino' => mb_strtoupper($encargo->agenciasDestino->sedes->nombre),
+                'destino_direccion' => mb_strtoupper($encargo->agenciasDestino->direccion),
+                'documento_fecha' => $encargo->documento_fecha,
+                'documento_hora' => $encargo->documento_hora,
 
-                'detalle_gravado' =>$encargo->detalle_gravado,
-                'detalle_exonerado' =>$encargo->detalle_exonerado,
-                'detalle_inafecto' =>$encargo->detalle_inafecto,
-                'detalle_gravado_gratuito' =>$encargo->detalle_gravado_gratuito,
-                'detalle_inafecto_gratuito' =>$encargo->detalle_inafecto_gratuito,
+                'detraccion_codigo' => $encargo->detraccion_codigo,
+                'detraccion_medio_pago' => $encargo->detraccion_medio_pago,
+                'detraccion_cta_banco' => $encargo->detraccion_cta_banco,
+                'detraccion_porcentaje' => $encargo->detraccion_porcentaje,
+                'detraccion_monto' => $encargo->detraccion_monto,
+
+                'detalle' => $encargo->detalles,
 
                 'monto_gravado' => $encargo->monto_gravado,
                 'monto_exonerado' => $encargo->monto_exonerado,
@@ -297,18 +309,21 @@ class Encargo extends Model
                 'importe_pagar_con_igv' => $encargo->importe_pagar_con_igv,
                 'importe_pagar_sin_igv' => $encargo->importe_pagar_sin_igv,
                 'importe_pagar_igv' => $encargo->importe_pagar_igv,
-            ];
-            if(strlen($encargo->adquirientes->documento) === 11) {
-                $data['adquiriente_ruc'] = $encargo->adquirientes->documento;
-                $data['adquiriente_nombre_comerial'] = mb_strtoupper($encargo->adquirientes->nombre_comercial);
-            } else {
-                $data['adquiriente_dni'] = $encargo->adquirientes->documento;
-                $data['adquiriente_nombre_comerial'] = mb_strtoupper($encargo->adquirientes->razon_social);
-            }
-        } else {
-            $data = [];
+            ];   
         }
         return $data;
+    }
+
+    static function getAllGuiaRemision($doc_recibe_envia, $documento) {
+        $guia_remision = 3;
+        $encargo = Encargo::select('id', 'doc_envia', 'doc_recibe','nombre_envia', 'nombre_recibe', 'agencia_destino', 'fecha_hora_envia', 'documento_fecha', 'documento_hora', 'oferta',
+                DB::raw('(select direccion from agencia where id=agencia_destino) as direccion'));
+        $encargo->where('documento_id', $guia_remision);
+        if (strlen($doc_recibe_envia)>0) {
+            $encargo = $encargo->where('doc_envia', $doc_recibe_envia)->orWhere('doc_recibe', $doc_recibe_envia);
+        }
+        $result = $encargo->get()->sortByDesc('fecha_hora_envia')->values();
+        return $result;
     }
 
     static function getNextSequence($encargo_id, $documento_serie) {

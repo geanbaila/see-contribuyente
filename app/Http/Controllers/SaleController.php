@@ -36,7 +36,7 @@ use App\Http\Controllers\Util;
 class SaleController extends Controller
 {
     public function list() {
-        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia');
+        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia')->values();
         return view('sale.list')->with([
             'encargo' => $encargo,
             'menu_venta_active' => 'active',
@@ -358,7 +358,7 @@ class SaleController extends Controller
              
             } else if ($row_documento->alias === 'G') {
                 $url_documento_pdf = $this->escribirGuiaRemision($encargo_id);
-                $url_documento = $this->escribirXMLGuiaRemision($encargo_id);
+                $url_documento = ['error'=> '', 'xml' => '', 'cdr' => '', 'nombre_archivo' => '', 'cdr_descripcion' => '|||'];
 
             } else {
                 // no escribir PDF
@@ -368,7 +368,6 @@ class SaleController extends Controller
                         'message' => 'Ha ocurrido un error(200) en el sistema, contacta con el proveedor.'
                         ]
                     ]);
-
             }
             
             if ($url_documento['error']) {
@@ -568,7 +567,6 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquiriente_razon_social'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
-            
             PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
@@ -595,18 +593,18 @@ class SaleController extends Controller
             PDF::Cell($width, $height, "", 'T', 1, 'L', 0, '', 10);
             
             PDF::SetFont('times', 'B', $font_size_regular);
-            PDF::Cell(24, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
-            PDF::Cell(14, $height, "CANTIDAD", '', 0, 'L', 1);
-            PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
+            PDF::Cell(34, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "CANT", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "PREC", '', 0, 'L', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $font_size_regular);
             foreach($data['detalle'] as $encargo):
-                PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
-                PDF::MultiCell(14, $height, $encargo['cantidad_item'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(34, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, $encargo['cantidad_item'], '', 'R', 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', 'R', 1, 0, $x, $y);
                 PDF::Ln();
             endforeach;
             
@@ -768,18 +766,18 @@ class SaleController extends Controller
             PDF::Cell($width, $height, "", 'T', 1, 'L', 0, '', 10);
             
             PDF::SetFont('times', 'B', $font_size_regular);
-            PDF::Cell(24, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
-            PDF::Cell(14, $height, "CANTIDAD", '', 0, 'L', 1);
-            PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
+            PDF::Cell(34, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "CANT", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "PREC", '', 0, 'L', 1);
             PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $font_size_regular);
             foreach($data['detalle'] as $encargo):
-                PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
-                PDF::MultiCell(14, $height, $encargo['cantidad_item'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(34, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, $encargo['cantidad_item'], '', 'R', 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, number_format($encargo['precio_unitario'], 2, '.', '') , '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(10, $height, number_format($encargo['valor_venta'] + $encargo['igv_venta'], 2, '.', ''), '', 'R', 1, 0, $x, $y);
                 PDF::Ln();
             endforeach;
      
@@ -850,12 +848,16 @@ class SaleController extends Controller
 
     public function escribirGuiaRemision($encargo_id) {
         $data = Encargo::buscarGuiaRemision($encargo_id);
-        if ($data) {
+        $url_documento_pdf = '';
+        if ($data) :
+            $textodniruc = (strlen($data['adquiriente_ruc_dni_ce']) === 11) ? 'RUC: ': 'DNI/CE: ';
+            $textodniruc .= $data['adquiriente_ruc_dni_ce'];
+            list($year, $month, $day) = explode("-", $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
+
             PDF::SetTitle($data['titulo_documento']);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
             PDF::AddPage();
-            $width = 50;
             
             PDF::SetFillColor(255, 255, 255);
             PDF::SetTextColor(0);
@@ -900,23 +902,22 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, $data['emisor_numero_documento_electronico'], '', $align_center, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width, $height, "", '', 1, 'L', 1);
-            $img = base_path('public/assets/media/icons/sis/bus.png');
+            $img = base_path('public/assets/media/bus.svg');
+            
             PDF::Image($img, '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
             PDF::Ln(20);
 
             PDF::SetFont('times', '', $font_size_regular);
             PDF::MultiCell($width, $height, "OPERADOR: ", 'T', $align_left, 1, 0, $x, $y);
             PDF::Ln();
-            PDF::Cell($width/2, $height, "FECHA: " . $data['emisor_fecha_documento_electronico_pe'], 'B', 0, 'L', 0);
+            PDF::Cell($width/2, $height, "FECHA: " .$day.'/'.$month.'/'.$year, 'B', 0, 'L', 0);
             PDF::Cell($width/2, $height, "HORA: " . $data['emisor_hora_documento_electronico'], 'B', 1, 'R', 0);
             // -------------
-            
-            $dniruc = (strlen($data['adquirienteRUC']) === 8) ? 'DNI/CE' : 'RUC';
             PDF::SetFont('times', '', $font_size_regular);
             PDF::MultiCell($width, $height, "CLIENTE: ".$data['adquiriente_razon_social'], '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
 
-            PDF::MultiCell($width, $height, "$dniruc: " . $data['adquirienteRUC'], '', $align_left, 1, 0, $x, $y);
+            PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
@@ -930,81 +931,124 @@ class SaleController extends Controller
             endforeach;
 
             PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "DIRECCIÓN: ". $data['destino_direccion'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $font_size_regular);
             PDF::MultiCell(20, $height, "DESTINO:", '', $align_left, 1, 0, $x, $y);
             PDF::SetFont('times', 'B', $font_size_gigante);
             PDF::MultiCell(40, $height, $data['destino'], $border, $align_right, 1, 0, $x, $y);
             PDF::Ln();
             PDF::Cell($width, $height, "", 'T', 1, 'L', 0, '', 10);
-            
+ 
+
             PDF::SetFont('times', 'B', $font_size_regular);
-            PDF::Cell(24, $height, "DESCRIPCIÓN", '', 0, 'L', 1);
-            PDF::Cell(14, $height, "CANTIDAD", '', 0, 'L', 1);
-            PDF::Cell(12, $height, "PRECIO", '', 0, 'R', 1);
-            PDF::Cell(10, $height, "TOTAL", '', 0, 'R', 1);
+            PDF::Cell(20, $height, "DESCRIP", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "CÓD", '', 0, 'R', 1);
+            PDF::Cell(8, $height, "CANT", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "PESO", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "UM", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "TOTAL", '', 0, 'R', 1);
             PDF::Ln();
 
-            $importeTotal = 0.00;
             PDF::SetFont('times', '', $font_size_regular);
-            foreach($data['encargo_detalle'] as $encargo):
-                $importeTotal += $encargo['total'];
-                PDF::MultiCell(24, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
-                PDF::MultiCell(14, $height, $encargo['cantidad'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(12, $height, $encargo['precio'], '', $align_center, 1, 0, $x, $y);
-                PDF::MultiCell(10, $height, $encargo['total'], '', $align_center, 1, 0, $x, $y);
+            foreach($data['detalle'] as $encargo):
+                PDF::MultiCell(20, $height, $encargo['descripcion'], '', $align_left, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, $encargo['codigo_producto'], '', 'R', 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, $encargo['cantidad_item'], '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, 1, '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, 'KG', '', $align_center, 1, 0, $x, $y);
+                PDF::MultiCell(8, $height, $encargo['valor_venta'], '', $align_center, 1, 0, $x, $y);
                 PDF::Ln();
             endforeach;
-            
-            $importePagar = number_format($data['importePagar'], 2, '.', '');
-            $igv = number_format($importePagar * env('IGV', 0.18), 2, '.', '');
-            $subtotal = number_format($importePagar - $igv, 2, '.', '');
-            $descuentos = number_format($importePagar - $importeTotal, 2, '.', '');
-         
-            PDF::Cell(35, $height, "DESCUENTOS", 'T', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", 'T', 0, 'C', 1);
-            PDF::Cell(20, $height, $descuentos, 'T', 0, 'R', 1);
+             
+            $descuentos = number_format($data['descuento'], 2, '.', '');         
+
+            PDF::Cell(36, $height, "DESCUENTOS", 'T', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", 'T', 0, 'C', 1);
+            PDF::Cell(17, $height, $descuentos, 'T', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell(35, $height, "SUBTOTAL", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
+            PDF::Cell(36, $height, "SUBTOTAL", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(17, $height, number_format($data['importe_pagar_sin_igv'], 2, '.', ''), '', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell(35, $height, "OP.GRAVADA", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $subtotal, '', 0, 'R', 1);
+            PDF::Cell(36, $height, "OP.GRAVADA", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(17, $height, number_format($data['importe_pagar_sin_igv'], 2, '.', ''), '', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell(35, $height, "OP.EXONERADA", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, "0", '', 0, 'R', 1);
+            PDF::Cell(36, $height, "OP.EXONERADA", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(17, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
             
-            PDF::Cell(35, $height, "OP.GRATUITA", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, "0", '', 0, 'R', 1);
+            PDF::Cell(36, $height, "OP.GRATUITA", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(17, $height, "0", '', 0, 'R', 1);
             PDF::Ln();
 
-            PDF::Cell(35, $height, "IGV 18%", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
-            PDF::Cell(20, $height, $igv, '', 0, 'R', 1);
+            PDF::Cell(36, $height, "IGV " . (env('IGV')*100) . "%", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(17, $height, number_format($data['importe_pagar_igv'], 2, '.', ''), '', 0, 'R', 1);
             PDF::Ln();
             
             PDF::SetFont('times', 'B', $font_size_grande);
-            PDF::Cell(35, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
-            PDF::Cell(5, $height, "S/.", '', 0, 'C', 1);
+            PDF::Cell(36, $height, "IMPORTE TOTAL", '', 0, 'L', 1);
+            PDF::Cell(8, $height, "S/.", '', 0, 'C', 1);
             PDF::SetFont('times', 'B', $font_size_gigante);
-            PDF::Cell(20, $height, $importePagar, '', 0, 'R', 1);
+            PDF::Cell(17, $height, number_format($data['oferta'], 2, '.', ''), '', 0, 'R', 1);
+            PDF::Ln();
+            PDF::Cell(60, $height,'', 'T', 0, 'R', 1);
             PDF::Ln();
 
             PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "FECHA DE EMISIÓN: ". $data['documento_fecha'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "FECHA DE TRASLADO: ". $data['documento_fecha'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            
+            PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "DIRECCIÓN PARTIDA: ". $data['emisor_agencia_direccion'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            
+            PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "DIRECCIÓN LLEGADA: ". $data['destino_direccion'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "REMITENTE: ". $data['emisor_razon_social'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+
+            PDF::SetFont('times', '', $font_size_regular);
+            PDF::MultiCell($width, $height, "DESTINATARIO: ". $data['emisor_razon_social'], '',$align_left, 1, 0, $x, $y);
+            PDF::Ln();
+            PDF::Ln();
+
+            $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
+            $filename = $data['emisor_ruc'].'-09-'.$data['emisor_numero_documento_electronico'] . '.pdf';
+            $estructura = storage_path('app/'.$tree);
+            if(!@mkdir($estructura, 0777, true)) {
+                if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
+            }
+            // $qr = $this->getQR($estructura, $data);
+            // QRcode::png($qr['value'], $qr['img'], 'L', 4, 2);
+            // PDF::Image($qr['img'], '30', '', 20, 20, '', '', '', false, 300, '', false, false, 0, false, false, false);
+            PDF::Ln(20);
+            PDF::SetFont('times', '', $font_size_regular);
+            // PDF::MultiCell($width, $height, "Representación impresa de ".$data['emisor_tipo_documento_electronico'].". Puede descargarlo y/o consultarlo desde www.enlacesbus.com.pe/see", $border, $align_center, 1, 0, $x, $y);
+            // PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
-            $output = public_path($tree . "/" . $filename);
+            $output = $estructura . "/" . $filename;
             PDF::Output($output, 'F');
             PDF::reset();
-            return $tree . "/" . $filename;
-        
-        }
+            $url_documento_pdf = $tree . "/" . $filename;
+        endif;
+        return $url_documento_pdf;
     }
 
     public function escribirXMLFactura($encargo_id) {

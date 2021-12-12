@@ -39,6 +39,7 @@ Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
 Route::post('/api/v1/encargo', 'ApiController@getEncargo');
 Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
 Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
+Route::post('/api/v1/guia-remision-transportista', 'ApiController@getGuiaRemision');
 
 Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
 Route::get('/api/v1/download/pdf64/{encargo_id}', 'ApiController@downloadPdfBase64');

@@ -7,19 +7,20 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
-        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
-        <input type="hidden" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
-        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
-        <input type="hidden" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
+        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <input type="text" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <input type="text" name="guia_remision_transportista" value="" />
 
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
@@ -60,10 +61,10 @@
                                     
                                         $fecha_hora_envia_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
                                     @endphp
-                                        <input type="text" class="form-control" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
+                                        <input type="text" class="form-control" name="fecha_recibe_blocked" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
                                          disabled />
                                     @else
-                                        <input type="text" class="form-control" value="" disabled />
+                                        <input type="text" class="form-control" name="fecha_recibe_blocked" value="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -380,7 +381,7 @@
                             
                                 <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">Confirmar</a>
                                 <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#modalBuscarVenta" onclick="javascript:$('#buscaDocRecibe').focus()">
+                                    data-bs-target="#modalBuscarVenta" onclick="javascript:document.getElementById('buscaDocRecibeDocEnvia').focus();">
                                     <img src="{{ asset('assets/media/search-white.svg') }}" width="20" />
                                 </a>
                                 @php
@@ -413,6 +414,7 @@
         const RUC = 11;
         const DNI = 8;
         const CE = 12;
+        const MAX_RESULT_GUIA_REMISION = 3; 
 
         function sendEmail() {
             alert('enviar correo..');
@@ -570,35 +572,31 @@
             $("[name='nombre_envia']").val(data.nombre_envia);
             // $("[name='celular_envia']").val(data.celular_envia);
             // $("[name='email_envia']").val(data.email_envia);
-            $("[name='fecha_hora_envia']").val(data.fecha_hora_envia);
-
-
+            $("[name='fecha_hora_envia']").val(data.fecha_hora_envia)
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
             // $("[name='celular_recibe']").val(data.celular_recibe);
             // $("[name='email_recibe']").val(data.email_recibe);
             $("[name='fecha_recibe']").val(data.fecha_recibe);
-            $("[name='fecha_recibe_blocked']").val(data.fecha_recibe);
-
+            $("[name='fecha_recibe_blocked']").val(data.fecha_recibe)
             // $("[name='origen']").val(data.origen).change(); // come from session
             $("[name='agencia_origen']").val(data.agencia_origen); // come from session
             // $("[name='destino']").val(data.destino).change();
-            getAgenciaDestino(data.destino, data.agencia_destino);
-
+            getAgenciaDestino(data.agencia_origen, data.agencia_destino)
             // $("[name='medio_pago']").val(data.medio_pago).change();
             $("[name='documento']").val(data.documento).change();
-            $("[name='documento_serie']").val(data.documento_serie);
-            $("[name='documento_correlativo']").val(data.documento_correlativo);
-
-            $("[name='adquiriente']").val(data.adquiriente);
-
-            if (data.encargo.length > 0) {
-                var total = data.encargo.length;
-                _.forEach(data.encargo, function(element, index) {
+            // $("[name='documento_serie']").val(data.documento_serie);
+            // $("[name='documento_correlativo']").val(data.documento_correlativo)
+            $("[name='adquiriente']").val(data.adquiriente)
+            if (data.detalles.length > 0) {
+                var total = data.detalles.length;
+                _.forEach(data.detalles, function(element, index) {
                     var j = index + 1;
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.carga).change();
+                    console.log("ahí una j: "+j);
+                    //$("#chargeRow > tr:nth-child(" + j + ") [name='descripcion'] option[value='" + element.item_id + "']").change();
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.item_id).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='valor_unitario']").val(element.valor_unitario);
-                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad).trigger(
+                    $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad_item).trigger(
                         "onkeyup");
                     // $("#chargeRow > tr:nth-child(" + j + ") [name='peso']").val(element.peso).trigger("onkeyup");
                     if (j < total) {
@@ -796,7 +794,6 @@
         function askEncargo() {
             var doc_recibe_envia = $("#buscaDocRecibeDocEnvia").val();
             var documento = $("#buscaDocumento").val();
-
             if (doc_recibe_envia.length === DNI || doc_recibe_envia.length === RUC || doc_recibe_envia.length === CE) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
@@ -808,25 +805,29 @@
                     data: {
                         doc_recibe_envia: doc_recibe_envia,
                         documento: documento
+                    },
+                    beforeSend: function () {
+                        $("#responseChargeRow").html("");
                     }
-                }).done(function(result) {
+                }).done(function(response) {
                     var html = '<tr><td colspan="5">No se encontraron coincidencias</td></tr>';
-                    if (result) {
-                        _.forEach(result.result.encargo, function(element, index) {
-                            html = '<tr>' +
-                                '<th scope="row">' +
-                                '<input class="form-check-input h-20px w-20px" type="checkbox" name="communication[]" value="email" checked="checked">' +
-                                '</th>' +
-                                '<td>' + element.doc_envia + '</td>' +
-                                '<td>' + element.doc_recibe + '</td>' +
-                                '<td>' + element.agencia_destino + '</td>' +
-                                '<td>' + element.documento_fecha + '</td>' +
-                                '<td>' + element.oferta + '</td>' +
-                                '</tr>';
-                            $("#responseChargeRow").html(html);
-                            putChargeForm(element);
-                        });
-                        enabledBtn();
+                    if (response.result.encargo.length > 0) {
+                        var i = 0;
+                        _.forEach(response.result.encargo, function(element, index) {
+                            i++;
+                            if(i <= MAX_RESULT_GUIA_REMISION) {
+                                html = '<tr>' +
+                                    '<td>' + element.doc_envia + '<br>'+ element.nombre_envia +'</td>' +
+                                    '<td>' + element.doc_recibe + '<br>'+ element.nombre_recibe +'</td>' +
+                                    '<td>' + element.direccion + '</td>' +
+                                    '<td>' + element.documento_fecha + '<br>'+ element.documento_hora +'</td>' +
+                                    '<td>' + element.oferta + '</td>' +
+                                    '<td>' + element.oferta + '</td>' +
+                                    '<td><a onclick="loadForm('+element.id+')" type="button" class="btn btn-primary">Pagar</a></td>' +
+                                    '</tr>';
+                                $("#responseChargeRow").append(html);
+                            };
+                        });   
                     } else {
                         $("#responseChargeRow").html(html);
                     }
@@ -834,6 +835,31 @@
             } else {
                 // no hay suficientes valores
             }
+        }
+        
+        function loadForm(encargo_id) {
+            enabledBtn();
+            $.ajax({
+                url: "{{ url('/api/v1/guia-remision-transportista') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    encargo_id: encargo_id
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    // $("#btnConfirmar").html(
+                    //     '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando'
+                    // );
+                }
+            }).done(function(response) {
+                if(response.result.status == 'OK') {
+                    putChargeForm(response.result.encargo);
+                }
+            });
+            
         }
 
         function enabledBtn() {
