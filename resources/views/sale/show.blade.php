@@ -584,16 +584,15 @@
             // $("[name='destino']").val(data.destino).change();
             getAgenciaDestino(data.agencia_origen, data.agencia_destino)
             // $("[name='medio_pago']").val(data.medio_pago).change();
-            $("[name='documento']").val(data.documento).change();
+            // $("[name='documento']").val(data.documento_id).change();
             // $("[name='documento_serie']").val(data.documento_serie);
             // $("[name='documento_correlativo']").val(data.documento_correlativo)
-            $("[name='adquiriente']").val(data.adquiriente)
+            $("[name='adquiriente']").val(data.adquiriente_id);
+            $("[name='guia_remision_transportista']").val("true");
             if (data.detalles.length > 0) {
                 var total = data.detalles.length;
                 _.forEach(data.detalles, function(element, index) {
                     var j = index + 1;
-                    console.log("ahí una j: "+j);
-                    //$("#chargeRow > tr:nth-child(" + j + ") [name='descripcion'] option[value='" + element.item_id + "']").change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='descripcion']").val(element.item_id).change();
                     $("#chargeRow > tr:nth-child(" + j + ") [name='valor_unitario']").val(element.valor_unitario);
                     $("#chargeRow > tr:nth-child(" + j + ") [name='cantidad']").val(element.cantidad_item).trigger(
@@ -604,10 +603,14 @@
                     }
                 });
             }
+
+            // set hiddens
+            console.log(data)
         }
 
         function getChargeForm() {
             var encargo_id = $("[name='encargo_id']").val().trim();
+            var guia_remision_transportista_id = $("[name='guia_remision_transportista']").val().trim();
 
             var doc_envia = $("[name='doc_envia']").val().trim();
             var nombre_envia = $("[name='nombre_envia']").val().trim();
@@ -653,6 +656,7 @@
             }
             var data = {
                 encargo_id: encargo_id,
+                guia_remision_transportista_id: guia_remision_transportista_id,
                 doc_envia: doc_envia,
                 nombre_envia: nombre_envia,
                 nombre_comercial_envia: nombre_comercial_envia,
@@ -680,7 +684,8 @@
                 subtotal: subtotal,
                 importe_pagar_con_descuento: importe_pagar_con_descuento,
                 descuento: descuento,
-                encargo: encargo
+                encargo: encargo,
+                
             };
             return data;
         }
@@ -902,12 +907,12 @@
                 }
             }).done(function(response) {
                 if (response.result.status === 'OK') {
-                    if (data.encargo_id.length === 0) {
+                    if (data.encargo_id.length > 0) {
                         $("[name='encargo_id']").val(response.result.encargo_id);
+                        $("[name='guia_remision_transportista']").val(response.result.guia_remision_transportista_id);
                         $("[name='adquiriente']").val(response.result.adquiriente_id);
                         $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
-                        $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,
-                            {{ env('ZEROFILL', 8) }}));
+                        $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
                         $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
                         $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
                         enabledBtn();

@@ -49,6 +49,7 @@ class Encargo extends Model
         'detraccion_medio_pago',
         'detraccion_cta_banco',
         'detraccion_porcentaje',
+        'detraccion_monto',
 
         'monto_gravado', // valor de la venta
         'monto_exonerado', // valor de la venta
@@ -318,10 +319,11 @@ class Encargo extends Model
         $guia_remision = 3;
         $encargo = Encargo::select('id', 'doc_envia', 'doc_recibe','nombre_envia', 'nombre_recibe', 'agencia_destino', 'fecha_hora_envia', 'documento_fecha', 'documento_hora', 'oferta',
                 DB::raw('(select direccion from agencia where id=agencia_destino) as direccion'));
-        $encargo->where('documento_id', $guia_remision);
         if (strlen($doc_recibe_envia)>0) {
-            $encargo = $encargo->where('doc_envia', $doc_recibe_envia)->orWhere('doc_recibe', $doc_recibe_envia);
+            $encargo->orWhere('doc_envia', $doc_recibe_envia)->orWhere('doc_recibe', $doc_recibe_envia);
         }
+        $encargo->where('documento_id', $guia_remision);
+        // dd($encargo->toSql());
         $result = $encargo->get()->sortByDesc('fecha_hora_envia')->values();
         return $result;
     }
