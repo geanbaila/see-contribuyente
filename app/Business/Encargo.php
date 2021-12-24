@@ -24,6 +24,9 @@ class Encargo extends Model
         'fecha_recibe',
         'hora_recibe',
 
+        'doc_recibe_alternativo',
+        'nombre_recibe_alternativo',
+
         // 'origen',
         // 'destino',
         'agencia_origen',

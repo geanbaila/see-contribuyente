@@ -266,12 +266,12 @@ class SaleController extends Controller
                 ]);
             }
 
-            if (strlen($data['encargo_id']) > 0) {
-                $adquiriente_id = $data['adquiriente'];
+            if ((int) $data['adquiriente'] > 0) {
+                $adquiriente_id = (int) $data['adquiriente'];
             } else {
                 $adquiriente_id = (Adquiriente::create($insert_adquiriente))->id;
             }
-            
+                        
             // registrar o actualizar el encargo
             $agencia_id = $data['agencia_origen']; // agencia que está en sesión. hacer luego
             $insert_encargo = array_merge([
@@ -286,6 +286,12 @@ class SaleController extends Controller
                 // 'celular_recibe' => $data['celular_recibe'],
                 // 'email_recibe' => $data['email_recibe'],
                 'fecha_recibe' => (empty($data['fecha_recibe']))?date(env('FORMATO_DATE')):$data['fecha_recibe'],
+
+                'doc_recibe_alternativo' => $data['doc_recibe_alternativo'],
+                'nombre_recibe_alternativo' => $data['nombre_recibe_alternativo'],
+                // 'celular_recibe_alternativo' => $data['celular_recibe_alternativo'],
+                // 'email_recibe_alternativo' => $data['email_recibe_alternativo'],
+                
 
                 // 'origen' => $data['origen'],
                 // 'destino' => $data['destino']),
@@ -318,15 +324,14 @@ class SaleController extends Controller
                     'detraccion_monto' => number_format(($insert_encargo['monto_gravado']-$insert_encargo['descuento']) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION') , 2, '.', ''),
                 ]);
             }
-            
+
             $encargo = null;
             if (strlen($data['encargo_id']) > 0) {
                 //controlar duplicidad de registros
-                $encargo_id = $data['encargo_id']; 
+                $encargo_id = (int) $data['encargo_id']; 
                 $fecha_hora_envia = $data['fecha_hora_envia'];
                 $documento_correlativo = $data['documento_correlativo'];
-                
-                if ($data['guia_remision_transportista_id']) {
+                if ((bool)$data['guia_remision_transportista_id']) {
                     $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
                     $insert_encargo['documento_correlativo'] = $documento_correlativo;
 

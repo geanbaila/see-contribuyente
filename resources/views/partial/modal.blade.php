@@ -38,11 +38,11 @@
                               <div class="row gy-5">
                                   <div class="col-3">
                                       <label for="exampleDataList" class="form-label">Recibe / Envía:</label>
-                                      <input class="form-control" id="buscaDocRecibeDocEnvia">
+                                      <input class="form-control buscaDocumento" id="buscaDocRecibeDocEnvia">
                                   </div>
                                   <div class="col-3">
                                       <label for="exampleDataList" class="form-label">Guía de Remisión:</label>
-                                      <input class="form-control" id="buscaDocumento">
+                                      <input class="form-control buscaDocumento" id="buscaDocumento">
                                   </div>
                                   <div class="col-3">
                                     <label for="exampleDataList" class="form-label">&nbsp;</label>

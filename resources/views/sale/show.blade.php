@@ -4,23 +4,38 @@
         .fw8 {
             font-weight: 800 !important;
         }
+        .display-hide {
+            display: none;
+        }
+        .display-show {
+            display: block;
+        }
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
         <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
         <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
-        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <br>
         <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
-        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
-        <input type="text" id="fecha_hora_envia" name="fecha_hora_envia" value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <input type="text" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
         <input type="text" name="guia_remision_transportista" value="" />
+        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <br>
+        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <br>
+        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <br>
+        <input type="text" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
+        <input type="text" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="text" name="celular_envia_alternativo" value="{{ isset($encargo) ? $encargo->celular_envia_alternativo : '' }}">
+        <input type="text" name="email_envia_alternativo" value="{{ isset($encargo) ? $encargo->email_envia_alternativo : '' }}">
+        
 
         <div class="card">
             <div class="card mb-5 mb-xxl-8">
@@ -124,6 +139,45 @@
                                         <img src="http://localhost/dev.enlaces.sis/public/assets/media/plus-circle.svg"
                                             width="20" />
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="RecibeRow" class="display-hide">
+                        <div class="row gy-5 g-xl-12">
+                            <div class="col-xxl-7">
+                                <div class="row gy-5">
+                                    <div class="col-xxl-5">
+                                        <label>&nbsp;</label>
+                                        @if (isset($encargo))
+                                            <input type="text" class="form-control" id="doc_recibe_alternativo" name="doc_recibe_alternativo" value="{{ $encargo->doc_recibe_alternativo }}"/>
+                                        @else
+                                            <input type="text" class="form-control" id="doc_recibe_alternativo" name="doc_recibe_alternativo" value=""/>
+                                        @endif
+                                    </div>
+                                    <div class="col-xxl-7">
+                                        <label>&nbsp;</label>
+                                        @if (isset($encargo))
+                                            <input type="text" class="form-control" id="nombre_recibe_alternativo" name="nombre_recibe_alternativo" value="{{ $encargo->nombre_recibe_alternativo }}" disabled />
+                                        @else 
+                                            <input type="text" class="form-control" id="nombre_recibe_alternativo" name="nombre_recibe_alternativo" value="" disabled />
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4">
+                                <div class="row gy-5">
+                                    <div class="col-xxl-5">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-1">
+                                <div class="row gy-5">
+                                    <div class="col-xxl-12">
+                                        <label>&nbsp;</label>
+                                        <a class="float-end" onclick="javascript:removeReceivesRow()">
+                                            <img class="float-right" src="http://localhost/dev.enlaces.sis/public/assets/media/minus-circle.svg" width="20">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -378,7 +432,6 @@
                             </div>
                         </div>
                         <div class="col-5 text-end align-top">
-                            
                                 <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">Confirmar</a>
                                 <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#modalBuscarVenta" onclick="javascript:document.getElementById('buscaDocRecibeDocEnvia').focus();">
@@ -568,8 +621,10 @@
         function putChargeForm(data) {
             $("[name='encargo_id']").val(data.id);
 
-            $("[name='doc_envia']").val(data.doc_envia);
-            $("[name='nombre_envia']").val(data.nombre_envia);
+            // hacer al receptor un adquiriente
+            $("[name='doc_envia']").val(data.doc_recibe); // $("[name='doc_envia']").val(data.doc_envia);
+            $("[name='nombre_envia']").val(data.nombre_recibe); // $("[name='nombre_envia']").val(data.nombre_envia);
+            // 
             // $("[name='celular_envia']").val(data.celular_envia);
             // $("[name='email_envia']").val(data.email_envia);
             $("[name='fecha_hora_envia']").val(data.fecha_hora_envia)
@@ -587,7 +642,7 @@
             // $("[name='documento']").val(data.documento_id).change();
             // $("[name='documento_serie']").val(data.documento_serie);
             // $("[name='documento_correlativo']").val(data.documento_correlativo)
-            $("[name='adquiriente']").val(data.adquiriente_id);
+            $("[name='adquiriente']").val(0);
             $("[name='guia_remision_transportista']").val("true");
             if (data.detalles.length > 0) {
                 var total = data.detalles.length;
@@ -620,6 +675,7 @@
             // var email_envia = $("[name='email_envia']").val().trim();
             var fecha_hora_envia = $("[name='fecha_hora_envia']").val().trim();
 
+
             var doc_recibe = $("[name='doc_recibe']").val().trim();
             var nombre_recibe = $("[name='nombre_recibe']").val().trim();
             var nombre_comercial_recibe = $("[name='nombre_comercial_recibe']").val().trim();
@@ -627,6 +683,11 @@
             // var celular_recibe = $("[name='celular_recibe']").val().trim();
             // var email_recibe = $("[name='email_recibe']").val().trim();
             var fecha_recibe = $("[name='fecha_recibe']").val().trim();
+
+            var doc_recibe_alternativo = $("[name='doc_recibe_alternativo']").val().trim();
+            var nombre_recibe_alternativo = $("[name='nombre_recibe_alternativo']").val().trim();
+            var nombre_comercial_recibe_alternativo = $("[name='nombre_comercial_recibe_alternativo']").val().trim();
+            var direccion_recibe_alternativo = $("[name='direccion_recibe_alternativo']").val().trim()
 
             // var origen = $("[name='origen']").val().trim();
             var agencia_origen = $("[name='agencia_origen']").val().trim();
@@ -673,6 +734,11 @@
                 // email_recibe: email_recibe,
                 fecha_recibe: fecha_recibe,
 
+                doc_recibe_alternativo: doc_recibe_alternativo,
+                nombre_recibe_alternativo: nombre_recibe_alternativo,
+                nombre_comercial_recibe_alternativo: nombre_comercial_recibe_alternativo,
+                direccion_recibe_alternativo: direccion_recibe_alternativo,
+
                 // data.push("origen", origen);
                 agencia_origen: agencia_origen,
                 agencia_destino: agencia_destino,
@@ -692,29 +758,45 @@
 
         function validate(data) {
             if (data.documento === factura && data.doc_envia.length !== RUC) {
-                showErrorToastr('Al documento <b>' + data.doc_envia + '</b> le faltan ' + (data.documento.length - RUC) +
-                    ' caracters para ser un RUC.');
+                if(data.doc_envia.length < RUC){
+                    showErrorToastr('Al documento <b>' + data.doc_envia + '</b> le faltan ' + (RUC-data.doc_envia.length) +
+                    ' caracteres para ser un RUC.');
+                } else {
+                    showErrorToastr('Al documento <b>' + data.doc_envia + '</b> le sobran ' + (data.doc_envia.length-RUC) +
+                    ' caracteres para ser un RUC.');
+                }
                 $("[name='doc_envia']").focus();
                 return false;
             }
             if (data.doc_envia.length !== DNI && data.doc_envia.length !== RUC && data.doc_envia.length !== CE) {
-                showErrorToastr('Documento incorrecto,<br>has ingresado ' + data.doc_envia.length + ' caracteres.');
+                showErrorToastr('Documento incorrecto (envía),<br>has ingresado ' + data.doc_envia.length + ' caracteres.');
                 $("[name='doc_envia']").focus();
                 return false;
             }
             if (data.nombre_envia.length === 0) {
-                showErrorToastr('Completa los nombre de quien Envía.');
+                showErrorToastr('Completa los nombre de quien <b>envía</b>.');
                 $("[name='nombre_envia']").focus();
                 return false;
             }
             if (data.doc_recibe.length !== DNI && data.doc_recibe.length !== RUC && data.doc_recibe
                 .length !== CE) {
-                showErrorToastr('Documento incorrecto,<br>has ingresado ' + data.doc_recibe.length + ' caracteres.');
+                showErrorToastr('Documento incorrecto (recibe),<br>has ingresado ' + data.doc_recibe.length + ' caracteres.');
                 $("[name='doc_recibe']").focus();
                 return false;
             }
             if (data.nombre_recibe.length === 0) {
-                showErrorToastr('Completa los nombre de quien Recibe.');
+                showErrorToastr('Completa los nombre de quien <b>recibe</b>.');
+                $("[name='nombre_recibe']").focus();
+                return false;
+            }
+            if (data.doc_recibe_alternativo.length>0 && data.doc_recibe_alternativo.length !== DNI && data.doc_recibe_alternativo.length !== RUC && data.doc_recibe_alternativo
+                .length !== CE) {
+                showErrorToastr('Documento incorrecto (recibe),<br>has ingresado ' + data.doc_recibe_alternativo.length + ' caracteres.');
+                $("[name='doc_recibe']").focus();
+                return false;
+            }
+            if (data.doc_recibe_alternativo.length>0 && data.nombre_recibe_alternativo.length === 0) {
+                showErrorToastr('Completa los nombre de quien <b>recibe</b>.');
                 $("[name='nombre_recibe']").focus();
                 return false;
             }
@@ -843,7 +925,6 @@
         }
         
         function loadForm(encargo_id) {
-            enabledBtn();
             $.ajax({
                 url: "{{ url('/api/v1/guia-remision-transportista') }}",
                 type: "POST",
@@ -862,9 +943,10 @@
             }).done(function(response) {
                 if(response.result.status == 'OK') {
                     putChargeForm(response.result.encargo);
+                    enabledBtn();
+                    $("#modalBuscarVenta").modal('hide');
                 }
             });
-            
         }
 
         function enabledBtn() {
@@ -892,40 +974,45 @@
             if (data == null) {
                 data = getChargeForm();
             }
-            $.ajax({
-                url: "{{ url('/venta/registrar') }}",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: data,
-                dataType: "json",
-                beforeSend: function() {
-                    $("#btnConfirmar").html(
-                        '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando'
-                    );
-                }
-            }).done(function(response) {
-                if (response.result.status === 'OK') {
-                    if (data.encargo_id.length > 0) {
-                        $("[name='encargo_id']").val(response.result.encargo_id);
-                        $("[name='guia_remision_transportista']").val(response.result.guia_remision_transportista_id);
-                        $("[name='adquiriente']").val(response.result.adquiriente_id);
-                        $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
-                        $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
-                        $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
-                        $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
-                        enabledBtn();
-                        showSuccessToastr(response.result.message);
+            var irregular = _.find(data.encargo, function(o) { return o.descripcion == '--' || o.cantidad == '' || o.cantidad == 0; })
+            if (!irregular) {
+                $.ajax({
+                    url: "{{ url('/venta/registrar') }}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function() {
+                        $("#btnConfirmar").html(
+                            '<div class="spinner-border spinner-border-sm text-light" role="status"><span class="sr-only">por favor espere</span></div> Guardando'
+                        );
                     }
-                } else {
-                    showErrorToastr(response.result.message);
-                }
-                $("#btnConfirmar").html("Confirmar");
-            }).fail(function() {
-                showErrorToastr('No se ha podido procesar la venta');
-                $("#btnConfirmar").html("Confirmar");
-            });
+                }).done(function(response) {
+                    if (response.result.status === 'OK') {
+                        if (response.result.encargo_id.toString().length > 0) {
+                            $("[name='encargo_id']").val(response.result.encargo_id);
+                            $("[name='guia_remision_transportista']").val(response.result.guia_remision_transportista_id);
+                            $("[name='adquiriente']").val(response.result.adquiriente_id);
+                            $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
+                            $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
+                            $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
+                            $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
+                            enabledBtn();
+                            showSuccessToastr(response.result.message);
+                        }
+                    } else {
+                        showErrorToastr(response.result.message);
+                    }
+                    $("#btnConfirmar").html("Confirmar");
+                }).fail(function() {
+                    showErrorToastr('No se ha podido procesar la venta');
+                    $("#btnConfirmar").html("Confirmar");
+                });
+            } else {
+                showErrorToastr('Indica el detalle de la encomienda: descripción, cantidad y valor unitario.');
+            }
         }
 
         function doit() {
@@ -1021,11 +1108,32 @@
             });
         }
 
-        function addReceivesRow() {
-
+        function removeReceivesRow() {
+            $("#RecibeRow").removeClass('display-show');
+            $("#RecibeRow").addClass('display-hide');
+            $("#doc_recibe_alternativo").val("");
+            $("#nombre_recibe_alternativo").val("");
         }
 
+        function addReceivesRow() {
+            $("#RecibeRow").removeClass('display-hide');
+            $("#RecibeRow").addClass('display-show');
+            // $("#doc_recibe_alternativo").val("");
+            // $("#nombre_recibe_alternativo").val("");
+        }
+
+        $("[name='doc_envia']").on('keydown', function(e){
+            if(e.which == 8) {
+                $("[name='nombre_envia']").val("");
+                $("[name='nombre_comercial_envia']").val("");
+                $("[name='direccion_envia']").val("");
+            }
+        });
+
         $("[name='doc_envia']").on('keypress', function(e) {
+            $("[name='nombre_envia']").val("");
+            $("[name='nombre_comercial_envia']").val("");
+            $("[name='direccion_envia']").val("");
             if (e.which == 13) {
                 var doc_envia = $("[name='doc_envia']").val().trim();
                 if (doc_envia.length === DNI || doc_envia.length === CE) {
@@ -1039,6 +1147,7 @@
                         dataType: "json"
                     }).done(function(response) {
                         $("[name='nombre_envia']").val(response.result.nombre);
+                        $("[name='nombre_comercial_envia']").val(response.result.nombre);
                         $("[name='direccion_envia']").val(response.result.direccion);
                     });
 
@@ -1064,7 +1173,18 @@
             }
         });
 
+        $("[name='doc_recibe']").on('keydown', function(e){
+            if(e.which == 8) {
+                $("[name='nombre_recibe']").val("");
+                $("[name='nombre_comercial_recibe']").val("");
+                $("[name='direccion_recibe']").val("");
+            }
+        });
+
         $("[name='doc_recibe']").on('keypress', function(e) {
+            $("[name='nombre_recibe']").val("");
+            $("[name='nombre_comercial_recibe']").val("");
+            $("[name='direccion_recibe']").val("");
             if (e.which == 13) {
                 var doc_recibe = $("[name='doc_recibe']").val().trim();
                 $("[name='nombre_comercial_recibe']").val('');
@@ -1101,6 +1221,63 @@
                     showErrorToastr("Ha ingresado " + doc_recibe.length + " caracteres, complételo por favor.");
                     $("[name='doc_recibe']").focus();
                 }
+            }
+        });
+
+        $("[name='doc_recibe_alternativo']").on('keydown', function(e){
+            if(e.which == 8) {
+                $("[name='nombre_recibe_alternativo']").val("");
+                $("[name='nombre_comercial_recibe_alternativo']").val("");
+                $("[name='direccion_recibe_alternativo']").val("");
+            }
+        });
+
+        $("[name='doc_recibe_alternativo']").on('keypress', function(e) {
+            $("[name='nombre_recibe_alternativo']").val("");
+            $("[name='nombre_comercial_recibe_alternativo']").val("");
+            $("[name='direccion_recibe_alternativo']").val("");
+            if (e.which == 13) {
+                var doc_recibe_alternativo = $("[name='doc_recibe_alternativo']").val().trim();
+                $("[name='nombre_comercial_recibe_alternativo']").val('');
+                if (doc_recibe_alternativo.length === DNI || doc_recibe_alternativo.length === CE) {
+                    // consultar a RENIEC
+                    $.ajax({
+                        url: "{{ url('/api/v1/reniec') }}/" + doc_recibe_alternativo,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombre_recibe_alternativo']").val(result.result.nombre);
+                        $("[name='nombre_comercial_recibe_alternativo']").val(result.result.nombre);
+                        $("[name='direccion_recibe_alternativo']").val(result.result.direccion);
+                    });
+
+                } else if (doc_recibe_alternativo.length === RUC) {
+                    // consultar a SUNAT
+                    $.ajax({
+                        url: "{{ url('/api/v1/sunat') }}/" + doc_recibe_alternativo,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json"
+                    }).done(function(result) {
+                        $("[name='nombre_recibe_alternativo']").val(result.result.nombre);
+                        $("[name='nombre_comercial_recibe_alternativo']").val(result.result.nombre);
+                        $("[name='direccion_recibe_alternativo']").val(result.result.direccion);
+                    });
+                } else {
+                    showErrorToastr("Ha ingresado " + doc_recibe_alternativo.length + " caracteres, complételo por favor.");
+                    $("[name='doc_recibe_alternativo']").focus();
+                }
+            }
+        });
+
+        $(".buscaDocRecibeDocEnvia").on('keypress', function(e) {
+            if (e.which == 13) {
+                askEncargo();
             }
         });
 
