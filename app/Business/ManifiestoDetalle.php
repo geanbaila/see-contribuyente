@@ -11,6 +11,7 @@ class ManifiestoDetalle extends Model
 
     protected $fillable = [
         'manifiesto_id',
+        'encargo_id',
         'subtotal',
         'oferta',
         'cantidad_item',
@@ -19,4 +20,15 @@ class ManifiestoDetalle extends Model
         'documento_serie',
         'documento_correlativo',
     ];
+
+    public function encargoDetalles()
+    {
+        return $this->hasMany('App\Business\EncargoDetalle', 'id', 'encargo_id');
+    }
+
+    public function encargos()
+    {
+        return $this->belongsTo('App\Business\Encargo', 'encargo_id');
+    }
 }
+

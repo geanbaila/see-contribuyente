@@ -997,9 +997,12 @@
                             $("[name='guia_remision_transportista']").val(response.result.guia_remision_transportista_id);
                             $("[name='adquiriente']").val(response.result.adquiriente_id);
                             $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
+                            $("[name='fecha_recibe_blocked']").val(response.result.fecha_hora_envia);
                             $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
                             $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
                             $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);
+
+                            
                             enabledBtn();
                             showSuccessToastr(response.result.message);
                         }

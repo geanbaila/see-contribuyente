@@ -193,6 +193,7 @@ class ApiController extends Controller
         $bool = $encargo->update(['estado' => 3]);  // encargo_estado: en manifiesto
         if($bool) {
             $prg_encargo = $encargo->get([
+                'id',
                 'oferta',
                 'subtotal',
                 'cantidad_item',
@@ -207,6 +208,7 @@ class ApiController extends Controller
             $subtotal_por_pagar = 0;
             foreach($prg_encargo as $item):
                 $manifiesto_detalle[] = [
+                    'encargo_id' => $item->id,
                     'oferta' => $item->oferta,
                     'subtotal' => $item->subtotal,
                     'cantidad_item' => $item->cantidad_item,
@@ -227,7 +229,6 @@ class ApiController extends Controller
                 'hora' => date('H:i:s'),
                 'url_documento_pdf' => $url_documento_pdf,
                 'nombre_archivo' => $nombre_archivo,
-                'items' => 10,
                 'cantidad_item' =>$cantidad_item,
                 'subtotal_pagado' =>$subtotal_pagado,
                 'subtotal_por_pagar' =>$subtotal_por_pagar,

@@ -58,13 +58,12 @@
                                         <div class="col-xxl-2  col-sm-2">
                                             <label for="exampleDataList" class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
-                                                onclick="javascript:transportar()">Trasladar</button>
+                                                onclick="javascript:noTransportar()">No Trasladar</button>
                                         </div>
                                         <div class="col-xxl-2  col-sm-2">
                                             <label for="exampleDataList" class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
-                                                onclick="javascript:noTransportar()">No
-                                                Trasladar</button>
+                                                onclick="javascript:transportar()">Trasladar</button>
                                         </div>
                                         <!--
                                             <div class="col-xxl-1  col-sm-1">

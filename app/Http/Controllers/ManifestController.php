@@ -31,7 +31,8 @@ class ManifestController extends Controller
     
     public function list() {
         $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
-        $encargo = Encargo::where('estado', '!=', $en_manifiesto)->get()->sortBy(['documento_fecha','documento_hora']);
+        // $encargo = Encargo::where('estado', '!=', $en_manifiesto)->get()->sortBy(['documento_fecha','documento_hora']);
+        $encargo = Encargo::all()->sortBy(['documento_fecha','documento_hora']);
         $manifiesto = Manifiesto::all()->sortBy('created_at');
         $agencia = Agencia::all();
         $data = [
@@ -69,7 +70,7 @@ class ManifestController extends Controller
 
         //Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=0, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
 
-        PDF::Cell(24+15+15+40+45+40+10, $height, 'MANIFIESTO DE ENCOMIENDAS Y CARGAS', '', 0, 'C', 0);
+        PDF::Cell(24+15+15+40+45+40+10, $height, 'ENCOMIENDAS Y CARGAS', '', 0, 'C', 0);
         PDF::Ln();
         PDF::Ln();
         
@@ -90,19 +91,30 @@ class ManifestController extends Controller
 
         $por_pagar = 0;
         $pagado = 0;
+        $resumen = [];
+        
         foreach($manifiesto->detalles as $item):
             $por_pagar += 0;
             $pagado += $item['oferta'];
             PDF::Cell(24, $height, $item['documento_serie'] . '-' . $item['documento_correlativo'], '', 0, 'L', 1);
             PDF::Cell(15, $height, number_format(0, 2, '.', ''), '', 0, 'L', 1);
             PDF::Cell(15, $height, number_format($item['oferta'], 2, '.', ''), '', 0, 'L', 1);
-            PDF::Cell(40, $height, "-", '', 0, 'L', 1, '', 0);
+            PDF::Cell(40, $height, $item->encargos->nombre_recibe, '', 0, 'L', 1, '', 0);
             PDF::Cell(40, $height, $item['agencia_destino'], '', 0, 'L', 1);
             PDF::Cell(45, $height, "Descripcion", '', 0, 'L', 1);
             PDF::Cell(10, $height, $item['cantidad_item'], '', 0, 'L', 1);
             PDF::Ln();
+            foreach($item->encargoDetalles as $item2):
+                if (array_key_exists($item2->codigo_producto, $resumen)) {
+                    $resumen[$item2->codigo_producto]['cantidad_item'] += $item2->cantidad_item; 
+                    $resumen[$item2->codigo_producto]['descripcion'] += $item2->descripcion; 
+                } else {
+                    $resumen[$item2->codigo_producto]['cantidad_item'] = $item2->cantidad_item; 
+                    $resumen[$item2->codigo_producto]['descripcion'] = $item2->descripcion; 
+                }
+            endforeach;
         endforeach;
-
+        
         PDF::Cell(24+15+15+40+45+40+10, $height, '', 'T', 0, 'L', 1);
         PDF::Ln();
         PDF::Cell(24, $height, 'Subtotal:', '', 0, 'R', 1);
@@ -110,8 +122,8 @@ class ManifestController extends Controller
         PDF::Cell(15, $height, number_format($pagado, 2, '.', ''), '', 0, 'L', 1);
         PDF::Cell(40, $height, '', '', 0, 'L', 1, '', 0);
         PDF::Cell(40, $height, '', '', 0, 'L', 1);
-        PDF::Cell(45, $height, 'Total de CPE enviados:', '', 0, 'R', 1);
-        PDF::Cell(10, $height, '21', '', 0, 'L', 1);
+        PDF::Cell(45, $height, 'Total de documentos enviados:', '', 0, 'R', 1);
+        PDF::Cell(10, $height, count($manifiesto->detalles), '', 0, 'L', 1);
         PDF::Ln();
 
         PDF::Cell(24, $height, 'Total general:', '', 0, 'R', 1);
@@ -119,23 +131,19 @@ class ManifestController extends Controller
         PDF::Cell(15, $height, '', '', 0, 'L', 1);
         PDF::Cell(40, $height, '', '', 0, 'L', 1, '', 0);
         PDF::Cell(40, $height, '', '', 0, 'L', 1);
-        PDF::Cell(45, $height, '', '', 0, 'L', 1);
-        PDF::Cell(10, $height, '', '', 0, 'L', 1);
+        PDF::Cell(45, $height, 'Peso total (KG):', '', 0, 'R', 1);
+        PDF::Cell(10, $height, '0000.00', '', 0, 'L', 1);
         PDF::Ln();
         
-        PDF::Cell(24, $height, 'Resumen:', '', 0, 'R', 1);
+        PDF::Cell(24, $height, 'Resumen de carga:', '', 0, 'R', 1);
         PDF::Ln();
 
-        PDF::Cell(24, $height, 50, '', 0, 'R', 1);
-        PDF::Cell(45, $height, 'XXXXXX', '', 0, 'L', 1);
-        PDF::Ln();
-        PDF::Cell(24, $height, 50, '', 0, 'R', 1);
-        PDF::Cell(45, $height, 'XXXXXX', '', 0, 'L', 1);
-        PDF::Ln();
-        PDF::Cell(24, $height, 50, '', 0, 'R', 1);
-        PDF::Cell(45, $height, 'XXXXXX', '', 0, 'L', 1);
-        PDF::Ln();
-
+        foreach($resumen as $key => $item):
+            PDF::Cell(24, $height, $item['cantidad_item'], '', 0, 'R', 1);
+            PDF::Cell(54, $height, $item['descripcion'], '', 0, 'L', 1);
+            PDF::Ln();
+        endforeach;
+        
         PDF::SetY(10);
         PDF::SetFont('times', 'I', $font_size_regular);
         PDF::Cell(0, 10, 'pág. '.PDF::getAliasNumPage().'/'.PDF::getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
