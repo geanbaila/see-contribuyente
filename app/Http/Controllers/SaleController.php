@@ -63,6 +63,11 @@ class SaleController extends Controller
         $agencia_origen = Agencia::all(); // sacar los valores de la sesión del usuario según los perfiles que tenga asignado
         $documento = Documento::all();
         $encargo = Encargo::find($encargo_id);
+        $GUIA_REMISION = 3;
+        if ($encargo['documento_id'] == $GUIA_REMISION) {
+            $encargo['guia_remision_transportista_id'] = 1;
+        }
+        
         return view('sale.edit')->with([
             'agencia_origen' => $agencia_origen,
             'sede' => $sede,
@@ -327,11 +332,12 @@ class SaleController extends Controller
 
             $encargo = null;
             if (strlen($data['encargo_id']) > 0) {
-                //controlar duplicidad de registros
+                // controlar duplicidad de registros
                 $encargo_id = (int) $data['encargo_id']; 
                 $fecha_hora_envia = $data['fecha_hora_envia'];
                 $documento_correlativo = $data['documento_correlativo'];
-                if ((bool)$data['guia_remision_transportista_id']) {
+                // cambiar guía de remisión a boleta/factura
+                if ((int)$data['guia_remision_transportista_id']==1) {
                     $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
                     $insert_encargo['documento_correlativo'] = $documento_correlativo;
 
@@ -408,6 +414,7 @@ class SaleController extends Controller
                 }
 
             } else {
+                // nuevo
                 $encargo_id = Encargo::create($insert_encargo)->id;
 
                 foreach($columnas[0] as $item):
@@ -421,10 +428,10 @@ class SaleController extends Controller
                  
                 $encargo = Encargo::where('id', $encargo_id)->update($update);
             }
-
             // registrar o actualizar el PDF
             if ($row_documento->alias === 'B') {
                 $url_documento_pdf = $this->escribirBoleta($encargo_id);
+                
                 $url_documento = $this->escribirXMLBoleta($encargo_id);
 
             } else if ($row_documento->alias === 'F') {
@@ -644,6 +651,7 @@ class SaleController extends Controller
 
             PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
+            PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
             PDF::Ln();
@@ -816,6 +824,7 @@ class SaleController extends Controller
 
             
             PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
+            PDF::Ln();
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);
@@ -993,6 +1002,7 @@ class SaleController extends Controller
             PDF::Ln();
 
             PDF::MultiCell($width, $height, $textodniruc, '', $align_left, 1, 0, $x, $y);
+            PDF::Ln();
             PDF::Ln();
             
             PDF::MultiCell($width, $height, "CONSIGNA:", '', $align_left, 1, 0, $x, $y);

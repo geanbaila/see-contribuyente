@@ -14,11 +14,11 @@
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
         <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="adquiriente" value="{{ isset($encargo) ? $encargo->adquiriente_id : '' }}" />
+        <input type="text" name="adquiriente" value="{{ (isset($encargo) && empty($encargo->guia_remision_transportista_id)) ? $encargo->adquiriente_id : 0}}" />
         <br>
         <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
         <input type="text" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
-        <input type="text" name="guia_remision_transportista" value="" />
+        <input type="text" name="guia_remision_transportista" value="{{ (isset($encargo) && !empty($encargo->guia_remision_transportista_id)) ? $encargo->guia_remision_transportista_id : 0 }}">
         <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
         <br>
         <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
@@ -624,7 +624,9 @@
             // hacer al receptor un adquiriente
             $("[name='doc_envia']").val(data.doc_recibe); // $("[name='doc_envia']").val(data.doc_envia);
             $("[name='nombre_envia']").val(data.nombre_recibe); // $("[name='nombre_envia']").val(data.nombre_envia);
-            // 
+            $("[name='adquiriente']").val(0);
+            $("[name='guia_remision_transportista']").val("true");
+
             // $("[name='celular_envia']").val(data.celular_envia);
             // $("[name='email_envia']").val(data.email_envia);
             $("[name='fecha_hora_envia']").val(data.fecha_hora_envia)
@@ -642,8 +644,7 @@
             // $("[name='documento']").val(data.documento_id).change();
             // $("[name='documento_serie']").val(data.documento_serie);
             // $("[name='documento_correlativo']").val(data.documento_correlativo)
-            $("[name='adquiriente']").val(0);
-            $("[name='guia_remision_transportista']").val("true");
+            
             if (data.detalles.length > 0) {
                 var total = data.detalles.length;
                 _.forEach(data.detalles, function(element, index) {
