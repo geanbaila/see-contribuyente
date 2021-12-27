@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Business\Salida;
 use App\Business\Sede;
 use App\Business\Agencia;
@@ -13,6 +15,11 @@ use PDF;
 
 class ManifestController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function list2() {
         $w = date('w');
         $ahora = date('H:i');
@@ -29,16 +36,35 @@ class ManifestController extends Controller
         return view('manifest.list')->with($data);
     }
     
-    public function list() {
+    public function list(Request $request) {
         $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
-        // $encargo = Encargo::where('estado', '!=', $en_manifiesto)->get()->sortBy(['documento_fecha','documento_hora']);
-        $encargo = Encargo::all()->sortByDesc('created_at');
-        $manifiesto = Manifiesto::all()->sortByDesc('created_at');
-        $agencia = Agencia::all();
+        $agencia_origen_selected = ((int)$request->input('agencia_origen') > 0)? (int)$request->input('agencia_origen'): 1;
+        
+        list($d,$m,$y) = explode('/', $request->input('fecha_recibe'));
+        $fecha_recibe = (checkdate($m,$d,$y))? $request->input('fecha_recibe'): date('d/m/Y');
+        
+        
+        $encargo = Encargo::where('estado', '!=', $en_manifiesto)->where('agencia_origen', $agencia_origen_selected)->get()->sortBy(['agencia_destino','documento_fecha','documento_hora']);
+        /* $encargo = DB::table('encargo')
+        ->select(
+            '*',
+            DB::raw('(select nombre from encargo_estado where id = estado) as estado_nombre'),
+            DB::raw('(select departamento from agencia where id = agencia_origen) as agencia_origen_departamento'),
+            DB::raw('(select departamento from agencia where id = agencia_destino) as agencia_destino_departamento')
+        )
+        ->orderBy('agencia_destino', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->paginate(env('PAGINACION_MANIFIESTO')); */
+
+
+        $manifiesto = Manifiesto::all()->sortByDesc('created_at')->take(100);
+        $agencia_origen = Agencia::all();
         $data = [
-            'origen' => $agencia,
+            'agencia_origen' => $agencia_origen,
             'encargo' => $encargo, 
             'manifiesto' => $manifiesto,
+            'fecha_recibe' => $fecha_recibe,
+            'agencia_origen_selected' => (int) $agencia_origen_selected,
             'menu_manifiesto_active' => 'active',
         ];
         return view('manifest.list')->with($data);

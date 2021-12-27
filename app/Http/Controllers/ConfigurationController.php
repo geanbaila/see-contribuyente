@@ -11,7 +11,11 @@ use MongoDB\BSON\ObjectId;
 
 class ConfigurationController extends Controller
 {
-    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function list() {
         // $agencia = Agencia::all();
         // $salida = Salida::all()->sortBy("agencia");

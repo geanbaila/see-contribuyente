@@ -14,6 +14,8 @@ class Manifiesto extends Model
         'fecha',
         'hora',
         'ruta',
+        'origen_nombre',
+        'destino_nombre',
         'cantidad_item',
         'subtotal_pagado',
         'subtotal_por_pagar',

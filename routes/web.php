@@ -11,10 +11,13 @@
 |
 */
 
+Auth::routes();
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/venta', 'SaleController@list');
 Route::get('/venta/nuevo', 'SaleController@show');
@@ -54,6 +57,3 @@ Route::post('/api/v1/manifiesto/transportar', 'ApiController@transportar');
 Route::post('/api/v1/manifiesto/no-transportar', 'ApiController@noTransportar');
 Route::post('/api/v1/manifiesto/empaquetar-envio', 'ApiController@empaquetarEnvio');
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

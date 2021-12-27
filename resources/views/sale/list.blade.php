@@ -7,11 +7,13 @@
                 <a id="btnEliminar" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEliminarVenta">
                     <img src="http://localhost/dev.enlaces.sis/public/assets/media/trash-2-white.svg" width="20">
                 </a>
+                <br/>
+                <br/>
                 <table
-                    class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
+                    class="table table-hover table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                     <thead class="border-gray-200 fw-bold bg-lighten">
                         <tr>
-                            <th scope="col" colspan="2"></th>
+                            <th scope="col"></th>
                             <th scope="col">Documento</th>
                             <th scope="col">F. recepción</th>
                             <th scope="col" width="150">Importe (S/.)</th>
@@ -22,6 +24,7 @@
                             <th scope="col">PDF</th>
                             <th scope="col">XML</th>
                             <th scope="col">CDR</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,11 +72,14 @@
                                     </td>
                                     <td>
                                         @if (!$item->url_documento_baja)
-                                            <input class="form-check-input check-encargos" type="checkbox" data-verificado="{{(!empty($item->url_documento_cdr))?'1':'0'}}" value="{{$item->id}}"/>
+                                            <input class="form-check-input check-encargos" type="checkbox"
+                                                data-verificado="{{ !empty($item->url_documento_cdr) ? '1' : '0' }}"
+                                                value="{{ $item->id }}" />
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr><td colspan="12">{{ $encargo->links() }}</td></tr>
                         @endif
                     </tbody>
                 </table>
@@ -151,7 +157,7 @@
             var encargos = [];
             $(".check-encargos").each(function(key, item) {
                 if ($(item).is(':checked')) {
-                    if($(item).data('verificado') == '1') {
+                    if ($(item).data('verificado') == '1') {
                         encargos.push($(item).val());
                         // $(item).parent().parent().remove();
                     } else {
@@ -159,7 +165,7 @@
                     }
                 }
             }).promise().done(function() {
-                if(encargos.length>0){
+                if (encargos.length > 0) {
                     $.ajax({
                         url: "{{ url('/venta/comunicar-baja') }}",
                         type: "POST",
@@ -171,7 +177,9 @@
                             encargo_id: encargos
                         },
                         beforeSend: function() {
-                            $("#btnBajaCPE").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class = "sr-only" > por favor espere < /span></div > Enviando ');
+                            $("#btnBajaCPE").html(
+                                '<div class="spinner-border spinner-border-sm text-light" role="status"><span class = "sr-only" > por favor espere < /span></div > Enviando '
+                                );
                         }
                     }).done(function(response) {
                         if (response.result.status === 'OK') {
@@ -182,7 +190,8 @@
                         $("#btnBajaCPE").html('Sí, Continuar');
                     }).fail(function() {
                         $("#btnBajaCPE").html('Sí, Continuar');
-                        showErrorToastr('No se pudo comunicar la baja del comprobante de pago electrónico.');
+                        showErrorToastr(
+                        'No se pudo comunicar la baja del comprobante de pago electrónico.');
                     });
                 } else {
                     showErrorToastr('Debe seleccionar al menos un comprobante de pago electrónico.');

@@ -8,6 +8,11 @@ use App\Http\Controllers\ManifestController;
 
 class ApiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getEncargo(Request $request) {
         $doc_recibe_envia = $request->input('doc_recibe_envia');
         $documento = $request->input('documento');
@@ -235,6 +240,8 @@ class ApiController extends Controller
                 'fecha' => date(env('FORMATO_DATE')),
                 'hora' => date('H:i:s'),
                 'ruta' => $item->agenciasOrigen->departamento . ' - ' . $item->agenciasDestino->departamento,
+                'origen_nombre' => $item->agenciasOrigen->departamento,
+                'destino_nombre' => $item->agenciasDestino->departamento,
                 'url_documento_pdf' => $url_documento_pdf,
                 'nombre_archivo' => $nombre_archivo,
                 'cantidad_item' =>$cantidad_item,

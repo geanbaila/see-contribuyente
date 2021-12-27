@@ -35,39 +35,35 @@
                                 <div class="card mb-5 mb-xxl-8">
                                     <div class="card-header border-0 pt-5">
                                         <div class="col-xxl-3 col-sm-3">
-                                            <label for="exampleDataList" class="form-label">Origen:</label>
-                                            <select class="form-select" aria-label="--" name="agencia_origen"
-                                                onchange="javascript:getAgenciaDestino(this.value, false);">
+                                            <label class="form-label">Fecha:</label>
+                                            <input type="text" class="form-control" name="fecha_recibe" value="{{ isset($fecha_recibe)?$fecha_recibe:date('d/m/Y')}}">
+                                        </div>
+                                        <div class="col-xxl-3 col-sm-3">
+                                            <label class="form-label">Origen:</label>
+                                            <select class="form-select" aria-label="--" name="agencia_origen" onchange="javascript:filtrar_manifiesto(this.value);">
                                                 <option value="--" selected> -- </option>
-                                                @if (isset($origen))
-                                                    @foreach ($origen as $item)
-                                                        <option value="{{ $item->id }}" data-sede="{{ $item->sede }}">
-                                                            {{ $item->nombre }}
+                                                @if (isset($agencia_origen))
+                                                    @foreach ($agencia_origen as $item)
+                                                        <option value="{{ $item->id }}" data-sede="{{ $item->sede_id }}" {{(isset($agencia_origen_selected) && $item->id==$agencia_origen_selected)?'selected':''}}>
+                                                            {{ $item->departamento }} - {{ $item->nombre }}
                                                         </option>
                                                     @endforeach
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="col-xxl-3 col-sm-3">
-                                            <label for="exampleDataList" class="form-label">Destino:</label>
-                                            <select class="form-select" aria-label="--" name="agencia_destino"
-                                                onchange="javascript:getData()">
-                                                <option value="--" selected> -- </option>
-                                            </select>
-                                        </div>
                                         <div class="col-xxl-2  col-sm-2">
-                                            <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                            <label class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
                                                 onclick="javascript:noTransportar()">No Trasladar</button>
                                         </div>
                                         <div class="col-xxl-2  col-sm-2">
-                                            <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                            <label class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
                                                 onclick="javascript:transportar()">Trasladar</button>
                                         </div>
                                         <!--
                                             <div class="col-xxl-1  col-sm-1">
-                                                <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                                <label class="form-label">&nbsp;</label>
                                                 <a id="btnImprimir" class="form-control btn btn-secondary disabled" data-bs-toggle="modal"
                                                     data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
                                                     <img src="{{ asset('assets/media/printer.svg') }}" width="20" />
@@ -75,7 +71,7 @@
                                             </div>
                                             -->
                                         <div class="col-xxl-1  col-sm-1">
-                                            <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                            <label class="form-label">&nbsp;</label>
                                             <a id="btnImprimir" class="form-control btn btn-primary"
                                                 onclick="javascript:empaquetarEnvio()">
                                                 <img src="{{ asset('assets/media/truck-white.svg') }}" width="20" />
@@ -86,7 +82,7 @@
                                     <div class="card-body pt-9 pb-0">
                                         
                                         <table
-                                            class="table table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
+                                            class="table table-hover table-responsive table-striped table-flush align-middle table-row-bordered table-row-solid gy-4">
                                             <thead class="border-gray-200 fw-bold bg-lighten">
                                                 <tr>
                                                     <th valign="top" scope="col" width="50">
@@ -172,8 +168,8 @@
                                                             <td></td>
                                                             <td>{{ $item->fecha }}</td>
                                                             <td>{{ $item->hora }}</td>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td>{{ $item->origen_nombre }}</td>
+                                                            <td>{{ $item->destino_nombre }}</td>
                                                             <td>{{ $item->cantidad_item }}</td>
                                                             <td>{{ number_format($item->subtotal_por_pagar, 2, '.', '') }}</td>
                                                             <td>{{ number_format($item->subtotal_pagado, 2, '.', '') }}</td>
@@ -208,6 +204,11 @@
 
 @section('scripts')
     <script>
+
+        Inputmask({
+            "mask" : "99/99/9999"
+        }).mask("[name='fecha_recibe']");
+
         function showSuccessToastr(message) {
             toastr.options = {
                 "closeButton": true,
@@ -279,6 +280,10 @@
             }
         }
 
+        function filtrar_manifiesto(agencia_origen) {
+            var fecha_recibe = $("input[name='fecha_recibe']").val();
+            window.location.href="?agencia_origen=" + agencia_origen + '&fecha_recibe=' + fecha_recibe;
+        }
         function getAgenciaDestino(destinoId, selected) {
             var sedeId = $("[name='agencia_origen'] option[value='" + destinoId + "']").data('sede');
             $("[name='agencia_destino']").html("<option value='--'>--</option>");
@@ -425,5 +430,12 @@
                 }
             });
         }
+
+        $("[name='fecha_recibe']").on('keypress', function(e) { 
+            if (e.which == 13) {
+
+            }
+        });
+        
     </script>
 @endsection

@@ -10,6 +10,11 @@ use PHPMailer\PHPMailer\Exception;
 
 class MailerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function enviarComprobante(Request $request) {
         require base_path("vendor/autoload.php");
         $mail = new PHPMailer(true);     // Passing `true` enables exceptions

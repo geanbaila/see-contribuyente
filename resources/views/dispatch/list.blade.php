@@ -68,16 +68,17 @@
                                     <td>{{ $item->doc_envia }}<br>{{ $item->nombre_envia }}</td>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_envia) !!}</td>
                                     <td>
-                                        {{ $item->agenciasOrigen->nombre }}
+                                        {{ $item->agencia_origen_nombre }}
                                     </td>
                                     <td>
-                                        {{ $item->agenciasDestino->nombre }}
+                                        {{ $item->agencia_destino_nombre }}
                                     </td>
                                     <td align="center">
                                         0.00
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr><td colspan="12">{{ $encargo->links() }}</td></tr>
                         @endif
                     </tbody>
                 </table>

@@ -35,8 +35,15 @@ use App\Http\Controllers\Util;
 
 class SaleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function list() {
-        $encargo = Encargo::all()->sortByDesc('fecha_hora_envia')->values();
+        // $encargo = Encargo::all()->sortByDesc('fecha_hora_envia')->values();
+        $encargo = DB::table('encargo')->orderBy('fecha_hora_envia','desc')->paginate(env('PAGINACION_ENCARGOS'));
+        
         return view('sale.list')->with([
             'encargo' => $encargo,
             'menu_venta_active' => 'active',
