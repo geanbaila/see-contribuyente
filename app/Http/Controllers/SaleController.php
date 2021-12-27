@@ -66,6 +66,9 @@ class SaleController extends Controller
         $GUIA_REMISION = 3;
         if ($encargo['documento_id'] == $GUIA_REMISION) {
             $encargo['guia_remision_transportista_id'] = 1;
+            $encargo['fecha_hora_envia'] = '';
+            $encargo['documento_fecha'] = '';
+            $encargo['documento_hora'] = '';
         }
         
         return view('sale.edit')->with([

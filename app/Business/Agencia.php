@@ -12,6 +12,7 @@ class Agencia extends Model
     protected $fillable = [
         'sede_id', // nuevo
         'nombre',
+        'departamento',
         'direccion',
         'telefono',
     ];

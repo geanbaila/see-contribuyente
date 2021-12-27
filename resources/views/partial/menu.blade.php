@@ -20,6 +20,11 @@
     </a>
 </div>
 <div class="menu-item me-lg-1">
+    <a class="menu-link py-3 {{(isset($menu_reporte_active))?"active":""}}" href="{{ url('/reporte') }}">
+        <span class="menu-title">REPORTE</span>
+    </a>
+</div>
+<div class="menu-item me-lg-1">
     <a class="menu-link py-3 {{(isset($menu_configuracion_active))?"active":""}}" href="{{ url('/configuracion') }}">
         <span class="menu-title">CONFIGURACIÓN</span>
     </a>

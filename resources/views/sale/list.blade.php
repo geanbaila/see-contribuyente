@@ -29,11 +29,6 @@
                             @foreach ($encargo as $item)
                                 <tr>
                                     <td>
-                                        @if (!$item->url_documento_baja)
-                                            <input class="form-check-input check-encargos" type="checkbox" data-verificado="{{(!empty($item->url_documento_cdr))?'1':'0'}}" value="{{$item->id}}"/>
-                                        @endif
-                                    </td>
-                                    <td>
                                         <a href="{{ url('/venta/editar/' . $item->id) }}"><img
                                                 src="{{ asset('/assets/media/edit.svg') }}" width="20" /></a>
                                     </td>
@@ -70,6 +65,11 @@
                                             <a target="_blank" href="{{ url('/api/v1/download/cdr/' . $item->id) }}"><img
                                                     src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
                                                     width="20"></a>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if (!$item->url_documento_baja)
+                                            <input class="form-check-input check-encargos" type="checkbox" data-verificado="{{(!empty($item->url_documento_cdr))?'1':'0'}}" value="{{$item->id}}"/>
                                         @endif
                                     </td>
                                 </tr>

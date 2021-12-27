@@ -196,12 +196,17 @@ class ApiController extends Controller
                 'id',
                 'oferta',
                 'subtotal',
+                'pagado',
+                'por_pagar',
                 'cantidad_item',
                 'agencia_origen',
                 'agencia_destino',
+                'documento_id',
                 'documento_serie',
                 'documento_correlativo',
-            ]);
+            ])->sortBy('documento_id')->values();
+
+
             $manifiesto_detalle = [];
             $cantidad_item = 0;
             $subtotal_pagado = 0;
@@ -211,6 +216,8 @@ class ApiController extends Controller
                     'encargo_id' => $item->id,
                     'oferta' => $item->oferta,
                     'subtotal' => $item->subtotal,
+                    'pagado' => $item->pagado,
+                    'por_pagar' => $item->por_pagar,
                     'cantidad_item' => $item->cantidad_item,
                     'agencia_origen' => $item->agencia_origen,
                     'agencia_destino' => $item->agencia_destino,
@@ -227,6 +234,7 @@ class ApiController extends Controller
             $manifiesto = \App\Business\Manifiesto::create([
                 'fecha' => date(env('FORMATO_DATE')),
                 'hora' => date('H:i:s'),
+                'ruta' => $item->agenciasOrigen->departamento . ' - ' . $item->agenciasDestino->departamento,
                 'url_documento_pdf' => $url_documento_pdf,
                 'nombre_archivo' => $nombre_archivo,
                 'cantidad_item' =>$cantidad_item,

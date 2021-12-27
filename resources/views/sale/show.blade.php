@@ -44,7 +44,7 @@
                         <div class="col-xxl-7">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">Envía:</label>
+                                    <label class="form-label">Envía:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia"
                                             value="{{ $encargo->doc_envia }}" />
@@ -54,7 +54,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
-                                    <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                    <label class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_envia" name="nombre_envia"
                                             value="{{ $encargo->nombre_envia }}" disabled>
@@ -68,8 +68,8 @@
                         <div class="col-xxl-4">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">F. recepción:</label>
-                                    @if (isset($encargo))
+                                    <label class="form-label">F. recepción:</label>
+                                    @if (isset($encargo) && !empty($encargo->fecha_hora_envia))
                                     @php
                                     list($fecha, $hora) = explode(' ', $encargo->fecha_hora_envia);
                                     list($year, $month, $day) = explode('-', $fecha);
@@ -96,7 +96,7 @@
                         <div class="col-xxl-7">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">Recibe:</label>
+                                    <label class="form-label">Recibe:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe"
                                             value="{{ $encargo->doc_recibe }}" />
@@ -106,7 +106,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
-                                    <label for="exampleDataList" class="form-label">&nbsp;</label>
+                                    <label class="form-label">&nbsp;</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="nombre_recibe" name="nombre_recibe"
                                             value="{{ $encargo->nombre_recibe }}" disabled />
@@ -120,7 +120,7 @@
                         <div class="col-xxl-4">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">F. entrega:</label>
+                                    <label class="form-label">F. entrega:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
                                             value="{{ $encargo->fecha_recibe }}" disabled>
@@ -186,7 +186,7 @@
                         <div class="col-xxl-7">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">Origen:</label>
+                                    <label class="form-label">Origen:</label>
                                     <select class="form-select" aria-label="--" name="agencia_origen"
                                         onchange="javascript:getSerie();getAgenciaDestino(this.value, false);">
                                         <!-- getSerie();-->
@@ -209,7 +209,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xxl-7">
-                                    <label for="exampleDataList" class="form-label">Agencia:</label>
+                                    <label class="form-label">Agencia:</label>
                                     <select class="form-select" aria-label="--" name="agencia_destino"
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected> -- </option>
@@ -220,7 +220,7 @@
                         <div class="col-xxl-4">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label for="exampleDataList" class="form-label">Documento:</label>
+                                    <label class="form-label">Documento:</label>
                                     <select class="form-select" aria-label="--" id="documento" name="documento"
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected>--</option>
@@ -237,7 +237,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xxl-3">
-                                    <label for="exampleDataList" class="form-label">Serie:</label>
+                                    <label class="form-label">Serie:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="documento_serie"
                                             name="documento_serie" value="{{ $encargo->documento_serie }}" disabled />
@@ -247,7 +247,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xxl-4">
-                                    <label for="exampleDataList" class="form-label">Correlativo:</label>
+                                    <label class="form-label">Correlativo:</label>
                                     @if (isset($encargo))
                                         <input type="text" class="form-control" id="documento_correlativo"
                                             name="documento_correlativo" value="{{ $encargo->documento_correlativo }}"
@@ -629,7 +629,7 @@
 
             // $("[name='celular_envia']").val(data.celular_envia);
             // $("[name='email_envia']").val(data.email_envia);
-            $("[name='fecha_hora_envia']").val(data.fecha_hora_envia)
+            $("[name='fecha_hora_envia']").val("");
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
             // $("[name='celular_recibe']").val(data.celular_recibe);

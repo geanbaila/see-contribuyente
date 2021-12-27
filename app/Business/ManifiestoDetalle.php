@@ -14,6 +14,8 @@ class ManifiestoDetalle extends Model
         'encargo_id',
         'subtotal',
         'oferta',
+        'pagado',
+        'por_pagar',
         'cantidad_item',
         'agencia_origen',
         'agencia_destino',
@@ -23,7 +25,7 @@ class ManifiestoDetalle extends Model
 
     public function encargoDetalles()
     {
-        return $this->hasMany('App\Business\EncargoDetalle', 'id', 'encargo_id');
+        return $this->hasMany('App\Business\EncargoDetalle', 'encargo_id', 'encargo_id');
     }
 
     public function encargos()

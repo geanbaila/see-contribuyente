@@ -129,8 +129,8 @@
                                                             </td>
                                                             <td>{{ $item->doc_recibe }}<br>{{ $item->nombre_recibe }}
                                                             </td>
-                                                            <td>{{ $item->agenciasOrigen->nombre }}</td>
-                                                            <td>{{ $item->agenciasDestino->nombre }}</td>
+                                                            <td>{{ $item->agenciasOrigen->departamento }}</td>
+                                                            <td>{{ $item->agenciasDestino->departamento }}</td>
                                                         </tr>
                                                     @endforeach
                                                 @endif
