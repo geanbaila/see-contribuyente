@@ -40,11 +40,19 @@ class ManifestController extends Controller
         $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
         $agencia_origen_selected = ((int)$request->input('agencia_origen') > 0)? (int)$request->input('agencia_origen'): 1;
         
-        list($d,$m,$y) = explode('/', $request->input('fecha_recibe'));
-        $fecha_recibe = (checkdate($m,$d,$y))? $request->input('fecha_recibe'): date('d/m/Y');
+        if(!empty($request->input('fecha_recibe'))) {
+            list($d,$m,$y) = explode('/', $request->input('fecha_recibe'));
+            $fecha_recibe = (checkdate($m,$d,$y))? $request->input('fecha_recibe'): date('d/m/Y');
+        } else {
+            $fecha_recibe = date('d/m/Y');
+            list($d,$m,$y) = $fecha_recibe;
+        }
         
         
-        $encargo = Encargo::where('estado', '!=', $en_manifiesto)->where('agencia_origen', $agencia_origen_selected)->get()->sortBy(['agencia_destino','documento_fecha','documento_hora']);
+        $encargo = Encargo::where('estado', '!=', $en_manifiesto)
+        ->where('agencia_origen', $agencia_origen_selected)
+        ->where('documento_fecha', $y.'-'.$m.'-'.$d)
+        ->get()->sortBy(['agencia_destino','documento_fecha','documento_hora']);
         /* $encargo = DB::table('encargo')
         ->select(
             '*',

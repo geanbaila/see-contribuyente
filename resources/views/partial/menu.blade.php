@@ -1,6 +1,6 @@
 <div class="menu-item me-lg-1">
     <a class="menu-link py-3" href="{{ url('/') }}">
-        <span class="menu-title">DASHBOARD</span>
+        <span class="menu-title">HOME</span>
     </a>
 </div>
 
