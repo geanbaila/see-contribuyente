@@ -38,7 +38,7 @@ class ManifestController extends Controller
     
     public function list(Request $request) {
         $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
-        $agencia_origen_selected = ((int)$request->input('agencia_origen') > 0)? (int)$request->input('agencia_origen'): 1;
+        $agencia_origen_selected = ((int)$request->input('agencia_origen') > 0)? (int)$request->input('agencia_origen'): 0;
         
         if(!empty($request->input('fecha_recibe'))) {
             list($d,$m,$y) = explode('/', $request->input('fecha_recibe'));

@@ -93,6 +93,7 @@ class SaleController extends Controller
             $data = $request->all();
             $var = function() {     
                 $prg = func_get_arg(0);
+                $documento_id = func_get_arg(1);
                 $gravado = [];
                 $exonerado = [];
                 $inafecto = [];
@@ -103,12 +104,15 @@ class SaleController extends Controller
                 $monto_exonerado = 0;
                 $monto_inafecto = 0;
                 $cantidad_item = 0;
+                $venta = 0;
 
                 foreach($prg as $item) :
                     if ($item['descripcion'] !== "--") :
                         $row_item = Item::find($item['descripcion']);
                         if ($row_item) :
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO')) {
+                                $valor_venta = $item['cantidad'] * $item['valor_unitario'];
+                                $igv_venta = ($valor_venta * env('IGV') * 100) / 100;
                                 array_push($gravado, [
                                     'item_id' => $row_item->id,
                                     'codigo_producto' => $row_item->codigo_producto,
@@ -116,19 +120,23 @@ class SaleController extends Controller
                                     'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
                                     'valor_unitario' => $item['valor_unitario'],
-                                    'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
-                                    'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
+                                    'valor_venta' => $valor_venta,
+                                    'valor_base_igv' => $valor_venta,
                                     'porcentaje_igv' => env('IGV') * 100,
-                                    'igv_venta' => ($item['cantidad'] * $item['valor_unitario'] * env('IGV') * 100) / 100,
+                                    'igv_venta' => $igv_venta,
                                     'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'] * (1 + env('IGV')),
                                 ]);
                                 $monto_gravado += $item['cantidad'] * $item['valor_unitario'];
                                 $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
+                                $venta += $valor_venta + $igv_venta;
                             }
                             
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_EXONERADO')) {
+                                $valor_venta = $item['cantidad'] * $item['valor_unitario'];
+                                $igv_venta = 0;
+                                
                                 array_push($exonerado, [
                                     'item_id' => $row_item->id,
                                     'codigo_producto' => $row_item->codigo_producto,
@@ -136,19 +144,23 @@ class SaleController extends Controller
                                     'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
                                     'valor_unitario' => $item['valor_unitario'],
-                                    'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
-                                    'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
+                                    'valor_venta' => $valor_venta,
+                                    'valor_base_igv' => $valor_venta,
                                     'porcentaje_igv' => 0,
-                                    'igv_venta' => 0,
+                                    'igv_venta' => $igv_venta,
                                     'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_exonerado += $item['cantidad'] * $item['valor_unitario'];
                                 $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
+                                $venta += $valor_venta + $igv_venta;
                             }
                             
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO')) {
+                                $valor_venta = $item['cantidad'] * $item['valor_unitario'];
+                                $igv_venta = 0;
+
                                 array_push($inafecto, [
                                     'item_id' => $row_item->id,
                                     'codigo_producto' => $row_item->codigo_producto,
@@ -156,19 +168,23 @@ class SaleController extends Controller
                                     'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
                                     'valor_unitario' => $item['valor_unitario'],
-                                    'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
-                                    'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
+                                    'valor_venta' => $valor_venta,
+                                    'valor_base_igv' => $valor_venta,
                                     'porcentaje_igv' => 0,
-                                    'igv_venta' => 0,
+                                    'igv_venta' => $igv_venta,
                                     'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => $item['valor_unitario'],
                                 ]);
                                 $monto_inafecto += $item['cantidad'] * $item['valor_unitario'];
                                 $precio_venta += $item['cantidad'] * $item['valor_unitario'] * (1 + env('IGV'));
                                 $cantidad_item += $item['cantidad'];
+                                $venta += $valor_venta + $igv_venta;
                             }
 
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO_GRATUITO')) {
+                                $valor_venta = $item['cantidad'] * $item['valor_unitario'];
+                                $igv_venta = ($item['cantidad'] * $item['valor_unitario'] * env('IGV') * 100) / 100;
+
                                 array_push($gravado_gratuito, [
                                     'item_id' => $row_item->id,
                                     'codigo_producto' => $row_item->codigo_producto,
@@ -176,19 +192,23 @@ class SaleController extends Controller
                                     'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
                                     'valor_unitario' => 0,
-                                    'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
+                                    'valor_venta' => $valor_venta,
+                                    'valor_base_igv' => $valor_venta,
                                     'valor_gratuito' => $item['cantidad'] * $item['valor_unitario'],
-                                    'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => env('IGV') * 100,
-                                    'igv_venta' => ($item['cantidad'] * $item['valor_unitario'] * env('IGV') * 100) / 100,
+                                    'igv_venta' => $igv_venta,
                                     'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
                                 $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
+                                $venta += $valor_venta + $igv_venta;
                             }
 
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_INAFECTO_GRATUITO')) {
+                                $valor_venta = $item['cantidad'] * $item['valor_unitario'];
+                                $igv_venta = 0;
+
                                 array_push($inafecto_gratuito, [
                                     'item_id' => $row_item->id,
                                     'codigo_producto' => $row_item->codigo_producto,
@@ -196,16 +216,17 @@ class SaleController extends Controller
                                     'cantidad_item' => $item['cantidad'],
                                     'peso' => $item['peso'],
                                     'valor_unitario' => 0,
-                                    'valor_venta' => $item['cantidad'] * $item['valor_unitario'],
+                                    'valor_venta' => $valor_venta,
+                                    'valor_base_igv' => $valor_venta,
                                     'valor_gratuito' => $item['cantidad'] * $item['valor_unitario'],
-                                    'valor_base_igv' => $item['cantidad'] * $item['valor_unitario'],
                                     'porcentaje_igv' => 0,
-                                    'igv_venta' => 0,
+                                    'igv_venta' => $igv_venta,
                                     'tipo_afectacion' => $row_item->tipo_afectaciones->codigo,
                                     'precio_unitario' => 0,
                                 ]);
                                 $precio_venta += $item['cantidad'] * 0;
                                 $cantidad_item += $item['cantidad'];
+                                $venta += $valor_venta + $igv_venta;
                             } 
                         endif;
                     endif;
@@ -221,11 +242,13 @@ class SaleController extends Controller
                         'importe_pagar_con_igv' => number_format($precio_venta, 2, '.', ''),
                         'importe_pagar_sin_igv' => number_format($precio_venta / (1 + env('IGV')) , 2, '.', ''),
                         'importe_pagar_igv' => number_format($precio_venta - ($precio_venta / (1 + env('IGV'))), 2, '.', ''),
+                        'pagado' => ($documento_id != 3)?$venta:0,
+                        'por_pagar' => ($documento_id == 3)?$venta:0,
                     ]
                 ];
             };
 
-            if (!$columnas = $var($data['encargo'])) {
+            if (!$columnas = $var($data['encargo'], $data['documento'])) {
                 return \response()->json([
                     'result' => [
                         'status' => 'fails', 
@@ -286,7 +309,6 @@ class SaleController extends Controller
                 if ((int) $data['adquiriente'] > 0) {
                     $adquiriente_id = (int) $data['adquiriente'];
                 } else {
-                    // $adquiriente_id = (Adquiriente::create($insert_adquiriente))->id;
                     $adquiriente_id = (int) DB::table('adquiriente')->insertGetId($insert_adquiriente);
                 }
                             

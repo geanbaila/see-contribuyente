@@ -14,12 +14,14 @@ class DispatchController extends Controller
     }
 
     public function list() {
+        $encargo_estado_en_manifiesto = 3;
         // $encargo = Encargo::all()->sortBy(['fecha_hora_envia', 'fecha_hora_recibe']);
         $encargo = DB::table('encargo')
         ->select('*',
             DB::raw('(select nombre from agencia where id = agencia_origen) as agencia_origen_nombre'),
             DB::raw('(select nombre from agencia where id = agencia_destino) as agencia_destino_nombre')
             )
+        ->where('estado', $encargo_estado_en_manifiesto)
         ->orderBy('fecha_hora_envia', 'desc')
         ->orderBy('fecha_hora_recibe', 'desc')
         ->paginate(env('PAGINACION_DESPACHOS'));

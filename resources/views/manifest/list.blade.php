@@ -44,7 +44,9 @@
                                                 <option value="--" selected> -- </option>
                                                 @if (isset($agencia_origen))
                                                     @foreach ($agencia_origen as $item)
-                                                        <option value="{{ $item->id }}" data-sede="{{ $item->sede_id }}" {{(isset($agencia_origen_selected) && $item->id==$agencia_origen_selected)?'selected':''}}>
+                                                        <option value="{{ $item->id }}" 
+                                                            data-sede="{{ $item->sede_id }}" 
+                                                            {{(isset($agencia_origen_selected) && $item->id==$agencia_origen_selected)?'selected':''}}>
                                                             {{ $item->departamento }} - {{ $item->nombre }}
                                                         </option>
                                                     @endforeach
@@ -165,7 +167,7 @@
                                                     @foreach ($manifiesto as $item)
                                                         <tr>
                                                             <th scope="row"></th>
-                                                            <td></td>
+                                                            <td>{{ $item->id }}</td>
                                                             <td>{{ $item->fecha }}</td>
                                                             <td>{{ $item->hora }}</td>
                                                             <td>{{ $item->origen_nombre }}</td>
@@ -406,18 +408,18 @@
                                 showSuccessToastr(response.result.message);
                                 var html = '<tr>';
                                     html += '<td>&nbsp;</td>';
-                                    html += '<td></td>';
+                                    html += '<td>'+response.result.manifiesto.id+'</td>';
                                     html += '<td>'+response.result.manifiesto.fecha+'</td>';
                                     html += '<td>'+response.result.manifiesto.hora+'</td>';
-                                    html += '<td></td>';
-                                    html += '<td></td>';
+                                    html += '<td>'+response.result.manifiesto.origen_nombre+'</td>';
+                                    html += '<td>'+response.result.manifiesto.destino_nombre+'</td>';
                                     html += '<td>'+response.result.manifiesto.cantidad_item+'</td>';
                                     html += '<td>'+response.result.manifiesto.subtotal_por_pagar.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.subtotal_pagado.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.total_general.toFixed(2)+'</td>';
                                     html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg" width="20"></a></td>';
                                     html += '</tr>';
-                                $('#tblManifiesto').append(html);
+                                $('#tblManifiesto').prepend(html);
                             } else {
                                 showErrorToastr(response.result.message);
                             }

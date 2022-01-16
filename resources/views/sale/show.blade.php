@@ -13,30 +13,30 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <br>encargo_id:<input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <br>adquiriente:<input type="text" name="adquiriente" value="{{ (isset($encargo) && empty($encargo->guia_remision_transportista_id)) ? $encargo->adquiriente_id : 0}}" />
-        <br>
-        <br>medio_pago:<input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <br>fecha_hora_envia:<input type="text" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
-        <br>fecha_hora_recibe:<input type="text" name="fecha_hora_recibe" id="fecha_hora_recibe"  value="{{ isset($encargo) ?$encargo->fecha_hora_recibe : '' }}" />
+        <input type="hidden" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="adquiriente" value="{{ (isset($encargo) && empty($encargo->guia_remision_transportista_id)) ? $encargo->adquiriente_id : 0}}" />
         
-        <br>guia_remision_transportista:<input type="text" name="guia_remision_transportista" value="{{ (isset($encargo) && !empty($encargo->guia_remision_transportista_id)) ? $encargo->guia_remision_transportista_id : 0 }}">
-        <br>url_documento_pdf:<input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
-        <br>
-        <br>nombre_comercial_envia:<input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <br>direccion_envia:<input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <br>celular_recibe:<input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <br>email_recibe:<input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
-        <br>
-        <br>nombre_comercial_recibe:<input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <br>direccion_recibe:<input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <br>celular_envia:<input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <br>email_envia:<input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
-        <br>
-        <br>nombre_comercial_recibe_alternativo:<input type="text" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
-        <br>direccion_recibe_alternativo:<input type="text" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <br>celular_envia_alternativo:<input type="text" name="celular_envia_alternativo" value="{{ isset($encargo) ? $encargo->celular_envia_alternativo : '' }}">
-        <br>email_envia_alternativo:<input type="text" name="email_envia_alternativo" value="{{ isset($encargo) ? $encargo->email_envia_alternativo : '' }}">
+        <input type="hidden" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <input type="hidden" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <input type="hidden" name="fecha_hora_recibe" id="fecha_hora_recibe"  value="{{ isset($encargo) ?$encargo->fecha_hora_recibe : '' }}" />
+        
+        <input type="hidden" name="guia_remision_transportista" value="{{ (isset($encargo) && !empty($encargo->guia_remision_transportista_id)) ? $encargo->guia_remision_transportista_id : 0 }}">
+        <input type="hidden" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        
+        <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        
+        <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        
+        <input type="hidden" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
+        <input type="hidden" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <input type="hidden" name="celular_envia_alternativo" value="{{ isset($encargo) ? $encargo->celular_envia_alternativo : '' }}">
+        <input type="hidden" name="email_envia_alternativo" value="{{ isset($encargo) ? $encargo->email_envia_alternativo : '' }}">
         
 
         <div class="card">
