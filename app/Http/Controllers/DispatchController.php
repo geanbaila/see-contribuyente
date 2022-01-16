@@ -19,7 +19,8 @@ class DispatchController extends Controller
         $encargo = DB::table('encargo')
         ->select('*',
             DB::raw('(select nombre from agencia where id = agencia_origen) as agencia_origen_nombre'),
-            DB::raw('(select nombre from agencia where id = agencia_destino) as agencia_destino_nombre')
+            DB::raw('(select nombre from agencia where id = agencia_destino) as agencia_destino_nombre'),
+            DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia')
             )
         ->where('estado', $encargo_estado_en_manifiesto)
         ->orderBy('fecha_hora_envia', 'desc')

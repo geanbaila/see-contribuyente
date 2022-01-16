@@ -42,7 +42,9 @@ class SaleController extends Controller
 
     public function list() {
         // $encargo = Encargo::all()->sortByDesc('fecha_hora_envia')->values();
-        $encargo = DB::table('encargo')->orderBy('fecha_hora_envia','desc')->paginate(env('PAGINACION_ENCARGOS'));
+        $encargo = DB::table('encargo')
+        ->select('*', DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia'))
+        ->orderBy('fecha_hora_envia','desc')->paginate(env('PAGINACION_ENCARGOS'));
         
         return view('sale.list')->with([
             'encargo' => $encargo,

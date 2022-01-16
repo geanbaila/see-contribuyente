@@ -52,20 +52,34 @@ class ManifestController extends Controller
         $encargo = Encargo::where('estado', '!=', $en_manifiesto)
         ->where('agencia_origen', $agencia_origen_selected)
         ->where('documento_fecha', $y.'-'.$m.'-'.$d)
-        ->get()->sortBy(['documento_fecha','documento_hora','agencia_destino']);
-        /* $encargo = DB::table('encargo')
+        ->select('*', 
+            DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia')
+        )->get()
+        ->sortBy(['documento_fecha','documento_hora','agencia_destino']);
+        
+/*
+        $encargo = DB::table('encargo')
         ->select(
             '*',
             DB::raw('(select nombre from encargo_estado where id = estado) as estado_nombre'),
             DB::raw('(select departamento from agencia where id = agencia_origen) as agencia_origen_departamento'),
             DB::raw('(select departamento from agencia where id = agencia_destino) as agencia_destino_departamento')
         )
+        ->where('estado', '!=', $en_manifiesto)
+        ->where('agencia_origen', $agencia_origen_selected)
+        ->where('documento_fecha', $y.'-'.$m.'-'.$d)
+        ->orderBy('documento_fecha', 'desc')
+        ->orderBy('documento_hora', 'desc')
         ->orderBy('agencia_destino', 'desc')
-        ->orderBy('created_at', 'desc')
-        ->paginate(env('PAGINACION_MANIFIESTO')); */
+        ->paginate(env('PAGINACION_MANIFIESTO'));
+*/
 
+        $manifiesto = DB::table('manifiesto')
+        ->select('*', DB::raw('(select date_format(fecha, "%d-%m-%Y") ) as fecha'))
+        ->get()
+        ->sortByDesc('created_at')
+        ->take(100);
 
-        $manifiesto = Manifiesto::all()->sortByDesc('created_at')->take(100);
         $agencia_origen = Agencia::all();
         $data = [
             'agencia_origen' => $agencia_origen,
