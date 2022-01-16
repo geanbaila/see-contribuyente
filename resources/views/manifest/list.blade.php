@@ -430,12 +430,6 @@
                 }
             });
         }
-
-        $("[name='fecha_recibe']").on('keypress', function(e) { 
-            if (e.which == 13) {
-
-            }
-        });
         
     </script>
 @endsection

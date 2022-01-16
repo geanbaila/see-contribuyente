@@ -13,28 +13,30 @@
 
     </style>
     <form action="{{ url('/venta/registrar') }}" method="POST">
-        <input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="adquiriente" value="{{ (isset($encargo) && empty($encargo->guia_remision_transportista_id)) ? $encargo->adquiriente_id : 0}}" />
+        <br>encargo_id:<input type="text" name="encargo_id" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <br>adquiriente:<input type="text" name="adquiriente" value="{{ (isset($encargo) && empty($encargo->guia_remision_transportista_id)) ? $encargo->adquiriente_id : 0}}" />
         <br>
-        <input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
-        <input type="text" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
-        <input type="text" name="guia_remision_transportista" value="{{ (isset($encargo) && !empty($encargo->guia_remision_transportista_id)) ? $encargo->guia_remision_transportista_id : 0 }}">
-        <input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
+        <br>medio_pago:<input type="text" name="medio_pago" value="{{ isset($encargo) ? $encargo->medio_pago : '' }}">
+        <br>fecha_hora_envia:<input type="text" name="fecha_hora_envia" id="fecha_hora_envia"  value="{{ isset($encargo) ?$encargo->fecha_hora_envia : '' }}" />
+        <br>fecha_hora_recibe:<input type="text" name="fecha_hora_recibe" id="fecha_hora_recibe"  value="{{ isset($encargo) ?$encargo->fecha_hora_recibe : '' }}" />
+        
+        <br>guia_remision_transportista:<input type="text" name="guia_remision_transportista" value="{{ (isset($encargo) && !empty($encargo->guia_remision_transportista_id)) ? $encargo->guia_remision_transportista_id : 0 }}">
+        <br>url_documento_pdf:<input type="text" name="url_documento_pdf" value="{{ isset($encargo) ? $encargo->url_documento_pdf : '' }}" />
         <br>
-        <input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
-        <input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        <br>nombre_comercial_envia:<input type="text" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
+        <br>direccion_envia:<input type="text" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <br>celular_recibe:<input type="text" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <br>email_recibe:<input type="text" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
         <br>
-        <input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
-        <input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        <br>nombre_comercial_recibe:<input type="text" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
+        <br>direccion_recibe:<input type="text" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <br>celular_envia:<input type="text" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <br>email_envia:<input type="text" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
         <br>
-        <input type="text" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
-        <input type="text" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="text" name="celular_envia_alternativo" value="{{ isset($encargo) ? $encargo->celular_envia_alternativo : '' }}">
-        <input type="text" name="email_envia_alternativo" value="{{ isset($encargo) ? $encargo->email_envia_alternativo : '' }}">
+        <br>nombre_comercial_recibe_alternativo:<input type="text" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
+        <br>direccion_recibe_alternativo:<input type="text" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
+        <br>celular_envia_alternativo:<input type="text" name="celular_envia_alternativo" value="{{ isset($encargo) ? $encargo->celular_envia_alternativo : '' }}">
+        <br>email_envia_alternativo:<input type="text" name="email_envia_alternativo" value="{{ isset($encargo) ? $encargo->email_envia_alternativo : '' }}">
         
 
         <div class="card">
@@ -76,10 +78,10 @@
                                     
                                         $fecha_hora_envia_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
                                     @endphp
-                                        <input type="text" class="form-control" name="fecha_recibe_blocked" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
+                                        <input type="text" class="form-control" name="fecha_hora_envia_blocked" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
                                          disabled />
                                     @else
-                                        <input type="text" class="form-control" name="fecha_recibe_blocked" value="" disabled />
+                                        <input type="text" class="form-control" name="fecha_hora_envia_blocked" value="" disabled />
                                     @endif
                                 </div>
                             </div>
@@ -121,13 +123,20 @@
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
                                     <label class="form-label">F. entrega:</label>
-                                    @if (isset($encargo))
-                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
-                                            value="{{ $encargo->fecha_recibe }}" disabled>
+                                    @if (isset($encargo) && !empty($encargo->fecha_hora_recibe))
+                                    @php
+                                    list($fecha, $hora) = explode(' ', $encargo->fecha_hora_recibe);
+                                    list($year, $month, $day) = explode('-', $fecha);
+                                    
+                                        $fecha_hora_recibe_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
+                                    @endphp
+                                        <input type="text" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
+                                            value="{{ $fecha_hora_recibe_dd_mm_yyyy }}" disabled>
                                     @else
-                                        <input type="text" class="form-control" id="fecha_recibe" name="fecha_recibe"
+                                        <input type="text" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
                                             value="" disabled>
                                     @endif
+                            
                                 </div>
                             </div>
                         </div>
@@ -419,7 +428,7 @@
                             @endif
                             <br />
                         </div>
-                        <div class="col-2">
+                        <!--<div class="col-2">
                             <div class="d-flex align-items-center w-100px w-sm-200px flex-column mt-2">
                                 <div class="d-flex justify-content-between w-100 mt-auto mb-2">
                                     <span class="fw-bold text-gray-400">envíos y viajes en el año</span>
@@ -430,7 +439,7 @@
                                         aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="col-5 text-end align-top">
                                 <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">Confirmar</a>
                                 <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
@@ -634,8 +643,22 @@
             $("[name='nombre_recibe']").val(data.nombre_recibe);
             // $("[name='celular_recibe']").val(data.celular_recibe);
             // $("[name='email_recibe']").val(data.email_recibe);
-            $("[name='fecha_recibe']").val(data.fecha_recibe);
-            $("[name='fecha_recibe_blocked']").val(data.fecha_recibe)
+
+            // F. recepción:
+            if (data.fecha_hora_envia) {
+                $("[name='fecha_hora_envia']").val(data.fecha_hora_envia); // yyyy-mm-dd hh:ii:ss
+                var fecha_hora_envia = (data.fecha_hora_envia).split(' ');
+                var fecha_hora_envia_dd_mm_yyyy = fecha_hora_envia[0].slice(8,12)+'-'+fecha_hora_envia[0].slice(5,7)+'-'+fecha_hora_envia[0].slice(0,4)+' '+fecha_hora_envia[1];
+                $("[name='fecha_hora_envia_blocked']").val(fecha_hora_envia_dd_mm_yyyy); // dd-mm-yyyy hh:ii:ss
+            }
+
+            // F. entrega:
+            if (data.fecha_hora_recibe) {
+                $("[name='fecha_hora_recibe']").val(data.fecha_hora_recibe); // yyyy-mm-dd hh:ii:ss
+                var fecha_hora_recibe = (data.fecha_hora_recibe).split(' ');
+                var fecha_hora_recibe_dd_mm_yyyy = fecha_hora_recibe[0].slice(8,12)+'-'+fecha_hora_recibe[0].slice(5,7)+'-'+fecha_hora_recibe[0].slice(0,4)+' '+fecha_hora_recibe[1];
+                $("[name='fecha_hora_recibe_blocked']").val(fecha_hora_recibe_dd_mm_yyyy); // dd-mm-yyyy hh:ii:ss
+            }
             // $("[name='origen']").val(data.origen).change(); // come from session
             $("[name='agencia_origen']").val(data.agencia_origen); // come from session
             // $("[name='destino']").val(data.destino).change();
@@ -683,8 +706,8 @@
             var direccion_recibe = $("[name='direccion_recibe']").val().trim();
             // var celular_recibe = $("[name='celular_recibe']").val().trim();
             // var email_recibe = $("[name='email_recibe']").val().trim();
-            var fecha_recibe = $("[name='fecha_recibe']").val().trim();
-
+            var fecha_hora_recibe = $("[name='fecha_hora_recibe']").val().trim();
+            
             var doc_recibe_alternativo = $("[name='doc_recibe_alternativo']").val().trim();
             var nombre_recibe_alternativo = $("[name='nombre_recibe_alternativo']").val().trim();
             var nombre_comercial_recibe_alternativo = $("[name='nombre_comercial_recibe_alternativo']").val().trim();
@@ -733,7 +756,7 @@
                 direccion_recibe: direccion_recibe,
                 // celular_recibe: celular_recibe,
                 // email_recibe: email_recibe,
-                fecha_recibe: fecha_recibe,
+                fecha_hora_recibe: fecha_hora_recibe,
 
                 doc_recibe_alternativo: doc_recibe_alternativo,
                 nombre_recibe_alternativo: nombre_recibe_alternativo,
@@ -991,13 +1014,21 @@
                         );
                     }
                 }).done(function(response) {
+                    console.log(response);
                     if (response.result.status === 'OK') {
                         if (response.result.encargo_id.toString().length > 0) {
                             $("[name='encargo_id']").val(response.result.encargo_id);
                             $("[name='guia_remision_transportista']").val(response.result.guia_remision_transportista_id);
                             $("[name='adquiriente']").val(response.result.adquiriente_id);
-                            $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia);
-                            $("[name='fecha_recibe_blocked']").val(response.result.fecha_hora_envia);
+                            
+                            // F. recepción:
+                            if (response.result.fecha_hora_envia) {
+                                $("[name='fecha_hora_envia']").val(response.result.fecha_hora_envia); //yyyy-mm-dd hh:ii:ss
+                                var fecha_hora_envia = (response.result.fecha_hora_envia).split(' ');
+                                var fecha_hora_envia_dd_mm_yyyy = fecha_hora_envia[0].slice(8,12)+'-'+fecha_hora_envia[0].slice(5,7)+'-'+fecha_hora_envia[0].slice(0,4)+' '+fecha_hora_envia[1];
+                                $("[name='fecha_hora_envia_blocked']").val(fecha_hora_envia_dd_mm_yyyy); // dd-mm-yyyy hh:ii:ss
+                            }
+                            
                             $("[name='documento_correlativo']").val(str_pad(response.result.documento_correlativo,{{ env('ZEROFILL', 8) }}));
                             $("[name='url_documento_pdf']").val(response.result.url_documento_pdf);
                             $("[name='cdr_descripcion']").html(response.result.cdr_descripcion);

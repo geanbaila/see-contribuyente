@@ -73,7 +73,7 @@ class SaleController extends Controller
         $GUIA_REMISION = 3;
         if ($encargo['documento_id'] == $GUIA_REMISION) {
             $encargo['guia_remision_transportista_id'] = 1;
-            $encargo['fecha_hora_envia'] = '';
+            // $encargo['fecha_hora_envia'] = '';
             $encargo['documento_fecha'] = '';
             $encargo['documento_hora'] = '';
         }
@@ -281,163 +281,180 @@ class SaleController extends Controller
                 ]);
             }
 
-            if ((int) $data['adquiriente'] > 0) {
-                $adquiriente_id = (int) $data['adquiriente'];
-            } else {
-                $adquiriente_id = (Adquiriente::create($insert_adquiriente))->id;
-            }
-                        
-            // registrar o actualizar el encargo
-            $agencia_id = $data['agencia_origen']; // agencia que está en sesión. hacer luego
-            $insert_encargo = array_merge([
-                'doc_envia' => $data['doc_envia'],
-                'nombre_envia' => $data['nombre_envia'],
-                // 'celular_envia' => $data['celular_envia'],
-                // 'email_envia' => $data['email_envia'],
-                'fecha_hora_envia' => (empty($data['fecha_hora_envia']))?date(env('FORMATO_DATETIME')):$data['fecha_hora_envia'],
+            DB::beginTransaction();
 
-                'doc_recibe' => $data['doc_recibe'],
-                'nombre_recibe' => $data['nombre_recibe'],
-                // 'celular_recibe' => $data['celular_recibe'],
-                // 'email_recibe' => $data['email_recibe'],
-                'fecha_recibe' => (empty($data['fecha_recibe']))?date(env('FORMATO_DATE')):$data['fecha_recibe'],
+                if ((int) $data['adquiriente'] > 0) {
+                    $adquiriente_id = (int) $data['adquiriente'];
+                } else {
+                    // $adquiriente_id = (Adquiriente::create($insert_adquiriente))->id;
+                    $adquiriente_id = (int) DB::table('adquiriente')->insertGetId($insert_adquiriente);
+                }
+                            
+                // registrar o actualizar el encargo
+                $agencia_id = $data['agencia_origen']; // agencia que está en sesión. hacer luego
 
-                'doc_recibe_alternativo' => $data['doc_recibe_alternativo'],
-                'nombre_recibe_alternativo' => $data['nombre_recibe_alternativo'],
-                // 'celular_recibe_alternativo' => $data['celular_recibe_alternativo'],
-                // 'email_recibe_alternativo' => $data['email_recibe_alternativo'],
+                $documento_fecha_hora = date(env('FORMATO_DATETIME'));
+                list($documento_fecha, $documento_hora) = explode(' ', $documento_fecha_hora);
                 
+                $insert_encargo = array_merge([
+                    'doc_envia' => $data['doc_envia'],
+                    'nombre_envia' => $data['nombre_envia'],
+                    // 'celular_envia' => $data['celular_envia'],
+                    // 'email_envia' => $data['email_envia'],
+                    'fecha_hora_envia' => (empty($data['fecha_hora_envia']))?date(env('FORMATO_DATETIME')):$data['fecha_hora_envia'],
 
-                // 'origen' => $data['origen'],
-                // 'destino' => $data['destino']),
-                'agencia_origen' => $data['agencia_origen'],
-                'agencia_destino' => $data['agencia_destino'],
+                    'doc_recibe' => $data['doc_recibe'],
+                    'nombre_recibe' => $data['nombre_recibe'],
+                    // 'celular_recibe' => $data['celular_recibe'],
+                    // 'email_recibe' => $data['email_recibe'],
+                    'fecha_recibe' => (empty($data['fecha_recibe']))?date(env('FORMATO_DATE')):$data['fecha_recibe'],
 
-                'agencia_id' => $agencia_id,
-                'adquiriente_id' => $adquiriente_id,
-                // 'medio_pago' => $data['medio_pago'],
-                'documento_id' => $data['documento'],
-                'documento_serie' => $data['documento_serie'],
-                'documento_correlativo' => $data['documento_correlativo'],
-                'documento_fecha' => date(env('FORMATO_DATE')),
-                'documento_hora' => date('H:i:s'),
+                    'doc_recibe_alternativo' => $data['doc_recibe_alternativo'],
+                    'nombre_recibe_alternativo' => $data['nombre_recibe_alternativo'],
+                    // 'celular_recibe_alternativo' => $data['celular_recibe_alternativo'],
+                    // 'email_recibe_alternativo' => $data['email_recibe_alternativo'],
+                    
 
-                'subtotal' => number_format($data['subtotal'], 2, '.', ''),
-                'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
-                'descuento' => number_format($data['descuento'], 2, '.', ''),
+                    // 'origen' => $data['origen'],
+                    // 'destino' => $data['destino']),
+                    'agencia_origen' => $data['agencia_origen'],
+                    'agencia_destino' => $data['agencia_destino'],
 
-                'estado' => 2, // encargo_estado: no trasladar
-            ], $columnas[1]);
+                    'agencia_id' => $agencia_id,
+                    'adquiriente_id' => $adquiriente_id,
+                    // 'medio_pago' => $data['medio_pago'],
+                    'documento_id' => $data['documento'],
+                    'documento_serie' => $data['documento_serie'],
+                    'documento_correlativo' => $data['documento_correlativo'],
+                    'documento_fecha' => $documento_fecha,
+                    'documento_hora' => $documento_hora,
+                    
+                    'subtotal' => number_format($data['subtotal'], 2, '.', ''),
+                    'oferta' => number_format($data['importe_pagar_con_descuento'], 2, '.', ''),
+                    'descuento' => number_format($data['descuento'], 2, '.', ''),
+
+                    'estado' => 2, // encargo_estado: no trasladar
+                ], $columnas[1]);
 
 
-            if($insert_encargo['subtotal'] > env('DETRACCION')) {
-                $insert_encargo = array_merge($insert_encargo, [
-                    'detraccion_codigo' => env('EMPRESA_CODIGO_DETRACCION'),
-                    'detraccion_medio_pago' => '001', // catalog. 59 : Depósito en cuenta
-                    'detraccion_cta_banco' => env('EMPRESA_CUENTA_BANCARIA_DETRACCION'),
-                    'detraccion_porcentaje' => env('EMPRESA_TASA_DETRACCION') * 100,
-                    'detraccion_monto' => number_format(($insert_encargo['monto_gravado']-$insert_encargo['descuento']) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION') , 2, '.', ''),
-                ]);
-            }
-
-            $encargo = null;
-            if (strlen($data['encargo_id']) > 0) {
-                // controlar duplicidad de registros
-                $encargo_id = (int) $data['encargo_id']; 
-                $fecha_hora_envia = $data['fecha_hora_envia'];
-                $documento_correlativo = $data['documento_correlativo'];
-                // cambiar guía de remisión a boleta/factura
-                if ((int)$data['guia_remision_transportista_id']==1) {
-                    $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
-                    $insert_encargo['documento_correlativo'] = $documento_correlativo;
-
-                    $encargo = Encargo::where('id', $encargo_id)->update($insert_encargo, ['upsert' => true]);
-                    if (!$encargo) {
-                        return \response()->json(['result' => ['status' => 'fails', 'message' => 'No hubo ningún cambio.']]);
-                    } else {
-                        $row_encargo = Encargo::find($encargo_id);
-                        
-                        DB::table('guia_transportista')->where('encargo_id', $encargo_id)->delete();
-                        DB::table('guia_transportista')->insert([
-                            'encargo_id' => $row_encargo->id,
-                            'fecha_hora_envia' => $row_encargo->fecha_hora_envia,
-                            'fecha_hora_recibe' => $row_encargo->fecha_hora_recibe,
-                            'doc_envia' => $row_encargo->doc_envia,
-                            'nombre_envia' => $row_encargo->nombre_envia,
-                            'doc_recibe' => $row_encargo->doc_recibe,
-                            'nombre_recibe' => $row_encargo->nombre_recibe,
-                            'fecha_recibe' => $row_encargo->fecha_recibe,
-                            'agencia_origen' => $row_encargo->agencia_origen,
-                            'agencia_destino' => $row_encargo->agencia_destino,
-                            'agencia_id' => $row_encargo->agencia_id,
-                            'adquiriente_id' => $row_encargo->adquiriente_id,
-                            'documento_id' => $row_encargo->documento_id,
-                            'documento_serie' => $row_encargo->documento_serie,
-                            'documento_correlativo' => $row_encargo->documento_correlativo,
-                            'documento_fecha' => $row_encargo->documento_fecha,
-                            'documento_hora' => $row_encargo->documento_hora,
-                            'subtotal' => $row_encargo->subtotal,
-                            'oferta' => $row_encargo->oferta,
-                            'estado' => $row_encargo->estado,
-                            'descuento' => $row_encargo->descuento,
-                            'cantidad_item' => $row_encargo->cantidad_item,
-                            'monto_gravado' => $row_encargo->monto_gravado,
-                            'monto_exonerado' => $row_encargo->monto_exonerado,
-                            'monto_inafecto' => $row_encargo->monto_inafecto,
-                            'importe_pagar_con_igv' => $row_encargo->importe_pagar_con_igv,
-                            'importe_pagar_sin_igv' => $row_encargo->importe_pagar_sin_igv,
-                            'importe_pagar_igv' => $row_encargo->importe_pagar_igv,
-                            'cdr_codigo' => $row_encargo->cdr_codigo,
-                            'cdr_descripcion' => $row_encargo->cdr_descripcion,
-                            'cdr_id' => $row_encargo->cdr_id,
-                            'cdr_notas' => $row_encargo->cdr_notas,
-                            'nombre_archivo' => $row_encargo->nombre_archivo,
-                            'url_documento_cdr' => $row_encargo->url_documento_cdr,
-                            'url_documento_pdf' => $row_encargo->url_documento_pdf,
-                            'url_documento_xml' => $row_encargo->url_documento_xml,
-                            'url_documento_baja' => $row_encargo->url_documento_baja,
-                            'updated_at' => $row_encargo->updated_at,
-                            'created_at' => $row_encargo->created_at,
-                        ], ['encargo_id' => $row_encargo->id]);
-                        
-                        DB::table('guia_transportista_detalle')->where('encargo_id', $encargo_id)->delete();
-                        foreach ($row_encargo->detalles as $item):
-                            DB::table('guia_transportista_detalle')->insert([
-                                'encargo_id' => $row_encargo->id,
-                                'item_id' => $item->item_id,
-                                'codigo_producto' => $item->codigo_producto,
-                                'descripcion' => $item->descripcion,
-                                'cantidad_item' => $item->cantidad_item,
-                                'peso' => $item->peso,
-                                'valor_unitario' => $item->valor_unitario,
-                                'valor_venta' => $item->valor_venta,
-                                'valor_base_igv' => $item->valor_base_igv,
-                                'porcentaje_igv' => $item->porcentaje_igv,
-                                'igv_venta' => $item->igv_venta,
-                                'tipo_afectacion' => $item->tipo_afectacion,
-                                'precio_unitario' => $item->precio_unitario,
-                                'updated_at' => $item->updated_at,
-                                'created_at' =>$item->created_at,
-                            ]);
-                        endforeach;
-                    }
+                if($insert_encargo['subtotal'] > env('DETRACCION')) {
+                    $insert_encargo = array_merge($insert_encargo, [
+                        'detraccion_codigo' => env('EMPRESA_CODIGO_DETRACCION'),
+                        'detraccion_medio_pago' => '001', // catalog. 59 : Depósito en cuenta
+                        'detraccion_cta_banco' => env('EMPRESA_CUENTA_BANCARIA_DETRACCION'),
+                        'detraccion_porcentaje' => env('EMPRESA_TASA_DETRACCION') * 100,
+                        'detraccion_monto' => number_format(($insert_encargo['monto_gravado']-$insert_encargo['descuento']) * (1 + env('IGV')) * env('EMPRESA_TASA_DETRACCION') , 2, '.', ''),
+                    ]);
                 }
 
-            } else {
-                // nuevo
-                $encargo_id = Encargo::create($insert_encargo)->id;
+                $encargo = null;
+                if (strlen($data['encargo_id']) > 0) {
+                    // controlar duplicidad de registros
+                    $encargo_id = (int) $data['encargo_id']; 
+                    $fecha_hora_envia = $data['fecha_hora_envia'];
+                    $documento_correlativo = $data['documento_correlativo'];
+                    // cambiar guía de remisión a boleta/factura
+                    if ((int)$data['guia_remision_transportista_id']==1) {
+                        $fecha_hora_envia = date(env('FORMATO_DATETIME')); // poner la fecha actual si es GR
 
-                foreach($columnas[0] as $item):
-                    $insert_encargo_detalle = array_merge($item, ['encargo_id' => $encargo_id]);
-                    EncargoDetalle::create($insert_encargo_detalle);
-                endforeach;
+                        $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
+                        $insert_encargo['documento_correlativo'] = $documento_correlativo;
 
-                $fecha_hora_envia = date(env('FORMATO_DATETIME'));
-                $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
-                $update = ['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo];
-                 
-                $encargo = Encargo::where('id', $encargo_id)->update($update);
-            }
+                        // $encargo = Encargo::where('id', $encargo_id)->update($insert_encargo, ['upsert' => true]);
+                        $encargo = DB::table('encargo')->where('id', $encargo_id)->update($insert_encargo);
+                        if (!$encargo) {
+                            return \response()->json(['result' => ['status' => 'fails', 'message' => 'No hubo ningún cambio.']]);
+                        } else {
+                            $row_encargo = Encargo::find($encargo_id);
+                            
+                            DB::table('guia_transportista')->where('encargo_id', $encargo_id)->delete();
+                            DB::table('guia_transportista')->insert([
+                                'encargo_id' => $row_encargo->id,
+                                'fecha_hora_envia' => $row_encargo->fecha_hora_envia,
+                                'fecha_hora_recibe' => $row_encargo->fecha_hora_recibe,
+                                'doc_envia' => $row_encargo->doc_envia,
+                                'nombre_envia' => $row_encargo->nombre_envia,
+                                'doc_recibe' => $row_encargo->doc_recibe,
+                                'nombre_recibe' => $row_encargo->nombre_recibe,
+                                'fecha_recibe' => $row_encargo->fecha_recibe,
+                                'agencia_origen' => $row_encargo->agencia_origen,
+                                'agencia_destino' => $row_encargo->agencia_destino,
+                                'agencia_id' => $row_encargo->agencia_id,
+                                'adquiriente_id' => $row_encargo->adquiriente_id,
+                                'documento_id' => $row_encargo->documento_id,
+                                'documento_serie' => $row_encargo->documento_serie,
+                                'documento_correlativo' => $row_encargo->documento_correlativo,
+                                'documento_fecha' => $row_encargo->documento_fecha,
+                                'documento_hora' => $row_encargo->documento_hora,
+                                'subtotal' => $row_encargo->subtotal,
+                                'oferta' => $row_encargo->oferta,
+                                'estado' => $row_encargo->estado,
+                                'descuento' => $row_encargo->descuento,
+                                'cantidad_item' => $row_encargo->cantidad_item,
+                                'monto_gravado' => $row_encargo->monto_gravado,
+                                'monto_exonerado' => $row_encargo->monto_exonerado,
+                                'monto_inafecto' => $row_encargo->monto_inafecto,
+                                'importe_pagar_con_igv' => $row_encargo->importe_pagar_con_igv,
+                                'importe_pagar_sin_igv' => $row_encargo->importe_pagar_sin_igv,
+                                'importe_pagar_igv' => $row_encargo->importe_pagar_igv,
+                                'cdr_codigo' => $row_encargo->cdr_codigo,
+                                'cdr_descripcion' => $row_encargo->cdr_descripcion,
+                                'cdr_id' => $row_encargo->cdr_id,
+                                'cdr_notas' => $row_encargo->cdr_notas,
+                                'nombre_archivo' => $row_encargo->nombre_archivo,
+                                'url_documento_cdr' => $row_encargo->url_documento_cdr,
+                                'url_documento_pdf' => $row_encargo->url_documento_pdf,
+                                'url_documento_xml' => $row_encargo->url_documento_xml,
+                                'url_documento_baja' => $row_encargo->url_documento_baja,
+                                'updated_at' => $row_encargo->updated_at,
+                                'created_at' => $row_encargo->created_at,
+                            ], ['encargo_id' => $row_encargo->id]);
+                        
+                            DB::table('guia_transportista_detalle')->where('encargo_id', $encargo_id)->delete();
+                            foreach ($row_encargo->detalles as $item):
+                                DB::table('guia_transportista_detalle')->insert([
+                                    'encargo_id' => $row_encargo->id,
+                                    'item_id' => $item->item_id,
+                                    'codigo_producto' => $item->codigo_producto,
+                                    'descripcion' => $item->descripcion,
+                                    'cantidad_item' => $item->cantidad_item,
+                                    'peso' => $item->peso,
+                                    'valor_unitario' => $item->valor_unitario,
+                                    'valor_venta' => $item->valor_venta,
+                                    'valor_base_igv' => $item->valor_base_igv,
+                                    'porcentaje_igv' => $item->porcentaje_igv,
+                                    'igv_venta' => $item->igv_venta,
+                                    'tipo_afectacion' => $item->tipo_afectacion,
+                                    'precio_unitario' => $item->precio_unitario,
+                                    'updated_at' => $item->updated_at,
+                                    'created_at' =>$item->created_at,
+                                ]);
+                            endforeach;
+                            
+                        }
+                    }
+
+                } else {
+                    // nuevo
+                    // $encargo_id = Encargo::create($insert_encargo)->id;
+                    $encargo_id = DB::table('encargo')->insertGetId($insert_encargo);
+
+                    foreach($columnas[0] as $item):
+                        $insert_encargo_detalle = array_merge($item, ['encargo_id' => $encargo_id]);
+                        // EncargoDetalle::create($insert_encargo_detalle);
+                        DB::table('encargo_detalle')->insert($insert_encargo_detalle);
+                    endforeach;
+
+                    $fecha_hora_envia = date(env('FORMATO_DATETIME'));
+                    $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
+                    $update = ['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo];
+                    
+                    // $encargo = Encargo::where('id', $encargo_id)->update($update);
+                    DB::table('encargo')->where('id', $encargo_id)->update($update);
+                }
+                
+                
+            DB::commit();
             // registrar o actualizar el PDF
             if ($row_documento->alias === 'B') {
                 $url_documento_pdf = $this->escribirBoleta($encargo_id);
@@ -488,7 +505,7 @@ class SaleController extends Controller
                     'status' => 'OK', 
                     'message' => 'Registrado correctamente', 
                     'encargo_id' => $encargo_id, 
-                    'adquiriente' => $adquiriente_id, 
+                    'adquiriente_id' => $adquiriente_id, 
                     'documento_correlativo' => $documento_correlativo,
                     'fecha_hora_envia' => $fecha_hora_envia,
                     'url_documento_pdf' => $url_documento_pdf,

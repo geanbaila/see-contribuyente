@@ -52,7 +52,7 @@ class ManifestController extends Controller
         $encargo = Encargo::where('estado', '!=', $en_manifiesto)
         ->where('agencia_origen', $agencia_origen_selected)
         ->where('documento_fecha', $y.'-'.$m.'-'.$d)
-        ->get()->sortBy(['agencia_destino','documento_fecha','documento_hora']);
+        ->get()->sortBy(['documento_fecha','documento_hora','agencia_destino']);
         /* $encargo = DB::table('encargo')
         ->select(
             '*',
