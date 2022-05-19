@@ -7,7 +7,6 @@ use App\Business\Agencia;
 use App\Business\Salida;
 use App\Business\Movimiento;
 use App\Business\Vehiculo;
-use MongoDB\BSON\ObjectId;
 
 class ConfigurationController extends Controller
 {

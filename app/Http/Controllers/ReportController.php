@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Business\Reporte;
 
 class ReportController extends Controller
 {
@@ -12,6 +13,9 @@ class ReportController extends Controller
     }
 
     public function list() {
-        return view('report.list');
+        $data = [
+            'prg_ingresos' => Reporte::getIncome(),
+        ];
+        return view('report.show')->with($data);
     }
 }

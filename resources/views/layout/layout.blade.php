@@ -29,6 +29,7 @@
 				margin-top: -44px !important;
 			}
 		</style>
+		@yield('head')
 	</head>
 	<!--end::Head-->
 	<!--begin::Body-->

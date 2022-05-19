@@ -10,7 +10,6 @@ use App\Business\Sede;
 use App\Business\Agencia;
 use App\Business\Encargo;
 use App\Business\Manifiesto;
-use MongoDB\BSON\ObjectId;
 use PDF;
 
 class ManifestController extends Controller
@@ -37,7 +36,7 @@ class ManifestController extends Controller
     }
     
     public function list(Request $request) {
-        $en_manifiesto = new ObjectId('61af909ad3f9efe2cb27e8be');
+        $en_manifiesto = 3;
         $agencia_origen_selected = ((int)$request->input('agencia_origen') > 0)? (int)$request->input('agencia_origen'): 0;
         
         if(!empty($request->input('fecha_recibe'))) {
