@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card mb-5 mb-xxl-8">
             <div class="card-body pt-9 pb-0">
-                <a href="{{ url('venta/nuevo') }}" class="btn btn-primary">Nuevo</a>
+                <a href="{{ url('/venta/nuevo') }}" class="btn btn-primary">Nuevo</a>
                 <a id="btnEliminar" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEliminarVenta">
                     <img src="{{asset('public/assets/media/trash-2-white.svg') }}" width="20">
                 </a>

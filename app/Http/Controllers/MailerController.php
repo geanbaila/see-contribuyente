@@ -43,9 +43,12 @@ class MailerController extends Controller
 
             $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
             $mail->addAddress($request->email_adquiriente);
-            $mail->addCC(env('MAIL_CC'));
-            $mail->addBCC(env('MAIL_CCO'));
-
+            if (!empty(env('MAIL_CC'))){
+                $mail->addCC(env('MAIL_CC'));
+            }
+            if (!empty(env('MAIL_CCO'))){
+                $mail->addBCC(env('MAIL_CCO'));
+            }
             $mail->addReplyTo(env('MAIL_REPLY_ADDRESS'), env('MAIL_REPLY_NAME'));
 
             if (isset($encargo['url_documento_xml'])) {

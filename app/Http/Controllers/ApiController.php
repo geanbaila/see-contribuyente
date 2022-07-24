@@ -140,7 +140,8 @@ class ApiController extends Controller
     public function downloadManifiesto($manifiesto_id) {
         $manifiesto = \App\Business\Manifiesto::where('id', $manifiesto_id)->get(['url_documento_pdf', 'nombre_archivo']);
         // $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
-        $file = base_path('public/' . $manifiesto[0]->url_documento_pdf);
+
+        $file = base_path('/public/' . $manifiesto[0]->url_documento_pdf);
         return \response()
              ->download($file, $manifiesto[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
     }
