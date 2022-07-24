@@ -180,7 +180,7 @@
                                                                 @if ($item->url_documento_pdf)
                                                                     <a target="_blank"
                                                                         href="{{ url('/api/v1/download/manifiesto/' . $item->id) }}"><img
-                                                                            src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
+                                                                            src="{{asset('public/assets/media/file-text.svg') }}"
                                                                             width="20"></a>
                                                                 @endif
                                                             </td>
@@ -417,7 +417,7 @@
                                     html += '<td>'+response.result.manifiesto.subtotal_por_pagar.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.subtotal_pagado.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.total_general.toFixed(2)+'</td>';
-                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg" width="20"></a></td>';
+                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="{{asset('public/assets/media/file-text.svg') }}" width="20"></a></td>';
                                     html += '</tr>';
                                 $('#tblManifiesto').prepend(html);
                             } else {

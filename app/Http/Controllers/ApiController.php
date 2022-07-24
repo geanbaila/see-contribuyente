@@ -62,7 +62,7 @@ class ApiController extends Controller
         $url = config('services.apiservice.url');
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $url."api/ruc/$ruc?api_token=$token",
+            CURLOPT_URL => $url."ruc/$ruc?api_token=$token",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_SSL_VERIFYPEER => false

@@ -145,7 +145,7 @@
                                 <div class="col-xxl-12">
                                     <label>&nbsp;</label>
                                     <a class="float-end" onclick="javascript:addReceivesRow()">
-                                        <img src="https://www.corpenlaces.com/panel/public/assets/media/plus-circle.svg"
+                                        <img src="{{asset('public/assets/media/plus-circle.svg') }}"
                                             width="20" />
                                     </a>
                                 </div>
@@ -184,7 +184,7 @@
                                     <div class="col-xxl-12">
                                         <label>&nbsp;</label>
                                         <a class="float-end" onclick="javascript:removeReceivesRow()">
-                                            <img class="float-right" src="https://www.corpenlaces.com/panel/public/assets/media/minus-circle.svg" width="20">
+                                            <img class="float-right" src="{{asset('public/assets/media/minus-circle.svg') }}" width="20">
                                         </a>
                                     </div>
                                 </div>
