@@ -57,29 +57,47 @@ class ApiController extends Controller
         return response()->json($serie);
     }
 
-    public function getSunat() {
+    public function getSunat(String $ruc) {
+        $token = config('services.apiservice.token');
+        $url = config('services.apiservice.url');
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url."api/ruc/$ruc?api_token=$token",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $empresa = json_decode($response);
+        $arrEmpresa = $empresa->data->nombre_o_razon_social;
+
         $response = [
             'result' =>[
-                'nombre' => 'BITERA EIRL',
-                'nombre_comercial' => 'BITERA EIRL',
-                'direccion' => 'LAURA CALLER',
-                'activo' => true,
-                'habido' => true,
-                'ubigeo' => '150117',
-                'departamento' => 'LIMA',
-                'provincia' => 'LIMA',
-                'distrito' => 'LOS OLIVOS',
-            ]
+                'nombre' => $arrEmpresa
+            ],
         ];
         return response()->json($response);
     }
     
-    public function getReniec() {
+    public function getReniec(String $dni) {
+        $token = config('services.apiservice.token');
+        $url = config('services.apiservice.url');
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url."dni/$dni?api_token=$token",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $persona = json_decode($response);
+        $arrPersona = $persona->data->nombre_completo;
+
         $response = [
             'result' =>[
-                'nombre' => 'GEAN CARLOS BAILA LAURENTE',
-                'direccion' => 'DIRECCIÓN HIPOTÉTICA 1', 
-                'foto' => '',
+                'nombre' => $arrPersona
             ],
         ];
         return response()->json($response);

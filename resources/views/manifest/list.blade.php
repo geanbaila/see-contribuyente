@@ -68,7 +68,7 @@
                                                 <label class="form-label">&nbsp;</label>
                                                 <a id="btnImprimir" class="form-control btn btn-secondary disabled" data-bs-toggle="modal"
                                                     data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                                    <img src="{{ asset('assets/media/printer.svg') }}" width="20" />
+                                                    <img src="{{ asset('public/assets/media/printer.svg') }}" width="20" />
                                                 </a>
                                             </div>
                                             -->
@@ -76,7 +76,7 @@
                                             <label class="form-label">&nbsp;</label>
                                             <a id="btnImprimir" class="form-control btn btn-primary"
                                                 onclick="javascript:empaquetarEnvio()">
-                                                <img src="{{ asset('assets/media/truck-white.svg') }}" width="20" />
+                                                <img src="{{ asset('public/assets/media/truck-white.svg') }}" width="20" />
                                             </a>
                                         </div>
 
@@ -108,7 +108,7 @@
                                                         <tr>
                                                             <th scope="row">
                                                                 @if ($item->estado == '3')
-                                                                    {{-- <img src="{{asset('assets/media/arrow-down-right.svg')}}" width="20" /> --}}
+                                                                    {{-- <img src="{{asset('public/assets/media/arrow-down-right.svg')}}" width="20" /> --}}
                                                                     <input class="form-check-input check-encargos"
                                                                         type="checkbox" value="{{ $item->id }}"
                                                                         data-verificado="{{ ($item->estado == '1' || $item->estado == '3')?'1':'0' }}">
@@ -180,7 +180,7 @@
                                                                 @if ($item->url_documento_pdf)
                                                                     <a target="_blank"
                                                                         href="{{ url('/api/v1/download/manifiesto/' . $item->id) }}"><img
-                                                                            src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                                            src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
                                                                             width="20"></a>
                                                                 @endif
                                                             </td>
@@ -417,7 +417,7 @@
                                     html += '<td>'+response.result.manifiesto.subtotal_por_pagar.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.subtotal_pagado.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.total_general.toFixed(2)+'</td>';
-                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg" width="20"></a></td>';
+                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg" width="20"></a></td>';
                                     html += '</tr>';
                                 $('#tblManifiesto').prepend(html);
                             } else {

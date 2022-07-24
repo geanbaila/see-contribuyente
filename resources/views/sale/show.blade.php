@@ -145,7 +145,7 @@
                                 <div class="col-xxl-12">
                                     <label>&nbsp;</label>
                                     <a class="float-end" onclick="javascript:addReceivesRow()">
-                                        <img src="http://localhost/dev.enlaces.sis/public/assets/media/plus-circle.svg"
+                                        <img src="https://www.corpenlaces.com/panel/public/assets/media/plus-circle.svg"
                                             width="20" />
                                     </a>
                                 </div>
@@ -184,7 +184,7 @@
                                     <div class="col-xxl-12">
                                         <label>&nbsp;</label>
                                         <a class="float-end" onclick="javascript:removeReceivesRow()">
-                                            <img class="float-right" src="http://localhost/dev.enlaces.sis/public/assets/media/minus-circle.svg" width="20">
+                                            <img class="float-right" src="https://www.corpenlaces.com/panel/public/assets/media/minus-circle.svg" width="20">
                                         </a>
                                     </div>
                                 </div>
@@ -300,7 +300,7 @@
                                 </th>
                                 <th scope="col" width="80" style="text-align:right">
                                     <a onclick="javascript:addChargeRow()"><img
-                                            src="{{ asset('assets/media/plus-circle.svg') }}" width="20" /></a>
+                                            src="{{ asset('public/assets/media/plus-circle.svg') }}" width="20" /></a>
                                 </th>
                             </tr>
                         </thead>
@@ -418,9 +418,9 @@
                             @if (isset($encargo))
                                 <span name="cdr_descripcion">{{ $encargo->cdr_descripcion }}
                                     @if ($encargo->cdr_codigo === '0')
-                                        <img src="{{ asset('assets/media/check-circle.svg') }}" width="20" />
+                                        <img src="{{ asset('public/assets/media/check-circle.svg') }}" width="20" />
                                     @else
-                                        <img src="{{ asset('assets/media/alert-circle.svg') }}" width="20" />
+                                        <img src="{{ asset('public/assets/media/alert-circle.svg') }}" width="20" />
                                     @endif
                                 </span>
                             @else
@@ -444,7 +444,7 @@
                                 <a class="btn btn-primary" id="btnConfirmar" onclick="javascript:doit();">Confirmar</a>
                                 <a id="btnBuscar" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#modalBuscarVenta" onclick="javascript:document.getElementById('buscaDocRecibeDocEnvia').focus();">
-                                    <img src="{{ asset('assets/media/search-white.svg') }}" width="20" />
+                                    <img src="{{ asset('public/assets/media/search-white.svg') }}" width="20" />
                                 </a>
                                 @php
                                     $img_enable = (isset($encargo))?'-white': '';
@@ -452,15 +452,15 @@
                                 @endphp
                                 <a id="btnImprimir" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalImprimirComprobante" onclick="javascript:printElement()">
-                                    <img src="{{ asset('assets/media/printer'.$img_enable.'.svg') }}" width="20" />
+                                    <img src="{{ asset('public/assets/media/printer'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                                 <a id="btnEmail" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                 data-bs-target="#modalEnviarEmail">
-                                    <img src="{{ asset('assets/media/email'.$img_enable.'.svg') }}" width="20" />
+                                    <img src="{{ asset('public/assets/media/email'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                                 <a id="btnEliminar" class="btn {{$btn_enable}}" data-bs-toggle="modal"
                                     data-bs-target="#modalEliminarVenta">
-                                    <img src="{{ asset('assets/media/trash-2'.$img_enable.'.svg') }}" width="20" />
+                                    <img src="{{ asset('public/assets/media/trash-2'.$img_enable.'.svg') }}" width="20" />
                                 </a>
                         </div>
                     </div>
@@ -606,7 +606,7 @@
                 '<td><input type="number" class="form-control fw8" name="valor_unitario" onkeyup="javascript:calculatePayChargeDetail(this)" disabled></td>' +
                 '<td><input type="number" class="form-control fw8" name="total" disabled></td>' +
                 '<td scope="row" align="right">' +
-                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('assets/media/minus-circle.svg') }}" width="20" /></a>' +
+                '<a onclick="javascript:removeChargeRow(this)"><img src="{{ asset('public/assets/media/minus-circle.svg') }}" width="20" /></a>' +
                 '</td>' +
                 '</tr>';
             $("#chargeRow").append(html);
@@ -980,9 +980,9 @@
             $("#btnEmail").addClass("btn-primary");
             $("#btnEliminar").removeClass("disabled btn-secondary");
             $("#btnEliminar").addClass("btn-primary");
-            $("#btnImprimir").children().attr("src", "{{ asset('assets/media/printer-white.svg') }}");
-            $("#btnEmail").children().attr("src", "{{ asset('assets/media/email-white.svg') }}");
-            $("#btnEliminar").children().attr("src", "{{ asset('assets/media/trash-2-white.svg') }}");
+            $("#btnImprimir").children().attr("src", "{{ asset('public/assets/media/printer-white.svg') }}");
+            $("#btnEmail").children().attr("src", "{{ asset('public/assets/media/email-white.svg') }}");
+            $("#btnEliminar").children().attr("src", "{{ asset('public/assets/media/trash-2-white.svg') }}");
         }
 
         function alertarDetraccion() {

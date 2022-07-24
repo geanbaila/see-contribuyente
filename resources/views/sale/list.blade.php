@@ -5,7 +5,7 @@
             <div class="card-body pt-9 pb-0">
                 <a href="{{ url('venta/nuevo') }}" class="btn btn-primary">Nuevo</a>
                 <a id="btnEliminar" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEliminarVenta">
-                    <img src="http://localhost/dev.enlaces.sis/public/assets/media/trash-2-white.svg" width="20">
+                    <img src="https://www.corpenlaces.com/panel/public/assets/media/trash-2-white.svg" width="20">
                 </a>
                 <br/>
                 <br/>
@@ -33,7 +33,7 @@
                                 <tr>
                                     <td>
                                         <a href="{{ url('/venta/editar/' . $item->id) }}"><img
-                                                src="{{ asset('/assets/media/edit.svg') }}" width="20" /></a>
+                                                src="{{ asset('public/assets/media/edit.svg') }}" width="20" /></a>
                                     </td>
                                     <td>{{ $item->documento_serie }}-{{ $item->documento_correlativo }}</td>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_envia) !!}</td>
@@ -45,28 +45,28 @@
                                         @if ($item->url_documento_baja)
                                             <a target="_blank"
                                                 href="{{ url('/api/v1/download/baja/' . $item->id) }}"><img
-                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                    src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
                                                     width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_pdf)
                                             <a target="_blank" href="{{ url('/api/v1/download/pdf/' . $item->id) }}"><img
-                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                    src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
                                                     width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_xml)
                                             <a target="_blank" href="{{ url('/api/v1/download/xml/' . $item->id) }}"><img
-                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                    src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
                                                     width="20"></a>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($item->url_documento_cdr)
                                             <a target="_blank" href="{{ url('/api/v1/download/cdr/' . $item->id) }}"><img
-                                                    src="http://localhost/dev.enlaces.sis/public/assets/media/file-text.svg"
+                                                    src="https://www.corpenlaces.com/panel/public/assets/media/file-text.svg"
                                                     width="20"></a>
                                         @endif
                                     </td>

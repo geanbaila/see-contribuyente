@@ -533,7 +533,7 @@ class SaleController extends Controller
                     'documento_correlativo' => $documento_correlativo,
                     'fecha_hora_envia' => $fecha_hora_envia,
                     'url_documento_pdf' => $url_documento_pdf,
-                    'cdr_descripcion' => $cdr_descripcion .' <img src="'. asset('assets/media/check-circle.svg'). '" width="20" />',
+                    'cdr_descripcion' => $cdr_descripcion .' <img src="'. asset('public/assets/media/check-circle.svg'). '" width="20" />',
                 ]
             ]);
         // } catch(\Throwable $e) {
@@ -642,11 +642,17 @@ class SaleController extends Controller
             $textodniruc .= $data['adquiriente_ruc_dni_ce'];
             list($year, $month, $day) = explode("-", $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
 
+            // $pageLayout = array($width, $height); //  or array($height, $width) 
+            // $pdf = new TCPDF('p', 'pt', $pageLayout, true, 'UTF-8', false);
+
             PDF::SetTitle($data['titulo_documento']);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
             PDF::AddPage();
-            
+            // PDF::AddPage('P', 'A6');
+            // PDF::AddPage('P', 'mm', array(2.1, 2.1), true, 'UTF-8', false);
+            // $pdf = new PDF('P', 'mm', array(2.1, 2.1), true, 'UTF-8', false);
+
             PDF::SetFillColor(255, 255, 255);
             PDF::SetTextColor(0);
             $font_size_grande = 9;
@@ -804,6 +810,8 @@ class SaleController extends Controller
             PDF::Output($output, 'F');
             PDF::reset();
             $url_documento_pdf = $tree . "/" . $filename;
+
+            
         endif;
         return $url_documento_pdf;
     }

@@ -176,7 +176,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         // add other provider
-        Jenssegers\Mongodb\MongodbServiceProvider::class,
     	Elibyy\TCPDF\ServiceProvider::class,
 
     ],

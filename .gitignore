@@ -1,4 +1,3 @@
-database.sql
 /storage/*.key
 /storage/cache/*
 /vendor
@@ -12,11 +11,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-carga.json
 /public/comprobantes
 /public/bajas
 /public/resources
 /node_modules
-feature.txt
-
-37.txt

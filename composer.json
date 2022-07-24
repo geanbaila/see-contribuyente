@@ -17,7 +17,6 @@
         "greenter/lite": "^4.3",
         "greenter/report": "^4.3",
         "greenter/xmldsig": "^5.0",
-        "jenssegers/mongodb": "3.6",
         "laravel/framework": "^6.20.26",
         "laravel/tinker": "^2.5",
         "phpmailer/phpmailer": "^6.5"

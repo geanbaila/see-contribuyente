@@ -331,23 +331,5 @@ class Encargo extends Model
         return $result;
     }
 
-    static function getNextSequence($encargo_id, $documento_serie) {
-        $encargo = Encargo::find($encargo_id);
-        if(!$encargo->documento_correlativo) {
-            $manager = new \MongoDB\Driver\Manager("mongodb://".env('DB_HOST').":".env('DB_PORT'));
-            $cmd = new \MongoDB\Driver\Command([
-                "findandmodify" => "sequence",
-                "query" => array("_id"=> $documento_serie),
-                "update" => array('$inc' => array("seq"=> 1)),
-            ]);
-            $cursor = $manager->executeCommand(env('DB_DATABASE'), $cmd);
-            $sequence = 0;
-            foreach($cursor as $d){
-                $sequence = $d->value->seq;
-            }
-            Talonario::insert(['documento_serie' => $documento_serie, 'documento_correlativo' => $sequence, 'encargo_id' => $encargo_id]);
-        }
-        return $sequence;
-    }
-
+    
 }

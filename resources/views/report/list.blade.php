@@ -15,7 +15,7 @@
                         
                         <tr>
                             <td valign="top" scope="row" class="text-center">
-                                <a><img src="{{ asset('assets/media/eye.svg') }}" width="20"></a>
+                                <a><img src="{{ asset('public/assets/media/eye.svg') }}" width="20"></a>
                             </td>
                             <td><p>Informe económico</p>
                             </td>
