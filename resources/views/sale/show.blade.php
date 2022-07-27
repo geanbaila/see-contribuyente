@@ -372,14 +372,15 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td align="right">Descuento global&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right">
+                                    Descuento global&nbsp;&nbsp;&nbsp;&nbsp;
+                                </td>
+                                <td align="right">
+                                    <input type="hidden" name="cantidad_total" value="0">
                                     @if (isset($encargo))
-                                        <input type="number" class="form-control fw8" name="descuento"
-                                            value="{{ $encargo->descuento }}" disabled>
+                                        <input type="number" class="form-control fw8" name="descuento" value="{{ $encargo->descuento }}" disabled>
                                     @else
-                                        <input type="number" class="form-control fw8" name="descuento"
-                                            value="0.00" disabled>
+                                        <input type="number" class="form-control fw8" name="descuento" value="0.00" disabled>
                                     @endif
                                 </td>
 
@@ -584,8 +585,21 @@
                 $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
             });
             $("[name='descuento']").val('0.00');
+            calculateCantidadTotal()
         }
 
+        function calculateCantidadTotal() {
+            var cantidad_total = 0;
+            var cantidad = 0;
+            $("#chargeRow >tr>td:nth-child(2) [name='cantidad']").each(function(index, element) {
+                cantidad = parseInt(element.value)
+                if (isNaN(cantidad)) {
+                    cantidad = 0
+                }
+                cantidad_total += cantidad;
+                $("[name='cantidad_total']").val(cantidad_total);
+            });
+        }
         function addChargeRow() {
             var options = '<option value="--" selected> -- </option>';
             @if (isset($carga))
@@ -1319,12 +1333,54 @@
         $("[name='importe_pagar_con_descuento']").on('keyup', function(e) {
             var oferta = parseFloat($(this).val());
             var precio_venta = parseFloat($("[name='subtotal']").val());
-            var descuento = precio_venta-oferta;
-            $("[name='descuento']").val(descuento.toFixed(2));
+            var descuento = 0.00;
+            reCalculatePayChargeDetailBasedGlobalPrice(oferta);
+            
         });
         @if (isset($encargo))
             getAgenciaDestino("{{ $encargo->agencia_origen }}","{{ $encargo->agencia_destino }}");
             // $("[name='cantidad']").trigger('onkeyup');
         @endif
+
+        // la variable *oferta* ya tiene el igv incluido
+        function reCalculatePayChargeDetailBasedGlobalPrice(oferta) {
+            var subtotal = 0.00;
+            var total = (oferta / (1 + parseFloat("{{ env('IGV') }}"))).toFixed(2);
+            var igv = (oferta - total).toFixed(2);
+            var cantidad_total = $("[name='cantidad_total']").val();
+            var valor_unitario = (total / cantidad_total).toFixed(2);
+            $("#chargeRow >tr").each(function(index, element) {
+                $(element).find("td [name='valor_unitario']").val(valor_unitario);
+                var cantidad = parseFloat($(element).find("td [name='cantidad']").val());
+                var peso = parseFloat($(element).find("td [name='peso']").val());
+                var total = valor_unitario * cantidad * peso;
+                $(element).find("td [name='total']").val(total.toFixed(2));
+                subtotal = subtotal + total + (total * parseFloat("{{ env('IGV') }}"));
+                $("[name='subtotal']").val(subtotal.toFixed(2));
+                
+            });
+            if (subtotal > oferta) {
+                descuento = (subtotal-oferta).toFixed(2);
+                console.log("descuento..", descuento)
+                $("[name='descuento']").val(descuento);
+            }
+
+            // $("[name='subtotal']").val(subtotal.toFixed(2));
+            // $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
+
+        /*function reCalculatePayChargeDetail() {
+            var subtotal = 0.00;
+            var total = 0.00;
+            $("#chargeRow >tr>td:nth-child(4)").each(function(index, element) {
+                total = parseFloat($(element).find("[name='total']").val());
+                subtotal = subtotal + total + (total * parseFloat("{{ env('IGV') }}"));
+                $("[name='subtotal']").val(subtotal.toFixed(2));
+                $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
+            });
+            $("[name='descuento']").val('0.00');
+            calculateCantidadTotal()
+        }*/
+
+        }
     </script>
 @endsection
