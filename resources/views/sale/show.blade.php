@@ -51,8 +51,14 @@
                                         <input type="text" class="form-control" id="doc_envia" name="doc_envia"
                                             value="{{ $encargo->doc_envia }}" />
                                     @else
-                                        <input type="text" class="form-control" id="doc_envia" name="doc_envia" value=""
-                                         />
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="doc_envia" name="doc_envia" value="" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                &nbsp;<img id="loading-input1" style="display:none" src="{{ asset('public/assets/media/loading.gif') }}" width="20" />
+                                            </span>
+                                        </div>
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
@@ -103,8 +109,14 @@
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe"
                                             value="{{ $encargo->doc_recibe }}" />
                                     @else
-                                        <input type="text" class="form-control" id="doc_recibe" name="doc_recibe" value=""
-                                         />
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="doc_recibe" name="doc_recibe" value=""/>
+                                         <div class="input-group-append">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                &nbsp;<img id="loading-input2" style="display:none" src="{{ asset('public/assets/media/loading.gif') }}" width="20" />
+                                            </span>
+                                        </div>
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="col-xxl-7">
@@ -263,15 +275,15 @@
                                             disabled />
                                     @else
                                         <input type="text" class="form-control" id="documento_correlativo"
-                                            name="documento_correlativo" value="" disabled />
+                                            name="documento_correlativo" value="" />
                                     @endif
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-xxl-1">
                             <div class="row gy-5">
                                 <div class="col-xxl-12">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -373,14 +385,14 @@
                         <tfoot>
                             <tr>
                                 <td align="right">
-                                    Descuento global&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <!--Descuento global&nbsp;&nbsp;&nbsp;&nbsp;-->
                                 </td>
                                 <td align="right">
                                     <input type="hidden" name="cantidad_total" value="0">
                                     @if (isset($encargo))
-                                        <input type="number" class="form-control fw8" name="descuento" value="{{ $encargo->descuento }}" disabled>
+                                        <input type="hidden" class="form-control fw8" name="descuento" value="{{ $encargo->descuento }}" disabled>
                                     @else
-                                        <input type="number" class="form-control fw8" name="descuento" value="0.00" disabled>
+                                        <input type="hidden" class="form-control fw8" name="descuento" value="0.00" disabled>
                                     @endif
                                 </td>
 
@@ -399,7 +411,7 @@
                                 <td>
                                     @if (isset($encargo))
                                         <input type="number" class="form-control fw8" name="importe_pagar_con_descuento"
-                                            value="{{ $encargo->oferta }}">
+                                            value="{{ $encargo->oferta }}" disabled>
                                     @else
                                         <input type="number" class="form-control fw8" name="importe_pagar_con_descuento"
                                             value="0.00">
@@ -680,7 +692,8 @@
             // $("[name='medio_pago']").val(data.medio_pago).change();
             // $("[name='documento']").val(data.documento_id).change();
             // $("[name='documento_serie']").val(data.documento_serie);
-            // $("[name='documento_correlativo']").val(data.documento_correlativo)
+            $("[name='documento_correlativo']").val(data.documento_correlativo);
+            
             
             if (data.detalles.length > 0) {
                 var total = data.detalles.length;
@@ -1028,7 +1041,6 @@
                         );
                     }
                 }).done(function(response) {
-                    console.log(response);
                     if (response.result.status === 'OK') {
                         if (response.result.encargo_id.toString().length > 0) {
                             $("[name='encargo_id']").val(response.result.encargo_id);
@@ -1193,8 +1205,13 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        dataType: "json"
-                    }).done(function(response) {
+                        dataType: "json",
+                        beforeSend: function(){
+                            $("#loading-input1").show();
+                        }
+                    })
+                    .done(function(response) {
+                        $("#loading-input1").hide();
                         $("[name='nombre_envia']").val(response.result.nombre);
                         $("[name='nombre_comercial_envia']").val(response.result.nombre);
                         $("[name='direccion_envia']").val(response.result.direccion);
@@ -1208,8 +1225,12 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        dataType: "json"
+                        dataType: "json",
+                        beforeSend: function(){
+                            $("#loading-input1").show();
+                        }
                     }).done(function(response) {
+                        $("#loading-input1").hide();
                         $("[name='nombre_envia']").val(response.result.nombre);
                         $("[name='nombre_comercial_envia']").val(response.result.nombre_comercial);
                         $("[name='direccion_envia']").val(response.result.direccion);
@@ -1245,8 +1266,12 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        dataType: "json"
+                        dataType: "json",
+                        beforeSend: function(){
+                            $("#loading-input2").show();
+                        }
                     }).done(function(result) {
+                        $("#loading-input2").hide();
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                         $("[name='direccion_recibe']").val(result.result.direccion);
@@ -1260,8 +1285,12 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        dataType: "json"
+                        dataType: "json",
+                        beforeSend: function(){
+                            $("#loading-input2").show();
+                        }
                     }).done(function(result) {
+                        $("#loading-input2").hide();
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                         $("[name='direccion_recibe']").val(result.result.direccion);
@@ -1342,44 +1371,32 @@
             // $("[name='cantidad']").trigger('onkeyup');
         @endif
 
-        // la variable *oferta* ya tiene el igv incluido
         function reCalculatePayChargeDetailBasedGlobalPrice(oferta) {
-            var subtotal = 0.00;
-            var total = (oferta / (1 + parseFloat("{{ env('IGV') }}"))).toFixed(2);
-            var igv = (oferta - total).toFixed(2);
-            var cantidad_total = $("[name='cantidad_total']").val();
-            var valor_unitario = (total / cantidad_total).toFixed(2);
+            var subtotal = 0.000000;
+            var total = (oferta / (1.00 + parseFloat("{{ env('IGV') }}"))).toFixed(6)
+            var igv = (oferta - total).toFixed(6)
+            var cantidad_total = parseFloat($("[name='cantidad_total']").val());
+            if (isNaN(cantidad_total)) {
+                return false;
+            }
+            
+            var valor_unitario = (total / cantidad_total).toFixed(6);
             $("#chargeRow >tr").each(function(index, element) {
-                $(element).find("td [name='valor_unitario']").val(valor_unitario);
                 var cantidad = parseFloat($(element).find("td [name='cantidad']").val());
                 var peso = parseFloat($(element).find("td [name='peso']").val());
-                var total = valor_unitario * cantidad * peso;
-                $(element).find("td [name='total']").val(total.toFixed(2));
-                subtotal = subtotal + total + (total * parseFloat("{{ env('IGV') }}"));
-                $("[name='subtotal']").val(subtotal.toFixed(2));
-                
+                var total = (valor_unitario * cantidad * peso).toFixed(6);
+                subtotal = parseFloat(subtotal) + (parseFloat(total) * (1.00 + parseFloat("{{ env('IGV') }}")))
+                subtotal = subtotal.toFixed(6);
+
+                $(element).find("td [name='valor_unitario']").val(valor_unitario);
+                $(element).find("td [name='total']").val(total);
+                $("[name='subtotal']").val(parseFloat(subtotal).toFixed(2));
             });
             if (subtotal > oferta) {
                 descuento = (subtotal-oferta).toFixed(2);
-                console.log("descuento..", descuento)
+                
                 $("[name='descuento']").val(descuento);
             }
-
-            // $("[name='subtotal']").val(subtotal.toFixed(2));
-            // $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
-
-        /*function reCalculatePayChargeDetail() {
-            var subtotal = 0.00;
-            var total = 0.00;
-            $("#chargeRow >tr>td:nth-child(4)").each(function(index, element) {
-                total = parseFloat($(element).find("[name='total']").val());
-                subtotal = subtotal + total + (total * parseFloat("{{ env('IGV') }}"));
-                $("[name='subtotal']").val(subtotal.toFixed(2));
-                $("[name='importe_pagar_con_descuento']").val(subtotal.toFixed(2));
-            });
-            $("[name='descuento']").val('0.00');
-            calculateCantidadTotal()
-        }*/
 
         }
     </script>

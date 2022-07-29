@@ -381,7 +381,7 @@ class SaleController extends Controller
                     if ((int)$data['guia_remision_transportista_id']==1) {
                         $fecha_hora_envia = date(env('FORMATO_DATETIME')); // poner la fecha actual si es GR
 
-                        $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
+                        $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie'], $data['documento_correlativo']);
                         $insert_encargo['documento_correlativo'] = $documento_correlativo;
 
                         // $encargo = Encargo::where('id', $encargo_id)->update($insert_encargo, ['upsert' => true]);
@@ -470,7 +470,7 @@ class SaleController extends Controller
                     endforeach;
 
                     $fecha_hora_envia = date(env('FORMATO_DATETIME'));
-                    $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie']);
+                    $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie'], $data['documento_correlativo']);
                     $update = ['fecha_hora_envia' => $fecha_hora_envia, 'documento_correlativo' => $documento_correlativo];
                     
                     // $encargo = Encargo::where('id', $encargo_id)->update($update);
@@ -482,7 +482,6 @@ class SaleController extends Controller
             // registrar o actualizar el PDF
             if ($row_documento->alias === 'B') {
                 $url_documento_pdf = $this->escribirBoleta($encargo_id);
-                
                 $url_documento = $this->escribirXMLBoleta($encargo_id);
 
             } else if ($row_documento->alias === 'F') {

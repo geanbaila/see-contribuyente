@@ -17,7 +17,7 @@ class MailerController extends Controller
 
     public function enviarComprobante(Request $request) {
         require base_path("vendor/autoload.php");
-        $mail = new PHPMailer(true);     // Passing `true` enables exceptions
+        $mail = new PHPMailer(true);
         $encargo_id = $request->encargo_id;
         $encargo = \App\Business\Encargo::find($encargo_id);
         
@@ -32,7 +32,7 @@ class MailerController extends Controller
         
         try {
             $mail->CharSet = 'UTF-8';
-            $mail->SMTPDebug = 0;
+            $mail->SMTPDebug = 1;
             $mail->isSMTP();
             $mail->Host = env('MAIL_HOST');
             $mail->SMTPAuth = true;

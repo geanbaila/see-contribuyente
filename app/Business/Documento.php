@@ -16,10 +16,9 @@ class Documento extends Model
         'alias',
     ];
 
-    static function nuevoCorrelativo($encargo_id, String $serie) {
+    static function nuevoCorrelativo($encargo_id, String $serie, $correlativo = '') {
         $id = DB::table('z_' . strtolower($serie))->insertGetId([
-            'id' => 0,
-            // 'encargo_id' => $encargo_id
+            'id' => (trim($correlativo)=='')?0:$correlativo,
         ]);
         $correlativo = sprintf("%0".env('ZEROFILL', 8)."d",$id);
         return $correlativo;

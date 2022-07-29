@@ -83,7 +83,8 @@
                 <div class="title m-b-md">
                     {{env('APP_NAME')}}
                 </div>
-
+                <i>SEE: Sistema de emisión de comprobantes de pago del contribuyente</i>
+                <br><br><br><br>
                 <div class="links">
                     <a href="{{url('/venta/nuevo')}}">ENCARGOS</a>
                     <a href="{{url('/despacho')}}">DESPACHOS</a>

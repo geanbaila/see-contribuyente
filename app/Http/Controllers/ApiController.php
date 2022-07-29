@@ -58,19 +58,32 @@ class ApiController extends Controller
     }
 
     public function getSunat(String $ruc) {
-        $token = config('services.apiservice.token');
-        $url = config('services.apiservice.url');
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url."ruc/$ruc?api_token=$token",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_SSL_VERIFYPEER => false
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        $empresa = json_decode($response);
-        $arrEmpresa = $empresa->data->nombre_o_razon_social;
+        $history_ruc = new \App\Business\HistoryRUC;
+        $row = $history_ruc->find($ruc);
+        if($row == null){
+            $token = config('services.apiservice.token');
+            $url = config('services.apiservice.url');
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url."ruc/$ruc?api_token=$token",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_SSL_VERIFYPEER => false
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $empresa = json_decode($response);
+            if($empresa->success){
+                $arrEmpresa = $empresa->data->nombre_o_razon_social;
+                $history_ruc->ruc = $ruc;
+                $history_ruc->razon_social = $arrEmpresa;
+                $history_ruc->save();
+            } else {
+                $arrEmpresa = "";
+            }
+        } else {
+            $arrEmpresa = $row->razon_social;
+        }
 
         $response = [
             'result' =>[
@@ -81,20 +94,34 @@ class ApiController extends Controller
     }
     
     public function getReniec(String $dni) {
-        $token = config('services.apiservice.token');
-        $url = config('services.apiservice.url');
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url."dni/$dni?api_token=$token",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_SSL_VERIFYPEER => false
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        $persona = json_decode($response);
-        $arrPersona = $persona->data->nombre_completo;
-
+        $history_dni = new \App\Business\HistoryDNI;
+        $row = $history_dni->find($dni);
+        
+        if($row == null){
+            $token = config('services.apiservice.token');
+            $url = config('services.apiservice.url');
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url."dni/$dni?api_token=$token",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_SSL_VERIFYPEER => false
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $persona = json_decode($response);
+            if($persona->success){
+                $arrPersona = $persona->data->nombre_completo;
+            
+                $history_dni->dni = $dni;
+                $history_dni->nombres = $arrPersona;
+                $history_dni->save();
+            } else {
+                $arrPersona = "";
+            }
+        } else {
+            $arrPersona = $row->nombres;
+        }
         $response = [
             'result' =>[
                 'nombre' => $arrPersona
