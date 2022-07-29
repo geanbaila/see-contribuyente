@@ -165,12 +165,12 @@ class ApiController extends Controller
     }
 
     public function downloadManifiesto($manifiesto_id) {
-        $manifiesto = \App\Business\Manifiesto::where('id', $manifiesto_id)->get(['url_documento_pdf', 'nombre_archivo']);
+        $manifiesto = \App\Business\Manifiesto::where('id', $manifiesto_id)->get(['url_documento_pdf', 'nombre_archivo', 'fecha']);
         // $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
 
         $file = base_path('/public/' . $manifiesto[0]->url_documento_pdf);
         return \response()
-             ->download($file, $manifiesto[0]->nombre_archivo . '.pdf', ['Content-Type'=> 'application/pdf']);
+             ->download($file, $manifiesto_id.'_'.str_replace('-', '', $manifiesto[0]->fecha).'_'.$manifiesto[0]->nombre_archivo , ['Content-Type'=> 'application/pdf']);
     }
 
     public function despacho($encargo_id) {
@@ -279,32 +279,37 @@ class ApiController extends Controller
                 $subtotal_pagado += $item->oferta;
             endforeach;
 
-            $fecha = date('Y/m/d');
-            $nombre_archivo = 'manifiesto.pdf';
-            $url_documento_pdf = 'resources/manifiesto/'.$fecha.'/'.$nombre_archivo;
-            $manifiesto = \App\Business\Manifiesto::create([
+            $row_manifiesto = \App\Business\Manifiesto::create([
                 'fecha' => date(env('FORMATO_DATE')),
                 'hora' => date('H:i:s'),
                 'ruta' => $item->agenciasOrigen->departamento . ' - ' . $item->agenciasDestino->departamento,
                 'origen_nombre' => $item->agenciasOrigen->departamento,
                 'destino_nombre' => $item->agenciasDestino->departamento,
-                'url_documento_pdf' => $url_documento_pdf,
-                'nombre_archivo' => $nombre_archivo,
+                'url_documento_pdf' => '',
+                'nombre_archivo' => '',
                 'cantidad_item' =>$cantidad_item,
                 'subtotal_pagado' =>$subtotal_pagado,
                 'subtotal_por_pagar' =>$subtotal_por_pagar,
                 'total_general' =>$subtotal_por_pagar + $subtotal_pagado,
             ]);
             foreach($manifiesto_detalle as $item):
-                \App\Business\ManifiestoDetalle::create(array_merge($item, ['manifiesto_id' => $manifiesto['id']]));
+                \App\Business\ManifiestoDetalle::create(array_merge($item, ['manifiesto_id' => $row_manifiesto->id]));
             endforeach;
+
             
-            (new ManifestController())->escribirPDF($manifiesto);
+            // $manifiesto = \App\Business\Manifiesto::find($row_manifiesto->id);
+            $fecha = date('Y/m/d');
+            $nombre_archivo = $row_manifiesto->id.'_'.str_replace('/','',$fecha).'_manifiesto.pdf';
+            $row_manifiesto->nombre_archivo = $nombre_archivo;
+            $row_manifiesto->url_documento_pdf = 'resources/manifiesto/'.$fecha.'/'.$nombre_archivo;
+            $row_manifiesto->save();
+
+            (new ManifestController())->escribirPDF($row_manifiesto);
             $response = [
                 'result' =>[
                     'status' => 'OK',
                     'message' => 'Manifiesto generado.',
-                    'manifiesto' => $manifiesto,
+                    'manifiesto' => $row_manifiesto,
                 ],
             ];
         } else {

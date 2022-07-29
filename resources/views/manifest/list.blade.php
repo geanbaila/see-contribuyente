@@ -34,7 +34,7 @@
                             <div class="card">
                                 <div class="card mb-5 mb-xxl-8">
                                     <div class="card-header border-0 pt-5">
-                                        <div class="col-xxl-3 col-sm-3">
+                                        <div class="col-xxl-2 col-sm-2">
                                             <label class="form-label">Fecha:</label>
                                             <input type="text" class="form-control" name="fecha_recibe" value="{{ isset($fecha_recibe)?$fecha_recibe:date('d/m/Y')}}">
                                         </div>
@@ -56,12 +56,12 @@
                                         <div class="col-xxl-2  col-sm-2">
                                             <label class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
-                                                onclick="javascript:noTransportar()">No Trasladar</button>
+                                                onclick="javascript:noTransportar()">1.No trasladar</button>
                                         </div>
                                         <div class="col-xxl-2  col-sm-2">
                                             <label class="form-label">&nbsp;</label>
                                             <button class="form-control btn btn-primary"
-                                                onclick="javascript:transportar()">Trasladar</button>
+                                                onclick="javascript:transportar()">2.Preparar</button>
                                         </div>
                                         <!--
                                             <div class="col-xxl-1  col-sm-1">
@@ -72,12 +72,10 @@
                                                 </a>
                                             </div>
                                             -->
-                                        <div class="col-xxl-1  col-sm-1">
+                                        <div class="col-xxl-2  col-sm-2">
                                             <label class="form-label">&nbsp;</label>
-                                            <a id="btnImprimir" class="form-control btn btn-primary"
-                                                onclick="javascript:empaquetarEnvio()">
-                                                <img src="{{ asset('public/assets/media/truck-white.svg') }}" width="20" />
-                                            </a>
+                                            <button id="btnImprimir" class="form-control btn btn-primary"
+                                            onclick="javascript:empaquetarEnvio()">3.Generar</button>
                                         </div>
 
                                     </div>
@@ -337,6 +335,7 @@
                     if (response) {
                         if (response.result.status === 'OK') {
                             showSuccessToastr(response.result.message);
+                            setTimeout(() => {window.location.reload()}, 1000);
 
                         } else {
                             showErrorToastr(response.result.message);
@@ -369,6 +368,7 @@
                     if (response) {
                         if (response.result.status === 'OK') {
                             showSuccessToastr(response.result.message);
+                            setTimeout(() => {window.location.reload()}, 1000);
                         } else {
                             showErrorToastr(response.result.message);
                         }
@@ -407,7 +407,7 @@
                             if (response.result.status === 'OK') {
                                 showSuccessToastr(response.result.message);
                                 var html = '<tr>';
-                                    html += '<td>&nbsp;</td>';
+                                    html += '<td>&nbsp;qwe</td>';
                                     html += '<td>'+response.result.manifiesto.id+'</td>';
                                     html += '<td>'+response.result.manifiesto.fecha+'</td>';
                                     html += '<td>'+response.result.manifiesto.hora+'</td>';
@@ -417,7 +417,7 @@
                                     html += '<td>'+response.result.manifiesto.subtotal_por_pagar.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.subtotal_pagado.toFixed(2)+'</td>';
                                     html += '<td>'+response.result.manifiesto.total_general.toFixed(2)+'</td>';
-                                    html += '<td><a target="_blank" href="{{url("/")}}/'+response.result.manifiesto.url_documento_pdf+'"><img src="{{asset('public/assets/media/file-text.svg') }}" width="20"></a></td>';
+                                    html += '<td><a target="_blank" href="{{url("/api/v1/download/manifiesto")}}/'+response.result.manifiesto.id+'"><img src="{{asset('public/assets/media/file-text.svg') }}" width="20"></a></td>';
                                     html += '</tr>';
                                 $('#tblManifiesto').prepend(html);
                             } else {

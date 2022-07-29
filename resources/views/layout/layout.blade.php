@@ -78,7 +78,7 @@
 										<div class="d-flex align-items-center ms-1 ms-lg-3" id="kt_header_user_menu_toggle">
 											<!--begin::Menu wrapper-->
 											<div class="cursor-pointer symbol symbol-30px symbol-md-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
-												<img src="{{asset('public/assets/metronic/media/avatars/150-27.jpg')}}" alt="metronic" />
+												<img src="{{asset('/public/assets/media/usuario.png')}}" alt="metronic" />
 											</div>
 											<!--begin::Menu-->
 											<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px" data-kt-menu="true">
@@ -87,7 +87,7 @@
 													<div class="menu-content d-flex align-items-center px-3">
 														<!--begin::Avatar-->
 														<div class="symbol symbol-50px me-5">
-															<img alt="Logo" src="{{asset('public/assets/metronic/media/avatars/150-27.jpg')}}" />
+															<img alt="Logo" src="{{asset('/public/assets/media/usuario.png')}}" />
 														</div>
 														<!--end::Avatar-->
 														<!--begin::Username-->
@@ -980,7 +980,7 @@
 									<div class="d-flex align-items-center">
 										<!--begin::Avatar-->
 										<div class="symbol symbol-35px symbol-circle">
-											<img alt="Pic" src="{{asset('public/assets/metronic/media/avatars/150-27.jpg')}}" />
+											<img alt="Pic" src="{{asset('/public/assets/media/usuario.png')}}" />
 										</div>
 										<!--end::Avatar-->
 										<!--begin::Details-->

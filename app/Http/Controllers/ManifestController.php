@@ -50,7 +50,7 @@ class ManifestController extends Controller
         
         $encargo = Encargo::where('estado', '!=', $en_manifiesto)
         ->where('agencia_origen', $agencia_origen_selected)
-        ->where('documento_fecha', $y.'-'.$m.'-'.$d)
+        ->where('documento_fecha','<=' , $y.'-'.$m.'-'.$d)
         ->select('*', 
             DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia')
         )->get()
@@ -129,7 +129,7 @@ class ManifestController extends Controller
         PDF::Ln();
         PDF::SetFont('times', '', $font_size_regular);
         PDF::Cell(24, $height, 'DESPACHADOR:', '', 0, 'R', 1);
-        PDF::Cell(15+15+40, $height, ' José María Vargas López ', '', 0, 'L', 1);
+        PDF::Cell(15+15+40, $height, ' ', '', 0, 'L', 1);
         PDF::Cell(80, $height, 'FECHA: ', '', 0, 'R', 1);
         PDF::Cell(15, $height, $manifiesto->fecha, '', 0, 'R', 1);
         PDF::Ln();
@@ -138,12 +138,12 @@ class ManifestController extends Controller
         PDF::Ln();
 
         PDF::Cell(24, $height, "CPE", $border, 0, 'L', 1);
-        PDF::Cell(15, $height, "POR PAGAR", $border, 0, 'L', 1);
-        PDF::Cell(15, $height, "PAGADO", $border, 0, 'L', 1);
-        PDF::Cell(40, $height, "CONSIGNA", $border, 0, 'L', 1);
-        PDF::Cell(40, $height, "DESTINO", $border, 0, 'L', 1);
-        PDF::Cell(45, $height, "DESCRIPCIÓN", $border, 0, 'L', 1);
-        PDF::Cell(10, $height, "ÍTEMS", $border, 0, 'L', 1);
+        PDF::Cell(15, $height, "Por pagar", $border, 0, 'L', 1);
+        PDF::Cell(15, $height, "Pagado", $border, 0, 'L', 1);
+        PDF::Cell(65, $height, "Consigna", $border, 0, 'L', 1);
+        PDF::Cell(30, $height, "Destino", $border, 0, 'L', 1);
+        PDF::Cell(30, $height, "Descripción", $border, 0, 'L', 1);
+        PDF::Cell(10, $height, "Ítems", $border, 0, 'L', 1);
         PDF::Ln();
 
         $peso = 0;
@@ -158,8 +158,8 @@ class ManifestController extends Controller
             PDF::Cell(24, $height, $item['documento_serie'] . '-' . $item['documento_correlativo'], '', 0, 'L', 1);
             PDF::Cell(15, $height, number_format($item['por_pagar'], 2, '.', ''), '', 0, 'L', 1);
             PDF::Cell(15, $height, number_format($item['pagado'], 2, '.', ''), '', 0, 'L', 1);
-            PDF::Cell(40, $height, $item->encargos->nombre_recibe, '', 0, 'L', 1, '', 0);
-            PDF::Cell(40, $height, $row_agencia[0]['nombre'], '', 0, 'L', 1);
+            PDF::Cell(65, $height, $item->encargos->nombre_recibe, '', 0, 'L', 1, '', 0);
+            PDF::Cell(30, $height, $row_agencia[0]['nombre'], '', 0, 'L', 1);
             
             foreach($item->encargoDetalles as $key=> $item2):
                 if (array_key_exists($item2->codigo_producto, $resumen)) {
@@ -171,7 +171,7 @@ class ManifestController extends Controller
                     $resumen[$item2->codigo_producto]['descripcion'] = $item2->descripcion; 
                 }
                 
-                PDF::Cell(45, $height, $item2->descripcion, '', 0, 'L', 1);
+                PDF::Cell(30, $height, $item2->descripcion, '', 0, 'L', 1);
                 PDF::Cell(10, $height, $item2->cantidad_item, '', 0, 'R', 1);
                 PDF::Ln();
                 $n = count($item->encargoDetalles);
@@ -179,8 +179,8 @@ class ManifestController extends Controller
                     PDF::Cell(24, $height, '', '', 0, 'L', 1);
                     PDF::Cell(15, $height, '', '', 0, 'L', 1);
                     PDF::Cell(15, $height, '', '', 0, 'L', 1);
-                    PDF::Cell(40, $height, '', '', 0, 'L', 1);
-                    PDF::Cell(40, $height, '', '', 0, 'L', 1);
+                    PDF::Cell(65, $height, '', '', 0, 'L', 1);
+                    PDF::Cell(30, $height, '', '', 0, 'L', 1);
                 }
             endforeach;
         endforeach;
