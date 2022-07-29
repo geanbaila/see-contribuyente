@@ -58,8 +58,10 @@
                             @foreach ($encargo as $item)
                                 <tr>
                                     <th scope="row">
-                                        <a onclick="javascript:entregarPaquete('{{ $item->id }}', this)"><img
+                                        @if ($item->documento_id != 3)
+                                            <a onclick="javascript:entregarPaquete('{{ $item->id }}', this)"><img
                                                 src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>
+                                        @endif
                                     </th>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_recibe) !!}</td>
                                     <td>{{ $item->cantidad_item }}</td>

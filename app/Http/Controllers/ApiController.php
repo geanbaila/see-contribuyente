@@ -14,8 +14,8 @@ class ApiController extends Controller
     }
 
     public function getEncargo(Request $request) {
-        $doc_recibe_envia = $request->input('doc_recibe_envia');
-        $documento = $request->input('documento');
+        $doc_recibe_envia = trim($request->input('doc_recibe_envia'));
+        $documento = trim($request->input('documento'));
         $encargo = \App\Business\Encargo::getAllGuiaRemision($doc_recibe_envia, $documento);
         return response()->json([
             'result' => [
@@ -173,7 +173,7 @@ class ApiController extends Controller
 
     public function despacho($encargo_id) {
         $fecha_hora_recibe = date(env('FORMATO_DATETIME'));
-        $bool = \App\Business\Encargo::where('id', $encargo_id)->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
+        $bool = \App\Business\Encargo::where('id', $encargo_id)->where('documento_id', '!=', 3)->update(['fecha_hora_recibe' => $fecha_hora_recibe]);
         if($bool) {
             $response = [
                 'result' =>[

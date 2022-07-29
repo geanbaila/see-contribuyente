@@ -933,9 +933,9 @@
         }
 
         function askEncargo() {
-            var doc_recibe_envia = $("#buscaDocRecibeDocEnvia").val();
-            var documento = $("#buscaDocumento").val();
-            if (doc_recibe_envia.length === DNI || doc_recibe_envia.length === RUC || doc_recibe_envia.length === CE) {
+            var doc_recibe_envia = $("#buscaDocRecibeDocEnvia").val().trim();
+            var documento = $("#buscaDocumento").val().trim();
+            if (doc_recibe_envia.length === DNI || doc_recibe_envia.length === RUC || doc_recibe_envia.length === CE || documento.length>0) {
                 $.ajax({
                     url: "{{ url('/api/v1/encargo') }}",
                     type: "POST",

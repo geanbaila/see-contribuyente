@@ -1,4 +1,4 @@
 @extends('layout.layout')
 @section('content')
-    configuraciones aquí
+    No tienes suficientes privilegios
 @endsection

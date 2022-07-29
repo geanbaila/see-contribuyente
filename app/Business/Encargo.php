@@ -320,14 +320,15 @@ class Encargo extends Model
 
     static function getAllGuiaRemision($doc_recibe_envia, $documento) {
         $guia_remision = 3;
-        $encargo = Encargo::select('id', 'doc_envia', 'doc_recibe','nombre_envia', 'nombre_recibe', 'agencia_destino', 'fecha_hora_envia', 'documento_fecha', 'documento_hora', 'oferta',
-                DB::raw('(select direccion from agencia where id=agencia_destino) as direccion'));
+        $encargo = Encargo::select('id', 'doc_envia', 'doc_recibe','nombre_envia', 'nombre_recibe', 'agencia_destino', 'fecha_hora_envia', 'documento_fecha', 'documento_hora', 'oferta', DB::raw('(select direccion from agencia where id=agencia_destino) as direccion'));
         $encargo->where('documento_id', $guia_remision);
         if (strlen($doc_recibe_envia)>0) {
             $encargo->whereRaw('(doc_envia='. $doc_recibe_envia.' or doc_recibe=' . $doc_recibe_envia.')');
         }
-    
-        // dd($encargo->toSql());
+        if (strlen($documento)>0) {
+            $encargo->whereRaw("(concat(documento_serie,'-',documento_correlativo) like '%$documento%')");
+        }
+        
         $result = $encargo->get()->sortByDesc('fecha_hora_envia')->values();
         return $result;
     }
