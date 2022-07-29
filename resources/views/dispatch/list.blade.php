@@ -8,23 +8,24 @@
                         <div class="row gy-5">
                             <div class="col-xxl-3">
                                 <label for="exampleDataList" class="form-label">Recibe / Envía:</label>
-                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="">
+                                <input class="form-control" id="doc_recibe_envia" placeholder="">
                             </div>
+                            <!--
                             <div class="col-xxl-9">
                                 <label for="exampleDataList" class="form-label">&nbsp;</label>
-                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder=""
-                                    disabled>
+                                <input class="form-control" disabled>
                             </div>
+                            -->
                         </div>
                     </div>
                     <div class="col-xxl-6">
                         <div class="row gy-5">
-
+                            <!--
                             <div class="col-xxl-3">
                                 <label for="exampleDataList" class="form-label">F. Recepción:</label>
-                                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder=""
-                                    disabled>
+                                <input class="form-control" disabled>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -53,7 +54,7 @@
                             <th valign="top" scope="col" width="110">Penalidad (S/.)</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="responseDispatcherRow">
                         @if (!empty($encargo))
                             @foreach ($encargo as $item)
                                 <tr>
@@ -189,5 +190,52 @@
                 showErrorToastr('No se ha podido registrar la entrega del paquete.');
             });
         }
+
+        $("#doc_recibe_envia").on('keypress', function(e) {
+            if (e.which == 13) {
+                var doc_recibe_envia = $(this).val();
+                $.ajax({
+                    url: "{{ url('/api/v1/despacho/any') }}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: "json",
+                    data: {
+                        doc_recibe_envia: doc_recibe_envia
+                    },
+                    beforeSend: function () {
+                        $("#responseDispatcherRow").html("");
+                        // $("#loading-modal").show();
+                    }
+                }).done(function(response) {
+                    // $("#loading-modal").hide();
+                    var html = '<tr><td colspan="10" align="center">No se encontraron coincidencias</td></tr>';
+                    console.log(response.result.encargo.data.length)
+                    if (response.result.encargo.data.length > 0) {
+                        _.forEach(response.result.encargo.data, function(element, index) {
+                            var click_event = (element.documento_id !=3)?'<a onclick="javascript:entregarPaquete('+element.id +', this)"><img src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>':'';
+                            html = '<tr>' +
+                                '<th scope="row">' + click_event + '</th>' +
+                                '<td>' + element.fecha_hora_recibe + '</td>' +
+                                '<td>' + element.cantidad_item + '</td>'+
+                                '<td>' + element.documento_serie + '-' + element.documento_correlativo + '</td>'+
+                                '<td>' + element.doc_recibe + '<br>' + element.nombre_recibe + '</td>'+
+                                '<td>' + element.doc_envia +'<br>' + element.nombre_envia + '</td>'+
+                                '<td>' + element.fecha_hora_envia + '</td>' +
+                                '<td>' + element.agencia_origen_nombre + '</td>' +
+                                '<td>' + element.agencia_destino_nombre + '</td>' +
+                                '<td align="center">0.00</td>' +
+                            '</tr>';
+                            $("#responseDispatcherRow").append(html);
+                        });   
+                    } else {
+                        $("#responseDispatcherRow").html(html);
+                    }
+                });
+
+            }
+        });
+        $('#doc_recibe_envia').focus();
     </script>
 @endsection

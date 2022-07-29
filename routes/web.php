@@ -39,10 +39,11 @@ Route::post('/enviar-comprobante', 'MailerController@enviarComprobante');
 
 Route::post('/api/v1/serie/{agencia_origen_id}/{agencia_destino_id}/{documento_id}', 'ApiController@getSerie');
 Route::post('/api/v1/agencia/{sedeId}', 'ApiController@getAgencia');
-Route::post('/api/v1/encargo', 'ApiController@getEncargo');
 Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
 Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
+Route::post('/api/v1/guia-remision-transportista/any', 'ApiController@buscarGuiaRemision');
 Route::post('/api/v1/guia-remision-transportista', 'ApiController@getGuiaRemision');
+
 
 Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
 Route::get('/api/v1/download/pdf64/{encargo_id}', 'ApiController@downloadPdfBase64');
@@ -51,7 +52,9 @@ Route::get('/api/v1/download/cdr/{encargo_id}', 'ApiController@downloadCdr');
 Route::get('/api/v1/download/baja/{encargo_id}', 'ApiController@downloadCdrBaja');
 Route::get('/api/v1/download/manifiesto/{encargo_id}', 'ApiController@downloadManifiesto');
 
+Route::post('/api/v1/despacho/any', 'ApiController@buscarDespacho');
 Route::post('/api/v1/despacho/{encargo_id}', 'ApiController@despacho');
+
 
 Route::post('/api/v1/manifiesto/transportar', 'ApiController@transportar');
 Route::post('/api/v1/manifiesto/no-transportar', 'ApiController@noTransportar');

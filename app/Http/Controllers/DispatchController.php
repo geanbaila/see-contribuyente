@@ -27,6 +27,6 @@ class DispatchController extends Controller
         ->orderBy('fecha_hora_recibe', 'desc')
         ->paginate(env('PAGINACION_DESPACHOS'));
         
-        return view('dispatch.list')->with([ 'encargo' => $encargo, 'menu_despacho_active' => 'active']);;
+        return view('dispatch.list')->with([ 'encargo' => $encargo, 'menu_despacho_active' => 'active']);
     }
 }

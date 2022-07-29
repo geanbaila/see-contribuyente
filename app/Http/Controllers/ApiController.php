@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ManifestController;
 
 class ApiController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
     }
 
-    public function getEncargo(Request $request) {
+    public function buscarGuiaRemision(Request $request) {
         $doc_recibe_envia = trim($request->input('doc_recibe_envia'));
         $documento = trim($request->input('documento'));
         $encargo = \App\Business\Encargo::getAllGuiaRemision($doc_recibe_envia, $documento);
+        
         return response()->json([
             'result' => [
                 'encargo' => $encargo
@@ -192,6 +193,33 @@ class ApiController extends Controller
             ];
         }
         return response()->json($response);
+    }
+
+    public function buscarDespacho(Request $request) {
+        $doc_recibe_envia = trim($request->input('doc_recibe_envia'));
+        $prg_encargo = [];
+        if (strlen($doc_recibe_envia)>0) {
+            $encargo_estado_en_manifiesto = 3;
+            $prg_encargo = \App\Business\Encargo::select('*',
+                DB::raw('(select nombre from agencia where id = agencia_origen) as agencia_origen_nombre'),
+                DB::raw('(select nombre from agencia where id = agencia_destino) as agencia_destino_nombre'),
+                DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia')
+                )
+            ->where('estado', $encargo_estado_en_manifiesto)
+            ->whereRaw('(doc_envia='. $doc_recibe_envia.' or doc_recibe=' . $doc_recibe_envia.')')
+            ->orderBy('fecha_hora_envia', 'desc')
+            ->orderBy('fecha_hora_recibe', 'desc')
+            ->paginate(env('PAGINACION_DESPACHOS'));
+        } 
+        $response = [
+            'result' => [
+                'status' => 'OK',
+                'message' => 'Encargos disponibles para despachar.',
+                'encargo' => $prg_encargo,
+            ],
+        ];
+        return response()->json($response);
+
     }
 
     public function noTransportar(Request $request) {

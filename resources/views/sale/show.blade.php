@@ -937,7 +937,7 @@
             var documento = $("#buscaDocumento").val().trim();
             if (doc_recibe_envia.length === DNI || doc_recibe_envia.length === RUC || doc_recibe_envia.length === CE || documento.length>0) {
                 $.ajax({
-                    url: "{{ url('/api/v1/encargo') }}",
+                    url: "{{ url('/api/v1/guia-remision-transportista/any') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1410,5 +1410,6 @@
             }
 
         }
+        $('#doc_envia').focus();
     </script>
 @endsection
