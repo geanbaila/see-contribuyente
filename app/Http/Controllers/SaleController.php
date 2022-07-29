@@ -481,15 +481,15 @@ class SaleController extends Controller
             DB::commit();
             // registrar o actualizar el PDF
             if ($row_documento->alias === 'B') {
-                $url_documento_pdf = $this->escribirBoleta($encargo_id);
+                $url_documento_pdf = $this->escribirPDFBoleta($encargo_id);
                 $url_documento = $this->escribirXMLBoleta($encargo_id);
 
             } else if ($row_documento->alias === 'F') {
-                $url_documento_pdf = $this->escribirFactura($encargo_id);
+                $url_documento_pdf = $this->escribirPDFFactura($encargo_id);
                 $url_documento = $this->escribirXMLFactura($encargo_id);
              
             } else if ($row_documento->alias === 'G') {
-                $url_documento_pdf = $this->escribirGuiaRemision($encargo_id);
+                $url_documento_pdf = $this->escribirPDFGuiaRemision($encargo_id);
                 $url_documento = ['error'=> '', 'xml' => '', 'cdr' => '', 'nombre_archivo' => '', 'cdr_descripcion' => '|||'];
 
             } else {
@@ -580,7 +580,17 @@ class SaleController extends Controller
                 list($year, $month, $day) = explode('-', $encargo->documento_fecha); // yyyy-mm-dd 
                 $folder = 'bajas/' . $year . '/' . $month . '/' . $correlativo;
                     
-                $see = $util->getSee(SunatEndpoints::FE_BETA);
+                switch(env('DETRACCION')){
+                    case 'HOMOLOGACION':
+                        $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
+                        break;
+                    case 'PRODUCCION':
+                        $see = $util->getSee(SunatEndpoints::FE_PRODUCCION);
+                        break;
+                    default:
+                        $see = $util->getSee(SunatEndpoints::FE_BETA);
+                    break;
+                }
                 $res = $see->send($voided);
                 $util->writeXml($folder, $voided, $see->getFactory()->getLastXml());
                 
@@ -633,7 +643,7 @@ class SaleController extends Controller
         return response()->json($response);
     }
 
-    public function escribirBoleta($encargo_id) {
+    public function escribirPDFBoleta($encargo_id) {
         $data = Encargo::buscarBoleta($encargo_id);
         $url_documento_pdf = '';
         if ($data) :
@@ -815,7 +825,7 @@ class SaleController extends Controller
         return $url_documento_pdf;
     }
 
-    public function escribirFactura($encargo_id) {
+    public function escribirPDFFactura($encargo_id) {
         $data = Encargo::buscarFactura($encargo_id);
         $url_documento_pdf = '';
         if ($data) :
@@ -988,7 +998,7 @@ class SaleController extends Controller
         return $url_documento_pdf;
     }
 
-    public function escribirGuiaRemision($encargo_id) {
+    public function escribirPDFGuiaRemision($encargo_id) {
         $data = Encargo::buscarGuiaRemision($encargo_id);
         $url_documento_pdf = '';
         if ($data) :
@@ -1388,7 +1398,17 @@ class SaleController extends Controller
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
            
             $util = Util::getInstance();
-            $see = $util->getSee(SunatEndpoints::FE_BETA);
+            switch(env('DETRACCION')){
+                case 'HOMOLOGACION':
+                    $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
+                    break;
+                case 'PRODUCCION':
+                    $see = $util->getSee(SunatEndpoints::FE_PRODUCCION);
+                    break;
+                default:
+                    $see = $util->getSee(SunatEndpoints::FE_BETA);
+                break;
+            }
             
             // Si solo desea enviar un XML ya generado utilice esta función
             // $res = $see->sendXml(get_class($invoice), $invoice->getName(), file_get_contents($ruta_XML));
@@ -1457,7 +1477,7 @@ class SaleController extends Controller
                 ->setCompany(Util::getCompany())
                 ->setClient($cliente);
 
-            if($data['descuento'] > 0){
+            if ($data['descuento'] > 0) {
                 $invoice->setDescuentos([
                     (new Charge())
                         ->setCodTipo('02') // Catalog. 53
@@ -1476,10 +1496,9 @@ class SaleController extends Controller
                 ->setTotalImpuestos(number_format(( ($gravadas) * (1 + env('IGV')) ) - $gravadas, 2, '.', '') )
                 ->setValorVenta(number_format(($gravadas), 2, '.', ''))
                 ->setSubTotal(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
-                ->setMtoImpVenta(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''))
-                ;
+                ->setMtoImpVenta(number_format(($gravadas) * (1 + env('IGV')), 2, '.', ''));
 
-            if($data['subtotal'] > env('DETRACCION')){
+            if ($data['subtotal'] > env('DETRACCION')) {
                 $invoice->setTipoOperacion('1001') // Catalogo 51: Operación Sujeta a Detracción Factura, Boletas
                 ->setDetraccion(
                     (new Detraction())
@@ -1556,7 +1575,6 @@ class SaleController extends Controller
                             ->setMtoPrecioUnitario($item['precio_unitario']) // S/.100
                         ;
                     }
-                    
                     // gravado gratuito 
                     if ($item['tipo_afectacion'] == 13) {
                         $items_gravado_gratuito[] = (new SaleDetail())
@@ -1575,7 +1593,6 @@ class SaleController extends Controller
                             ->setMtoPrecioUnitario($item['precio_unitario']) // 0
                         ;
                     }
-
                     // inafecto gratuito
                     if ($item['tipo_afectacion'] == 32) {
                         $items_inafecto_gratuito[] = (new SaleDetail())
@@ -1623,7 +1640,17 @@ class SaleController extends Controller
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
            
             $util = Util::getInstance();
-            $see = $util->getSee(SunatEndpoints::FE_BETA);
+            switch(env('DETRACCION')){
+                case 'HOMOLOGACION':
+                    $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
+                    break;
+                case 'PRODUCCION':
+                    $see = $util->getSee(SunatEndpoints::FE_PRODUCCION);
+                    break;
+                default:
+                    $see = $util->getSee(SunatEndpoints::FE_BETA);
+                break;
+            }
 
             // Si solo desea enviar un XML ya generado utilice esta función
             // $res = $see->sendXml(get_class($invoice), $invoice->getName(), file_get_contents($ruta_XML));
