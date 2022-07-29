@@ -651,16 +651,10 @@ class SaleController extends Controller
             $textodniruc .= $data['adquiriente_ruc_dni_ce'];
             list($year, $month, $day) = explode("-", $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
 
-            // $pageLayout = array($width, $height); //  or array($height, $width) 
-            // $pdf = new TCPDF('p', 'pt', $pageLayout, true, 'UTF-8', false);
-
             PDF::SetTitle($data['titulo_documento']);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(false);
             PDF::AddPage();
-            // PDF::AddPage('P', 'A6');
-            // PDF::AddPage('P', 'mm', array(2.1, 2.1), true, 'UTF-8', false);
-            // $pdf = new PDF('P', 'mm', array(2.1, 2.1), true, 'UTF-8', false);
 
             PDF::SetFillColor(255, 255, 255);
             PDF::SetTextColor(0);
@@ -801,10 +795,9 @@ class SaleController extends Controller
             // PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
 
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = storage_path('app/'.$tree);
             if(!@mkdir($estructura, 0777, true)) {
-                if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
+                if (file_exists($estructura)) { @unlink($estructura); }
             }
             $qr = $this->getQR($estructura, $data);
             QRcode::png($qr['value'], $qr['img'], 'L', 4, 2);
@@ -815,12 +808,13 @@ class SaleController extends Controller
             PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
+            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $output = $estructura . "/" . $filename;
+            $url_documento_pdf = $tree . "/" . $filename;
+            
             PDF::Output($output, 'F');
             PDF::reset();
-            $url_documento_pdf = $tree . "/" . $filename;
 
-            
         endif;
         return $url_documento_pdf;
     }

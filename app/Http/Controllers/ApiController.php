@@ -166,11 +166,9 @@ class ApiController extends Controller
 
     public function downloadManifiesto($manifiesto_id) {
         $manifiesto = \App\Business\Manifiesto::where('id', $manifiesto_id)->get(['url_documento_pdf', 'nombre_archivo', 'fecha']);
-        // $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
-
-        $file = base_path('/public/' . $manifiesto[0]->url_documento_pdf);
+        $file = storage_path('app/' . $manifiesto[0]->url_documento_pdf);
         return \response()
-             ->download($file, $manifiesto_id.'_'.str_replace('-', '', $manifiesto[0]->fecha).'_'.$manifiesto[0]->nombre_archivo , ['Content-Type'=> 'application/pdf']);
+             ->download($file, $manifiesto[0]->nombre_archivo , ['Content-Type'=> 'application/pdf']);
     }
 
     public function despacho($encargo_id) {
@@ -257,7 +255,6 @@ class ApiController extends Controller
                 'documento_correlativo',
             ])->sortBy('documento_id')->values();
 
-
             $manifiesto_detalle = [];
             $cantidad_item = 0;
             $subtotal_pagado = 0;
@@ -296,15 +293,20 @@ class ApiController extends Controller
                 \App\Business\ManifiestoDetalle::create(array_merge($item, ['manifiesto_id' => $row_manifiesto->id]));
             endforeach;
 
-            
-            // $manifiesto = \App\Business\Manifiesto::find($row_manifiesto->id);
             $fecha = date('Y/m/d');
-            $nombre_archivo = $row_manifiesto->id.'_'.str_replace('/','',$fecha).'_manifiesto.pdf';
-            $row_manifiesto->nombre_archivo = $nombre_archivo;
-            $row_manifiesto->url_documento_pdf = 'resources/manifiesto/'.$fecha.'/'.$nombre_archivo;
+            $filename = $row_manifiesto->id.'_'.str_replace('/','',$fecha).'_manifiesto.pdf';
+
+            $tree = 'manifiesto/'.$fecha;
+            $estructura = storage_path('app/'.$tree);
+            if(!@mkdir($estructura, 0777, true)) {
+                if (file_exists($estructura)) { @unlink($estructura); }
+            }
+
+            $row_manifiesto->nombre_archivo = $filename;
+            $row_manifiesto->url_documento_pdf = $tree . "/" . $filename;
             $row_manifiesto->save();
 
-            (new ManifestController())->escribirPDF($row_manifiesto);
+            (new ManifestController())->escribirPDFManifiesto($row_manifiesto);
             $response = [
                 'result' =>[
                     'status' => 'OK',

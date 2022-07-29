@@ -475,6 +475,9 @@
                                     data-bs-target="#modalEliminarVenta">
                                     <img src="{{ asset('public/assets/media/trash-2'.$img_enable.'.svg') }}" width="20" />
                                 </a>
+                                <a href="{{url("/venta/nuevo")}}" class="btn btn-primary" >
+                                    Nuevo
+                                </a>
                         </div>
                     </div>
                 </div>

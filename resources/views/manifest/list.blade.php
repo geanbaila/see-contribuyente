@@ -407,7 +407,7 @@
                             if (response.result.status === 'OK') {
                                 showSuccessToastr(response.result.message);
                                 var html = '<tr>';
-                                    html += '<td>&nbsp;qwe</td>';
+                                    html += '<td>&nbsp;*Nuevo*</td>';
                                     html += '<td>'+response.result.manifiesto.id+'</td>';
                                     html += '<td>'+response.result.manifiesto.fecha+'</td>';
                                     html += '<td>'+response.result.manifiesto.hora+'</td>';

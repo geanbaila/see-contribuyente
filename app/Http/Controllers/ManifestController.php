@@ -91,13 +91,12 @@ class ManifestController extends Controller
         return view('manifest.list')->with($data);
     }
 
-    public function escribirPDF($manifiesto) {
+    public function escribirPDFManifiesto($manifiesto) {
         PDF::SetTitle($manifiesto->nombre_archivo);
         PDF::setPrintHeader(false);
         PDF::setPrintFooter(false);
         PDF::SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
         PDF::AddPage();
-        
         
         PDF::SetFillColor(255, 255, 255);
         PDF::SetTextColor(0);
@@ -186,8 +185,6 @@ class ManifestController extends Controller
         endforeach;
         PDF::Ln();
         
-        
-        
         PDF::Cell(24+15+15+40+45+40+10, $height, '', 'T', 0, 'L', 1);
         PDF::Ln();
         PDF::Cell(24, $height, 'SUBTOTAL:', '', 0, 'R', 1);
@@ -220,15 +217,9 @@ class ManifestController extends Controller
         PDF::SetY(10);
         PDF::SetFont('times', 'I', $font_size_regular);
         PDF::Cell(0, 10, 'pág. '.PDF::getAliasNumPage().'/'.PDF::getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    
-        list($year, $month, $day) = explode('-', $manifiesto->fecha); // yyyy-mm-dd
-        $tree = 'resources/manifiesto/' . $year . '/' . $month . '/' . $day;
-        $estructura = base_path('public/'.$tree);
-        if(!@mkdir($estructura, 0777, true)) {
-            if (file_exists($estructura . "/" . $manifiesto->nombre_archivo)) { @unlink($estructura . "/" . $manifiesto->nombre_archivo); }
-        }
 
-        $output = public_path($manifiesto->url_documento_pdf);
+        $output = storage_path('app/'.$manifiesto->url_documento_pdf);
+
         PDF::Output($output, 'F');
         PDF::reset();
         
