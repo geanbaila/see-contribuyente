@@ -663,7 +663,7 @@
             $("[name='doc_envia']").val(data.doc_recibe); // $("[name='doc_envia']").val(data.doc_envia);
             $("[name='nombre_envia']").val(data.nombre_recibe); // $("[name='nombre_envia']").val(data.nombre_envia);
             $("[name='adquiriente']").val(0);
-            $("[name='guia_remision_transportista']").val("true");
+            $("[name='guia_remision_transportista']").val(1);
 
             // $("[name='celular_envia']").val(data.celular_envia);
             // $("[name='email_envia']").val(data.email_envia);
@@ -695,7 +695,7 @@
             // $("[name='medio_pago']").val(data.medio_pago).change();
             // $("[name='documento']").val(data.documento_id).change();
             // $("[name='documento_serie']").val(data.documento_serie);
-            $("[name='documento_correlativo']").val(data.documento_correlativo);
+            // $("[name='documento_correlativo']").val(data.documento_correlativo);
             
             
             if (data.detalles.length > 0) {
@@ -949,9 +949,11 @@
                     },
                     beforeSend: function () {
                         $("#responseChargeRow").html("");
+                        $("#loading-modal").show();
                     }
                 }).done(function(response) {
-                    var html = '<tr><td colspan="5">No se encontraron coincidencias</td></tr>';
+                    $("#loading-modal").hide();
+                    var html = '<tr><td colspan="7" align="center">No se encontraron coincidencias</td></tr>';
                     if (response.result.encargo.length > 0) {
                         var i = 0;
                         _.forEach(response.result.encargo, function(element, index) {
@@ -1356,7 +1358,13 @@
             }
         });
 
-        $(".buscaDocRecibeDocEnvia").on('keypress', function(e) {
+        $("#buscaDocRecibeDocEnvia").on('keypress', function(e) {
+            if (e.which == 13) {
+                askEncargo();
+            }
+        });
+
+        $("#buscaDocumento").on('keypress', function(e) {
             if (e.which == 13) {
                 askEncargo();
             }

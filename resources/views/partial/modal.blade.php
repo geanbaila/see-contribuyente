@@ -67,7 +67,13 @@
                                             </tr>
                                         </thead>
                                       <tbody id="responseChargeRow">
+                                        
                                       </tbody>
+                                      <tfoot>
+                                        <tr>
+                                            <td colspan="7" align="center"><img id="loading-modal" style="display:none" src="{{ asset('public/assets/media/loading.gif') }}" width="20" /></td>
+                                        </tr>
+                                      </tfoot>
                                   </table>
                               </div>
 

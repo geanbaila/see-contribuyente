@@ -78,6 +78,7 @@ class SaleController extends Controller
             // $encargo['fecha_hora_envia'] = '';
             $encargo['documento_fecha'] = '';
             $encargo['documento_hora'] = '';
+            $encargo['documento_correlativo'] = '';
         }
         
         return view('sale.edit')->with([
@@ -379,6 +380,7 @@ class SaleController extends Controller
                     $documento_correlativo = $data['documento_correlativo'];
                     // cambiar guía de remisión a boleta/factura
                     if ((int)$data['guia_remision_transportista_id']==1) {
+                        
                         $fecha_hora_envia = date(env('FORMATO_DATETIME')); // poner la fecha actual si es GR
 
                         $documento_correlativo = Documento::nuevoCorrelativo($encargo_id, $data['documento_serie'], $data['documento_correlativo']);
@@ -490,7 +492,8 @@ class SaleController extends Controller
              
             } else if ($row_documento->alias === 'G') {
                 $url_documento_pdf = $this->escribirPDFGuiaRemision($encargo_id);
-                $url_documento = ['error'=> '', 'xml' => '', 'cdr' => '', 'nombre_archivo' => '', 'cdr_descripcion' => '|||'];
+                // $url_documento = ['error'=> '', 'xml' => '', 'cdr' => '', 'nombre_archivo' => '', 'cdr_descripcion' => '|||'];
+                $url_documento = ['error'=> '', 'xml' => '', 'cdr' => '', 'nombre_archivo' => 'guia_remision.pdf', 'cdr_descripcion' => '|||'];
 
             } else {
                 // no escribir PDF
@@ -796,8 +799,9 @@ class SaleController extends Controller
 
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
             $estructura = storage_path('app/'.$tree);
+            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             if(!@mkdir($estructura, 0777, true)) {
-                if (file_exists($estructura)) { @unlink($estructura); }
+                if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
             }
             $qr = $this->getQR($estructura, $data);
             QRcode::png($qr['value'], $qr['img'], 'L', 4, 2);
@@ -808,7 +812,6 @@ class SaleController extends Controller
             PDF::Ln();
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
-            $filename = $data['emisor_ruc'].'-03-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $output = $estructura . "/" . $filename;
             $url_documento_pdf = $tree . "/" . $filename;
             
@@ -970,8 +973,8 @@ class SaleController extends Controller
             // PDF::Cell($width, $height, "1c7a92ae351d4e21ebdfb897508f59d6", '', 1, 'L', 1);
  
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-            $filename = $data['emisor_ruc'].'-01-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = storage_path('app/'.$tree);
+            $filename = $data['emisor_ruc'].'-01-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
             }
@@ -985,9 +988,11 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
             $output = $estructura . "/" . $filename;
+            $url_documento_pdf = $tree . "/" . $filename;
+
             PDF::Output($output, 'F');
             PDF::reset();
-            $url_documento_pdf = $tree . "/" . $filename;
+            
         endif;
         return $url_documento_pdf;
     }
@@ -1176,8 +1181,8 @@ class SaleController extends Controller
             PDF::Ln();
 
             $tree = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-            $filename = $data['emisor_ruc'].'-09-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             $estructura = storage_path('app/'.$tree);
+            $filename = $data['emisor_ruc'].'-09-'.$data['emisor_numero_documento_electronico'] . '.pdf';
             if(!@mkdir($estructura, 0777, true)) {
                 if (file_exists($estructura . "/" . $filename)) { @unlink($estructura . "/" . $filename); }
             }
@@ -1191,9 +1196,11 @@ class SaleController extends Controller
             PDF::MultiCell($width, $height, env('EMPRESA_DISCLAIMER',''), '', $align_left, 1, 0, $x, $y);
             
             $output = $estructura . "/" . $filename;
+            $url_documento_pdf = $tree . "/" . $filename;
+
             PDF::Output($output, 'F');
             PDF::reset();
-            $url_documento_pdf = $tree . "/" . $filename;
+            
         endif;
         return $url_documento_pdf;
     }
