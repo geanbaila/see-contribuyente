@@ -57,11 +57,18 @@
                     <tbody id="responseDispatcherRow">
                         @if (!empty($encargo))
                             @foreach ($encargo as $item)
-                                <tr>
+                                @php
+                                    $background = ($item->documento_id == 3)?"table-danger":"";
+                                @endphp
+                                <tr class="{{ $background }}">
                                     <th scope="row">
                                         @if ($item->documento_id != 3)
-                                            <a onclick="javascript:entregarPaquete('{{ $item->id }}', this)"><img
-                                                src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>
+                                            @if ($item->fecha_hora_recibe!='' && $item->fecha_hora_recibe!=null)
+                                                <img src="{{ asset('public/assets/media/check-circle.svg') }}" width="20" />
+                                            @else
+                                            <a onclick="javascript:entregarPaquete('{{ $item->id }}', this)">
+                                                <img src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>
+                                            @endif
                                         @endif
                                     </th>
                                     <td>{!! str_replace(' ', '<br>', $item->fecha_hora_recibe) !!}</td>
@@ -214,7 +221,14 @@
                     console.log(response.result.encargo.data.length)
                     if (response.result.encargo.data.length > 0) {
                         _.forEach(response.result.encargo.data, function(element, index) {
-                            var click_event = (element.documento_id !=3)?'<a onclick="javascript:entregarPaquete('+element.id +', this)"><img src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>':'';
+                            var click_event = ''
+                            if(element.documento_id !=3) {
+                                if(element.fecha_hora_recibe.length>0 && element.fecha_hora_recibe!=null) {
+                                    click_event = '<img src="{{ asset('public/assets/media/check-circle.svg') }}" width="20" />';
+                                } else {
+                                    click_event = '<a onclick="javascript:entregarPaquete('+element.id +', this)"><img src="{{ asset('public/assets/media/package.svg') }}" width="20" /></a>';
+                                }
+                            }
                             html = '<tr>' +
                                 '<th scope="row">' + click_event + '</th>' +
                                 '<td>' + element.fecha_hora_recibe + '</td>' +

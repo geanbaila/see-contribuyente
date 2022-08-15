@@ -23,8 +23,8 @@ class DispatchController extends Controller
             DB::raw('(select date_format(fecha_hora_envia, "%d-%m-%Y %H:%i:%s") ) as fecha_hora_envia')
             )
         ->where('estado', $encargo_estado_en_manifiesto)
-        ->orderBy('fecha_hora_envia', 'desc')
-        ->orderBy('fecha_hora_recibe', 'desc')
+        // ->orderBy('fecha_hora_envia', 'desc')
+        ->orderBy('fecha_hora_recibe', 'asc')
         ->paginate(env('PAGINACION_DESPACHOS'));
         
         return view('dispatch.list')->with([ 'encargo' => $encargo, 'menu_despacho_active' => 'active']);

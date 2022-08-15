@@ -230,7 +230,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xxl-7">
-                                    <label class="form-label">Agencia:</label>
+                                    <label class="form-label">Agencia destino:</label>
                                     <select class="form-select" aria-label="--" name="agencia_destino"
                                         onchange="javascript:getSerie()">
                                         <option value="--" selected> -- </option>
