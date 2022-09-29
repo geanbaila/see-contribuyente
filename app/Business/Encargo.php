@@ -26,7 +26,8 @@ class Encargo extends Model
 
         'doc_recibe_alternativo',
         'nombre_recibe_alternativo',
-
+        'celular_recibe_alternativo',
+        'email_recibe_alternativo',
         // 'origen',
         // 'destino',
         'agencia_origen',

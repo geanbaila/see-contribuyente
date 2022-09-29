@@ -92,8 +92,12 @@ class SaleController extends Controller
     }
 
     public function register(Request $request) {
+        $data = $request->all();
+        return $this->registerFromDB($data);
+    }
+
+    public function registerFromDB($data) {
         // try {
-            $data = $request->all();
             $var = function() {     
                 $prg = func_get_arg(0);
                 $documento_id = func_get_arg(1);
@@ -111,7 +115,7 @@ class SaleController extends Controller
 
                 foreach($prg as $item) :
                     if ($item['descripcion'] !== "--") :
-                        $row_item = Item::find($item['descripcion']);
+                        $row_item =  Item::find($item['descripcion']);
                         if ($row_item) :
                             if ($row_item->tipo_afectaciones->codigo == env('AFECTACION_GRAVADO')) {
                                 $valor_venta = $item['cantidad'] * $item['valor_unitario'];
@@ -259,7 +263,6 @@ class SaleController extends Controller
                     ]
                 ]);
             }
-
             if (strlen($data['doc_recibe']) === 8) {
                 $tipo_documento = 'DNI';
             }else if (strlen($data['doc_recibe']) === 11) {
@@ -324,14 +327,14 @@ class SaleController extends Controller
                 $insert_encargo = array_merge([
                     'doc_envia' => $data['doc_envia'],
                     'nombre_envia' => $data['nombre_envia'],
-                    // 'celular_envia' => $data['celular_envia'],
-                    // 'email_envia' => $data['email_envia'],
+                    'celular_envia' => $data['celular_envia'],
+                    'email_envia' => $data['email_envia'],
                     'fecha_hora_envia' => (empty($data['fecha_hora_envia']))?date(env('FORMATO_DATETIME')):$data['fecha_hora_envia'],
 
                     'doc_recibe' => $data['doc_recibe'],
                     'nombre_recibe' => $data['nombre_recibe'],
-                    // 'celular_recibe' => $data['celular_recibe'],
-                    // 'email_recibe' => $data['email_recibe'],
+                    'celular_recibe' => $data['celular_recibe'],
+                    'email_recibe' => $data['email_recibe'],
                     'fecha_recibe' => (empty($data['fecha_recibe']))?date(env('FORMATO_DATE')):$data['fecha_recibe'],
 
                     'doc_recibe_alternativo' => $data['doc_recibe_alternativo'],
@@ -1614,7 +1617,7 @@ class SaleController extends Controller
                     }
                 endforeach;
             }
-
+            
             list($enteros, $decimales) = explode('.', $data['oferta']);
             $formatter_es = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
             $letras = $formatter_es->format($enteros);
@@ -1639,9 +1642,9 @@ class SaleController extends Controller
 
             list($year, $month, $day) = explode('-', $data['emisor_fecha_documento_electronico']); // yyyy-mm-dd
             $folder = 'comprobantes/' . $year . '/' . $month . '/' . $encargo_id;
-           
+            
             $util = Util::getInstance();
-            switch(env('DETRACCION')){
+            switch(env('SUNAT_ENDPOINT')){
                 case 'HOMOLOGACION':
                     $see = $util->getSee(SunatEndpoints::FE_HOMOLOGACION);
                     break;

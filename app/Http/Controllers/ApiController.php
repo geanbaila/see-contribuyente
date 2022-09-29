@@ -113,7 +113,6 @@ class ApiController extends Controller
             $persona = json_decode($response);
             if($persona->success){
                 $arrPersona = $persona->data->nombre_completo;
-            
                 $history_dni->dni = $dni;
                 $history_dni->nombres = $arrPersona;
                 $history_dni->save();
@@ -351,6 +350,66 @@ class ApiController extends Controller
             ];   
         }
         return response()->json($response);
+    }
+
+    public function conversionGuiaRemision(Request $request) {
+        $encargo_id = trim($request->input('encargo_id'));
+        $nuevo_documento_id = trim($request->input('documento'));
+        $nuevo_doc_recibe = trim($request->input('doc_recibe'));
+        $nuevo_nombre_recibe = trim($request->input('nombre_recibe'));
+        $encargo = \App\Business\Encargo::find($encargo_id);
+        $nuevo_documento_serie = json_decode($this->getSerie($encargo["agencia_origen"], $encargo["agencia_destino"], $nuevo_documento_id)->getContent())[0]->serie;
+        
+        $nuevo_documento_correlativo = "";
+        // $encargo['documento_fecha'] = '';
+        // $encargo['documento_hora'] = '';
+        // $encargo['documento_correlativo'] = '';
+        $detalle = [];
+        foreach($encargo->detalles as $i => $row) {
+            $detalle[$i]['descripcion'] = $row->item_id;
+            $detalle[$i]['peso'] = $row->peso;
+            $detalle[$i]['cantidad'] = ($row->cantidad) ? $row->cantidad: 1;
+            $detalle[$i]['valor_unitario'] = $row->valor_unitario;
+        }
+        
+        $data = [
+            "encargo_id" => $encargo['id'],
+            "guia_remision_transportista_id" => 1,
+            "doc_envia" => $encargo['doc_envia'],
+            "nombre_envia" => $encargo['nombre_envia'],
+            "nombre_comercial_envia" => '', // de todos modos este dato ya está insertado
+            "direccion_envia" => '', // de todos modos este dato ya está insertado
+            "celular_envia" => $encargo['celular_envia'],
+            "email_envia" => $encargo['email_envia'],
+            "fecha_hora_envia" => $encargo['fecha_hora_envia'], // de todos modos esta fecha va cambiar por tratarse de una conversión
+            "doc_recibe" => $nuevo_doc_recibe,
+            "nombre_recibe" => $nuevo_nombre_recibe,
+            "nombre_comercial_recibe" => '', // de todos modos este dato ya está insertado
+            "direccion_recibe" => '', // de todos modos este dato ya está insertado
+            "celular_recibe" => $nuevo_doc_recibe == $encargo['doc_recibe'] ? $encargo['celular_recibe'] : '',
+            "email_recibe" => $nuevo_doc_recibe == $encargo['doc_recibe'] ? $encargo['email_recibe']: '',
+            "fecha_hora_recibe" => $encargo['fecha_hora_recibe'],
+            "doc_recibe_alternativo" => $encargo['doc_recibe_alternativo'],
+            "nombre_recibe_alternativo" => $encargo['nombre_recibe_alternativo'],
+            "nombre_comercial_recibe_alternativo" => $encargo['nombre_comercial_recibe_alternativo'], // no se requiere por ahora
+            "direccion_recibe_alternativo" => $encargo['direccion_recibe_alternativo'], // no se requiere por ahora
+            
+            "agencia_origen" => $encargo['agencia_origen'],
+            "agencia_destino" => $encargo['agencia_destino'],
+            
+            "adquiriente" => $encargo['adquiriente_id'],
+            "documento" => $nuevo_documento_id,
+            "documento_serie" => $nuevo_documento_serie,
+            "documento_correlativo" => $nuevo_documento_correlativo,
+            "subtotal" => $encargo['subtotal'],
+            "importe_pagar_con_descuento" => $encargo['oferta'],
+            "descuento" => $encargo['descuento'],
+            "encargo" => $detalle,
+        ];
+
+        $sale = new SaleController();
+        return $sale->registerFromDB($data);
+        
     }
 
 }

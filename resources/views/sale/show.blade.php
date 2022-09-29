@@ -25,13 +25,13 @@
         
         <input type="hidden" name="nombre_comercial_envia" value="{{ isset($encargo) ? $encargo->nombre_envia : '' }}" />
         <input type="hidden" name="direccion_envia" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
-        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}">
+        {{-- <input type="hidden" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}">
+        <input type="hidden" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}"> --}}
         
         <input type="hidden" name="nombre_comercial_recibe" value="{{ isset($encargo) ? $encargo->nombre_recibe : '' }}" />
         <input type="hidden" name="direccion_recibe" value="{{ isset($encargo) ? $encargo->id : '' }}" />
-        <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
-        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}">
+        {{-- <input type="hidden" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}">
+        <input type="hidden" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}"> --}}
         
         <input type="hidden" name="nombre_comercial_recibe_alternativo" value="{{ isset($encargo) ? $encargo->nombre_recibe_alternativo : '' }}" />
         <input type="hidden" name="direccion_recibe_alternativo" value="{{ isset($encargo) ? $encargo->id : '' }}" />
@@ -76,7 +76,9 @@
                         <div class="col-xxl-4">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label class="form-label">F. recepción:</label>
+                                    <label class="form-label">Celular:</label>
+                                    <input type="text" class="form-control" name="celular_envia" value="{{ isset($encargo) ? $encargo->celular_envia : '' }}" placeholder="999999999"/>
+                                    
                                     @if (isset($encargo) && !empty($encargo->fecha_hora_envia))
                                     @php
                                     list($fecha, $hora) = explode(' ', $encargo->fecha_hora_envia);
@@ -84,17 +86,23 @@
                                     
                                         $fecha_hora_envia_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
                                     @endphp
-                                        <input type="text" class="form-control" name="fecha_hora_envia_blocked" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
+                                        <input type="hidden" class="form-control" name="fecha_hora_envia_blocked" value="{{ $fecha_hora_envia_dd_mm_yyyy }}"
                                          disabled />
                                     @else
-                                        <input type="text" class="form-control" name="fecha_hora_envia_blocked" value="" disabled />
+                                    <input type="hidden" class="form-control" name="fecha_hora_envia_blocked" value="" disabled />
                                     @endif
+                                </div>
+                                <div class="col-xxl-7">
+                                    <label class="form-label">E-mail:</label>
+                                    <input type="text" class="form-control" name="email_envia" value="{{ isset($encargo) ? $encargo->email_envia : '' }}" placeholder="....@gmail.com"/>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xxl-1">
                             <div class="row gy-5">
                                 <div class="col-xxl-12">
+                                    <label class="form-label">Clave 4D:</label>
+                                    <input type="password" class="form-control" name="clave" maxlength="4"/>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +121,7 @@
                                         <input type="text" class="form-control" id="doc_recibe" name="doc_recibe" value=""/>
                                          <div class="input-group-append">
                                             <span class="input-group-text" id="basic-addon2">
-                                                &nbsp;<img id="loading-input2" style="display:none" src="{{ asset('public/assets/media/loading.gif') }}" width="20" />
+                                                &nbsp;<img class="loading-input2" style="display:none" src="{{ asset('public/assets/media/loading.gif') }}" width="20" />
                                             </span>
                                         </div>
                                     </div>
@@ -134,7 +142,9 @@
                         <div class="col-xxl-4">
                             <div class="row gy-5">
                                 <div class="col-xxl-5">
-                                    <label class="form-label">F. entrega:</label>
+                                    <label class="form-label">Celular:</label>
+                                    <input type="text" class="form-control" name="celular_recibe" value="{{ isset($encargo) ? $encargo->celular_recibe : '' }}" placeholder="999999999">
+                                    
                                     @if (isset($encargo) && !empty($encargo->fecha_hora_recibe))
                                     @php
                                     list($fecha, $hora) = explode(' ', $encargo->fecha_hora_recibe);
@@ -142,13 +152,16 @@
                                     
                                         $fecha_hora_recibe_dd_mm_yyyy = $day.'-'.$month.'-'.$year.' '.$hora;
                                     @endphp
-                                        <input type="text" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
+                                        <input type="hidden" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
                                             value="{{ $fecha_hora_recibe_dd_mm_yyyy }}" disabled>
                                     @else
-                                        <input type="text" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
+                                        <input type="hidden" class="form-control" id="fecha_hora_recibe_blocked" name="fecha_hora_recibe_blocked"
                                             value="" disabled>
                                     @endif
-                            
+                                </div>
+                                <div class="col-xxl-7">
+                                    <label class="form-label">E-mail:</label>
+                                    <input type="text" class="form-control" name="email_recibe" value="{{ isset($encargo) ? $encargo->email_recibe : '' }}" placeholder="....@gmail.com"/>
                                 </div>
                             </div>
                         </div>
@@ -665,13 +678,13 @@
             $("[name='adquiriente']").val(0);
             $("[name='guia_remision_transportista']").val(1);
 
-            // $("[name='celular_envia']").val(data.celular_envia);
-            // $("[name='email_envia']").val(data.email_envia);
+            $("[name='celular_envia']").val(data.celular_envia);
+            $("[name='email_envia']").val(data.email_envia);
             $("[name='fecha_hora_envia']").val("");
             $("[name='doc_recibe']").val(data.doc_recibe);
             $("[name='nombre_recibe']").val(data.nombre_recibe);
-            // $("[name='celular_recibe']").val(data.celular_recibe);
-            // $("[name='email_recibe']").val(data.email_recibe);
+            $("[name='celular_recibe']").val(data.celular_recibe);
+            $("[name='email_recibe']").val(data.email_recibe);
 
             // F. recepción:
             if (data.fecha_hora_envia) {
@@ -725,8 +738,8 @@
             var nombre_envia = $("[name='nombre_envia']").val().trim();
             var nombre_comercial_envia = $("[name='nombre_comercial_envia']").val().trim();
             var direccion_envia = $("[name='direccion_envia']").val().trim();
-            // var celular_envia = $("[name='celular_envia']").val().trim();
-            // var email_envia = $("[name='email_envia']").val().trim();
+            var celular_envia = $("[name='celular_envia']").val().trim();
+            var email_envia = $("[name='email_envia']").val().trim();
             var fecha_hora_envia = $("[name='fecha_hora_envia']").val().trim();
 
 
@@ -734,8 +747,8 @@
             var nombre_recibe = $("[name='nombre_recibe']").val().trim();
             var nombre_comercial_recibe = $("[name='nombre_comercial_recibe']").val().trim();
             var direccion_recibe = $("[name='direccion_recibe']").val().trim();
-            // var celular_recibe = $("[name='celular_recibe']").val().trim();
-            // var email_recibe = $("[name='email_recibe']").val().trim();
+            var celular_recibe = $("[name='celular_recibe']").val().trim();
+            var email_recibe = $("[name='email_recibe']").val().trim();
             var fecha_hora_recibe = $("[name='fecha_hora_recibe']").val().trim();
             
             var doc_recibe_alternativo = $("[name='doc_recibe_alternativo']").val().trim();
@@ -776,16 +789,16 @@
                 nombre_envia: nombre_envia,
                 nombre_comercial_envia: nombre_comercial_envia,
                 direccion_envia: direccion_envia,
-                // celular_envia: celular_envia,
-                // email_envia: email_envia,
+                celular_envia: celular_envia,
+                email_envia: email_envia,
                 fecha_hora_envia: fecha_hora_envia,
 
                 doc_recibe: doc_recibe,
                 nombre_recibe: nombre_recibe,
                 nombre_comercial_recibe: nombre_comercial_recibe,
                 direccion_recibe: direccion_recibe,
-                // celular_recibe: celular_recibe,
-                // email_recibe: email_recibe,
+                celular_recibe: celular_recibe,
+                email_recibe: email_recibe,
                 fecha_hora_recibe: fecha_hora_recibe,
 
                 doc_recibe_alternativo: doc_recibe_alternativo,
@@ -949,10 +962,10 @@
                     },
                     beforeSend: function () {
                         $("#responseChargeRow").html("");
-                        $("#loading-modal").show();
+                        $(".loading-modal").show();
                     }
                 }).done(function(response) {
-                    $("#loading-modal").hide();
+                    $(".loading-modal").hide();
                     var html = '<tr><td colspan="7" align="center">No se encontraron coincidencias</td></tr>';
                     if (response.result.encargo.length > 0) {
                         var i = 0;
@@ -1273,10 +1286,10 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            $("#loading-input2").show();
+                            $(".loading-input2").show();
                         }
                     }).done(function(result) {
-                        $("#loading-input2").hide();
+                        $(".loading-input2").hide();
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                         $("[name='direccion_recibe']").val(result.result.direccion);
@@ -1292,10 +1305,10 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            $("#loading-input2").show();
+                            $(".loading-input2").show();
                         }
                     }).done(function(result) {
-                        $("#loading-input2").hide();
+                        $(".loading-input2").hide();
                         $("[name='nombre_recibe']").val(result.result.nombre);
                         $("[name='nombre_comercial_recibe']").val(result.result.nombre);
                         $("[name='direccion_recibe']").val(result.result.direccion);

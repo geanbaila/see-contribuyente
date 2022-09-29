@@ -25,6 +25,7 @@ Route::get('/venta/editar/{encargo_id}', 'SaleController@edit');
 Route::post('/venta/registrar', 'SaleController@register');
 Route::post('/venta/comunicar-baja', 'SaleController@baja');
 
+
 Route::get('/reporte', 'ReportController@list');
 
 Route::get('/manifiesto', 'ManifestController@list');
@@ -43,7 +44,7 @@ Route::post('/api/v1/sunat/{ruc}', 'ApiController@getSunat');
 Route::post('/api/v1/reniec/{dni}', 'ApiController@getReniec');
 Route::post('/api/v1/guia-remision-transportista/any', 'ApiController@buscarGuiaRemision');
 Route::post('/api/v1/guia-remision-transportista', 'ApiController@getGuiaRemision');
-
+Route::post('/api/v1/guia-remision-transportista/conversion', 'ApiController@conversionGuiaRemision');
 
 Route::get('/api/v1/download/pdf/{encargo_id}', 'ApiController@downloadPdf');
 Route::get('/api/v1/download/pdf64/{encargo_id}', 'ApiController@downloadPdfBase64');
